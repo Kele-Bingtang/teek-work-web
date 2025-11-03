@@ -1,9 +1,9 @@
 {
-  "name": "kbt-vue3-template",
-  "version": "1.0.0",
+  "name": "teek-work-web",
+  "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@10.7.1",
-  "description": "Teek Design Vue3 后台管理系统",
+  "description": "Teek 工作平台",
   "author": "Teeker <2456019588@qq.com>",
   "license": "MIT",
   "type": "module",
