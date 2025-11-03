@@ -1,8 +1,10 @@
 import type { Router } from "vue-router";
+import { message } from "teek";
 import { serviceConfig, LOGIN_URL } from "@/common/config";
 import { useRouteFn } from "@/composables";
-import { useRouteStore, useUserStore } from "@/pinia";
+import { useRouteStore, useUserStore, useDataStore } from "@/pinia";
 import { resetRouter } from "..";
+import { getOne } from "@/common/api/application/app";
 
 export const createAuthGuard = (router: Router) => {
   /**
@@ -11,8 +13,18 @@ export const createAuthGuard = (router: Router) => {
   router.beforeEach(async (to, from, next) => {
     const userStore = useUserStore();
     const routeStore = useRouteStore();
+    const dataStore = useDataStore();
     const { initDynamicRoutes } = useRouteFn();
     const accessToken = userStore.accessToken;
+
+    if (!to.meta.app) dataStore.clearAppInfo();
+    else if (to.params.appId && dataStore.appInfo?.appId !== to.params.appId) {
+      const res = await getOne(to.params.appId as string);
+      if (res.status === "success") {
+        const data = res.data;
+        useDataStore().setAppInfo(data);
+      } else message.error(res.message);
+    }
 
     // 白名单
     const whiteList = serviceConfig.router.whiteList;

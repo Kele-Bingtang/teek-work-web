@@ -24,6 +24,10 @@ export const getAppTreeList = () => {
   return http.get<httpNs.Response<App.AppTree[]>>(`${baseUri}/treeList`);
 };
 
+export const getOne = (appId: string) => {
+  return http.get<httpNs.Response<App.AppInfo>>(`${baseUri}/getOne/${appId}`);
+};
+
 export const listApp = (params?: Partial<App.AppInfo>) => {
   return http.get<httpNs.Response<App.AppInfo[]>>(`${baseUri}/list`, params);
 };

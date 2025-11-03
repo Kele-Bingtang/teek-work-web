@@ -10,6 +10,7 @@ export * from "./stores/setting";
 export * from "./stores/user";
 export * from "./stores/error-log";
 export * from "./stores/dict";
+export * from "./stores/data";
 
 /**
  * 自定义存储逻辑

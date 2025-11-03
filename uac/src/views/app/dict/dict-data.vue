@@ -21,9 +21,11 @@ export interface DictDataProps {
 
 // 接受父组件参数，配置默认值
 const props = defineProps<DictDataProps>();
+const route = useRoute();
 
 const initRequestParams = reactive({
   dictCode: computed(() => props.dictCode),
+  appId: route.params.appId as string,
 });
 
 const columns: TableColumn<DictData.DictDataInfo>[] = [

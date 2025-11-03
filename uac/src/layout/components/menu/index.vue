@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import { ElScrollbar, ElMenu } from "element-plus";
 import { isFunction } from "@/common/utils";
 import { useMenu } from "@/composables";
-import { useSettingStore } from "@/pinia";
+import { useDataStore, useSettingStore } from "@/pinia";
 import MenuItem from "./menu-item.vue";
 
 defineOptions({ name: "AsideMenu" });
@@ -26,6 +26,8 @@ const props = withDefaults(defineProps<MenuProps>(), {
 
 const route = useRoute();
 const settingStore = useSettingStore();
+const dataStore = useDataStore();
+
 const { menuList: menuListRef } = useMenu();
 
 const { menu } = storeToRefs(settingStore);
@@ -43,8 +45,10 @@ const isCollapse = computed(() => (props.isCollapse === undefined ? menu.value.c
 
 // 菜单列表
 const menuList = computed(() => {
-  if (props.menuList?.length) return props.menuList;
-  return menuListRef.value;
+  const menuList = props.menuList?.length ? props.menuList : menuListRef.value;
+  if (dataStore.appInfo?.appId) return menuList.filter(menu => menu.meta.app);
+
+  return menuList.filter(menu => !menu.meta.app);
 });
 </script>
 

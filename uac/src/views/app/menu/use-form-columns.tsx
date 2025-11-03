@@ -28,22 +28,12 @@ export const elFormProps = {
   rules: rules,
 };
 
-export const useFormColumns = (options: ComputedRef<any>, defaultValue: ComputedRef<string>) => {
+export const useFormColumns = (defaultValue: ComputedRef<string>) => {
   const columns: DialogFormColumn<Menu.MenuInfo>[] = [
     {
       prop: "base",
       label: "基础配置",
       el: "ElDivider",
-    },
-    {
-      prop: "appId",
-      label: "所属 App",
-      el: "el-select",
-      options,
-      optionField: { value: "appId", label: "appName" },
-      defaultValue: defaultValue,
-      disabledIn: ["edit"],
-      elProps: { clearable: true, placeholder: "请选择 App" },
     },
     {
       prop: "menuType",

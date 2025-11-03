@@ -4,7 +4,7 @@ import { ElMenuItem, ElSubMenu } from "element-plus";
 import { isValidURL } from "@/common/utils";
 import { Tooltip, PointTag } from "@/components";
 import { useNamespace, useCommon } from "@/composables";
-import { useSettingStore } from "@/pinia";
+import { useSettingStore, useDataStore } from "@/pinia";
 import { LayoutModeEnum } from "@/common/config";
 
 defineOptions({ name: "AsideMenuItem" });
@@ -14,6 +14,7 @@ defineProps<{ menuItem: RouterConfig }>();
 const ns = useNamespace();
 const router = useRouter();
 const settingStore = useSettingStore();
+const dataStore = useDataStore();
 const { isMobile, getTitle } = useCommon();
 
 const { menu, layout } = storeToRefs(settingStore);
@@ -28,7 +29,11 @@ const handleMenuClick = (menuItem: RouterConfig) => {
   if (isMobile.value) settingStore.collapseSideMenu();
 
   if (isValidURL(menuItem.path)) return window.open(menuItem.path, "_blank");
-  router.push(menuItem.meta._fullPath || menuItem.path || "");
+
+  const path = menuItem.meta._fullPath || menuItem.path || "";
+  const appId = dataStore.appInfo?.appId;
+  if (appId) router.push(path.replace(":appId", appId));
+  else router.push(path);
 };
 </script>
 

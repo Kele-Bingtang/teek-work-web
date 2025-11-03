@@ -1,12 +1,10 @@
 <script setup lang="tsx" name="Menu">
-import type { TreeKey } from "element-plus";
-import type { DialogFormProps, TableColumn, ProPageInstance, TreeFilterInstance } from "teek";
+import type { DialogFormProps, TableColumn, ProPageInstance } from "teek";
 import type { Menu } from "@/common/api/system/menu";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
-import { TreeFilter, ProPage, Icon, downloadByData, useNamespace } from "teek";
+import { ProPage, Icon, downloadByData, useNamespace } from "teek";
 import { httpPrefix, httpsPrefix } from "@/common/config";
-import { getAppTreeList } from "@/common/api/application/app";
 import { listMenuTreeTableByApp, addMenu, editMenu, removeMenu, exportExcel } from "@/common/api/system/menu";
 import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
@@ -14,8 +12,8 @@ import { menuTypeEnum, elFormProps, useFormColumns } from "./use-form-columns";
 
 const ns = useNamespace("menu");
 
-const treeFilterInstance = useTemplateRef<TreeFilterInstance>("treeFilterInstance");
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
+const route = useRoute();
 
 const { statusChange } = useChange(
   "menuName",
@@ -25,7 +23,7 @@ const { statusChange } = useChange(
 );
 
 const initRequestParams = reactive({
-  appId: "",
+  appId: route.params.appId as string,
 });
 
 const columns: TableColumn<Menu.MenuInfo>[] = [
@@ -85,10 +83,7 @@ const { hasAuth } = usePermission();
 const dialogFormProps: DialogFormProps = {
   form: {
     elFormProps,
-    columns: useFormColumns(
-      computed(() => treeFilterInstance.value?.treeData),
-      computed(() => initRequestParams.appId)
-    ).columns,
+    columns: useFormColumns(computed(() => initRequestParams.appId)).columns,
     notCleanModelKeys: ["meta"],
   },
   id: ["id", "menuId"],
@@ -136,10 +131,6 @@ const dialogFormProps: DialogFormProps = {
   },
 };
 
-const handleTreeChange = (nodeId: string | TreeKey[]) => {
-  initRequestParams.appId = nodeId + "";
-};
-
 const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
   ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
     exportExcel(searchParam).then(res => {
@@ -151,52 +142,34 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 
 <template>
   <div :class="ns.b()">
-    <TreeFilter
-      ref="treeFilterInstance"
-      title="App 清单"
-      :requestApi="getAppTreeList"
-      @change="handleTreeChange"
-      id="appId"
-      label="appName"
-      :enable-total="false"
-    >
-      <template #default="{ node }">
-        <Icon v-if="node.data.icon" :icon="node.data.icon"></Icon>
-        <span>{{ node.label }}</span>
-      </template>
-    </TreeFilter>
-
-    <div :class="ns.e('table')">
-      <div :class="ns.em('table', 'empty')" v-if="!initRequestParams.appId">
-        <el-empty description="请先选择一个应用" />
-      </div>
-      <ProPage
-        ref="proPageInstance"
-        v-show="initRequestParams.appId"
-        :request-api="listMenuTreeTableByApp"
-        :columns
-        :init-request-params="initRequestParams"
-        :request-immediate="false"
-        :search-props="{ searchCols: { xs: 1, sm: 1, md: 2, lg: 3, xl: 3 } }"
-        :dialog-form-props
-        :border="false"
-        :page-scope="false"
-        :export-file
-        :disabled-tool-button="!hasAuth('system:menu:export') ? ['export'] : []"
-      >
-        <template #operation-after="{ row, dialogFormInstance }">
-          <el-button
-            v-auth="['system:menu:add']"
-            link
-            size="small"
-            :icon="Plus"
-            @click="dialogFormInstance?.handleAdd({ parentId: row.menuId })"
-          >
-            新增
-          </el-button>
-        </template>
-      </ProPage>
+    <div :class="ns.em('table', 'empty')" v-if="!initRequestParams.appId">
+      <el-empty description="请先选择一个应用" />
     </div>
+    <ProPage
+      ref="proPageInstance"
+      v-show="initRequestParams.appId"
+      :request-api="listMenuTreeTableByApp"
+      :columns
+      :init-request-params="initRequestParams"
+      :search-props="{ searchCols: { xs: 1, sm: 1, md: 2, lg: 3, xl: 3 } }"
+      :dialog-form-props
+      :border="false"
+      :page-scope="false"
+      :export-file
+      :disabled-tool-button="!hasAuth('system:menu:export') ? ['export'] : []"
+    >
+      <template #operation-after="{ row, dialogFormInstance }">
+        <el-button
+          v-auth="['system:menu:add']"
+          link
+          size="small"
+          :icon="Plus"
+          @click="dialogFormInstance?.handleAdd({ parentId: row.menuId })"
+        >
+          新增
+        </el-button>
+      </template>
+    </ProPage>
   </div>
 </template>
 
@@ -205,20 +178,12 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 @use "@teek/styles/mixins/function" as *;
 
 @include b(menu) {
-  display: flex;
-  height: 100%;
-
-  @include e(table) {
-    width: calc(100% - 230px);
+  @include m(empty) {
+    display: flex;
+    justify-content: center;
+    width: 100%;
     height: 100%;
-
-    @include m(empty) {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      background-color: cssVar(bg-color);
-    }
+    background-color: cssVar(bg-color);
   }
 }
 </style>

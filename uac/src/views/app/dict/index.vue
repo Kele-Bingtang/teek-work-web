@@ -10,9 +10,14 @@ import { dictTypeElFormProps, useFormColumns } from "./use-form-columns";
 import DictData from "./dict-data.vue";
 
 const ns = useNamespace("dict-type");
+const route = useRoute();
 
 const dictInfo = ref<DictType.DictTypeInfo>();
 const drawer = ref(false);
+
+const initRequestParams = reactive({
+  appId: route.params.appId as string,
+});
 
 const clickDictCode = (row: DictType.DictTypeInfo) => {
   dictInfo.value = row;
@@ -87,6 +92,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       <ProPage
         :request-api="listPage"
         :columns
+        :init-request-params="initRequestParams"
         :search-props="{ searchCols: { xs: 1, sm: 1, md: 2, lg: 3, xl: 3 } }"
         :dialogFormProps
         :export-file

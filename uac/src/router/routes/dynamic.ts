@@ -38,7 +38,7 @@
  * @param meta.query ==> 查询参数，Teek 不做任何处理，自行取出处理
  */
 
-import { Compass, Setting, Operation, Connection, View } from "@element-plus/icons-vue";
+import { Compass, Connection, View } from "@element-plus/icons-vue";
 import { HOME_URL, HOME_NAME } from "@/common/config";
 
 /**
@@ -78,130 +78,44 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     },
   },
   {
-    path: "/system-manage",
-    name: "SystemManage",
-    meta: {
-      title: "系统管理",
-      icon: Setting,
-    },
-    children: [
-      {
-        path: "tenant-manage",
-        name: "TenantManage",
-        component: "/system/tenant/index",
-        meta: {
-          title: "租户管理",
-        },
-      },
-      {
-        path: "user-manage",
-        name: "UserManage",
-        component: "/system/user/index",
-        meta: {
-          title: "用户信息",
-        },
-      },
-      {
-        path: "dept-manage",
-        name: "DeptManage",
-        component: "/system/dept/index",
-        meta: {
-          title: "部门管理",
-        },
-      },
-      {
-        path: "post-manage",
-        name: "PostManage",
-        component: "/system/post/index",
-        meta: {
-          title: "岗位管理",
-        },
-      },
-      {
-        path: "role-manage",
-        name: "RoleManage",
-        component: "/system/role/index",
-        meta: {
-          title: "角色管理",
-        },
-      },
-      {
-        path: "menu-manage",
-        name: "MenuManage",
-        component: "/system/menu/index",
-        meta: {
-          title: "菜单管理",
-        },
-      },
-      {
-        path: "dict-manage",
-        name: "DictManage",
-        component: "/system/dict/index",
-        meta: {
-          title: "字典管理",
-        },
-      },
-    ],
-  },
-  {
-    path: "/application-manage",
-    name: "ApplicationManage",
+    path: "/app-manage",
+    name: "AppManage",
+    component: "/application/app/index",
     meta: {
       title: "应用管理",
-      icon: Operation,
     },
-    children: [
-      {
-        path: "client-manage",
-        name: "ClientManage",
-        component: "/application/client/index",
-        meta: {
-          title: "客户端管理",
-        },
-      },
-      {
-        path: "app-manage",
-        name: "AppManage",
-        component: "/application/app/index",
-        meta: {
-          title: "App 管理",
-        },
-      },
-    ],
   },
   {
-    path: "/config-manage",
-    name: "ConfigManage",
+    path: "/tenant-manage",
+    name: "TenantManage",
+    component: "/system/tenant/index",
     meta: {
-      title: "配置管理",
-      icon: Connection,
+      title: "租户管理",
     },
-    children: [
-      {
-        path: "user-config",
-        name: "UserConfig",
-        component: "/config/user-config/index",
-        meta: {
-          title: "用户配置",
-        },
-      },
-      {
-        path: "user-group-config",
-        name: "UserGroupConfig",
-        component: "/config/user-group-config/index",
-        meta: {
-          title: "用户组配置",
-        },
-      },
-      {
-        path: "role-config",
-        name: "RoleConfig",
-        component: "/config/role-config/index",
-        meta: {
-          title: "角色配置",
-        },
-      },
-    ],
+  },
+  {
+    path: "/user-manage",
+    name: "UserManage",
+    component: "/system/user/index",
+    meta: {
+      title: "用户信息",
+    },
+  },
+  {
+    path: "/dept-manage",
+    name: "DeptManage",
+    component: "/system/dept/index",
+    meta: {
+      title: "部门管理",
+    },
+  },
+  {
+    path: "/post-manage",
+    name: "PostManage",
+    component: "/system/post/index",
+    meta: {
+      title: "岗位管理",
+    },
   },
   {
     path: "/system-monitor",
@@ -250,6 +164,80 @@ export const dynamicRoutes: RouterConfigRaw[] = [
         meta: {
           title: "后台监控",
           iframeSrc: "http://localhost:9090/admin",
+        },
+      },
+    ],
+  },
+
+  {
+    path: "/menu-manage/:appId",
+    name: "MenuManage",
+    component: "/app/menu/index",
+    meta: {
+      title: "资源管理",
+      app: true,
+    },
+  },
+  {
+    path: "/role-manage/:appId",
+    name: "RoleManage",
+    component: "/app/role/index",
+    meta: {
+      title: "角色管理",
+      app: true,
+    },
+  },
+  {
+    path: "/dict-manage/:appId",
+    name: "DictManage",
+    component: "/app/dict/index",
+    meta: {
+      title: "字典管理",
+      app: true,
+    },
+  },
+  {
+    path: "/client-manage",
+    name: "ClientManage",
+    component: "/application/client/index",
+    meta: {
+      title: "客户端管理",
+    },
+  },
+  {
+    path: "/config-manage",
+    name: "ConfigManage",
+    meta: {
+      title: "授权管理",
+      icon: Connection,
+      app: true,
+    },
+    children: [
+      {
+        path: "user-config",
+        name: "UserConfig",
+        component: "/app/config/user-config/index",
+        meta: {
+          title: "用户配置",
+          app: true,
+        },
+      },
+      {
+        path: "user-group-config",
+        name: "UserGroupConfig",
+        component: "/app/config/user-group-config/index",
+        meta: {
+          title: "用户组配置",
+          app: true,
+        },
+      },
+      {
+        path: "role-config",
+        name: "RoleConfig",
+        component: "/app/config/role-config/index",
+        meta: {
+          title: "角色配置",
+          app: true,
         },
       },
     ],

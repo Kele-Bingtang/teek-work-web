@@ -5,7 +5,7 @@ import { ElMessageBox, ElSwitch } from "element-plus";
 import { TreeFilter, ProPage, downloadByData } from "teek";
 import { getAppTreeList } from "@/common/api/application/app";
 import { listPage, addRole, editRole, removeRole, removeBatch, type Role, exportExcel } from "@/common/api/system/role";
-import { elFormProps, useFormColumns } from "@/views/system/role/use-form-columns";
+import { elFormProps, formColumns } from "@/views/app/role/use-form-columns";
 import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
 import { Description } from "@/components";
@@ -79,10 +79,7 @@ const { hasAuth } = usePermission();
 const dialogFormProps: DialogFormProps = {
   form: {
     elFormProps,
-    columns: useFormColumns(
-      computed(() => treeFilterInstance.value?.treeData),
-      computed(() => requestParam.appId)
-    ).columns,
+    columns: formColumns,
   },
   id: ["id", "roleId", "appId"],
   addApi: addRole,

@@ -1,19 +1,17 @@
 <script setup lang="tsx" name="Role">
-import type { TreeKey } from "element-plus";
-import type { DialogFormProps, ProPageInstance, TableColumn, TreeFilterInstance } from "teek";
+import type { DialogFormProps, ProPageInstance, TableColumn } from "teek";
 import type { Role } from "@/common/api/system/role";
 import { ElMessageBox, ElSwitch } from "element-plus";
-import { TreeFilter, ProPage, downloadByData, useNamespace } from "teek";
-import { getAppTreeList } from "@/common/api/application/app";
+import { ProPage, downloadByData, useNamespace } from "teek";
 import { listPage, addRole, editRole, removeRole, removeBatch, exportExcel } from "@/common/api/system/role";
 import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
-import { elFormProps, useFormColumns } from "./use-form-columns";
+import { elFormProps, formColumns } from "./use-form-columns";
 
 const ns = useNamespace("role");
 
-const treeFilterInstance = useTemplateRef<TreeFilterInstance>("treeFilterInstance");
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
+const route = useRoute();
 
 const { statusChange } = useChange(
   "roleName",
@@ -23,7 +21,7 @@ const { statusChange } = useChange(
 );
 
 const initRequestParams = reactive({
-  appId: "",
+  appId: route.params.appId as string,
 });
 
 const columns: TableColumn<Role.RoleInfo>[] = [
@@ -65,10 +63,7 @@ const { hasAuth } = usePermission();
 const dialogFormProps: DialogFormProps = {
   form: {
     elFormProps,
-    columns: useFormColumns(
-      computed(() => treeFilterInstance.value?.treeData),
-      computed(() => initRequestParams.appId)
-    ).columns,
+    columns: formColumns,
   },
   id: ["id", "roleId"],
   addApi: addRole,
@@ -88,10 +83,6 @@ const dialogFormProps: DialogFormProps = {
   },
 };
 
-const handleTreeChange = (nodeId: string | TreeKey[]) => {
-  initRequestParams.appId = nodeId + "";
-};
-
 const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
   ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
     exportExcel(searchParam).then(res => {
@@ -103,32 +94,16 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 
 <template>
   <div :class="ns.b()">
-    <TreeFilter
-      ref="treeFilterInstance"
-      title="App 清单"
-      :requestApi="getAppTreeList"
-      @change="handleTreeChange"
-      id="appId"
-      label="appName"
-    >
-      <template #default="{ node }">
-        <Icon v-if="node.data.icon" :icon="node.data.icon"></Icon>
-        <span>{{ node.label }}</span>
-      </template>
-    </TreeFilter>
-
-    <div :class="ns.e('table')">
-      <ProPage
-        ref="proTableRef"
-        :request-api="listPage"
-        :columns
-        :init-request-params="initRequestParams"
-        :search-props="{ searchCols: { xs: 1, sm: 1, md: 3, lg: 3, xl: 3 } }"
-        :dialog-form-props
-        :export-file
-        :disabled-tool-button="!hasAuth('system:role:export') ? ['export'] : []"
-      ></ProPage>
-    </div>
+    <ProPage
+      ref="proTableRef"
+      :request-api="listPage"
+      :columns
+      :init-request-params="initRequestParams"
+      :search-props="{ searchCols: { xs: 1, sm: 1, md: 3, lg: 3, xl: 3 } }"
+      :dialog-form-props
+      :export-file
+      :disabled-tool-button="!hasAuth('system:role:export') ? ['export'] : []"
+    ></ProPage>
   </div>
 </template>
 
@@ -137,11 +112,5 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 
 @include b(role) {
   display: flex;
-  height: 100%;
-
-  @include e(table) {
-    width: calc(100% - 230px);
-    height: 100%;
-  }
 }
 </style>
