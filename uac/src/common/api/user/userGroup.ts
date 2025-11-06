@@ -6,6 +6,7 @@ export namespace UserGroup {
     id: number; // 主键
     groupId: string; // 用户组 ID
     groupName: string; // 用户组名
+    groupType: string; // 用户组类型
     ownerId: string; // 负责人 ID
     ownerName: string; // 负责人 username
     intro: string; // 用户组描述

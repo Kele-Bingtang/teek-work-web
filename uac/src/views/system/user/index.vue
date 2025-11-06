@@ -124,11 +124,11 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
     <ProPage
       ref="proPageInstance"
       :request-api="listPage"
+      :init-request-params
       :columns
       :dialog-form-props
       :export-file
       :disabled-tool-button="!hasAuth('system:user:export') ? ['export'] : []"
-      :init-request-params
     >
       <template #operation-after>
         <el-button v-auth="['system:user:passwordReset']" link size="small" :icon="Key" @click="resetPassword">

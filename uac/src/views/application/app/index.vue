@@ -132,6 +132,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       @change="handleTreeChange"
       id="clientId"
       label="clientName"
+      class="role-tree"
     >
       <template #default="{ node }">
         <Icon v-if="node.data.icon" :icon="node.data.icon"></Icon>
@@ -158,11 +159,9 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 
 @include b(app) {
   display: flex;
-  height: 100%;
 
-  @include e(role-table) {
-    width: calc(100% - 230px);
-    height: 100%;
+  .role-tree {
+    min-width: 220px;
   }
 }
 </style>

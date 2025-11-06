@@ -8,6 +8,9 @@ import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
 import { elFormProps, formColumns } from "./form-columns";
 
+// 部门管理的用户列表需要传入
+const props = defineProps<{ initRequestParams?: Recordable }>();
+
 const ns = useNamespace("post");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
@@ -88,6 +91,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
     <ProPage
       ref="proPageInstance"
       :request-api="listPage"
+      :init-request-params
       :columns
       :dialog-form-props
       :export-file
@@ -95,11 +99,3 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
     ></ProPage>
   </div>
 </template>
-
-<style lang="scss" scoped>
-@use "@teek/styles/mixins/bem" as *;
-
-@include b(post) {
-  height: 100%;
-}
-</style>

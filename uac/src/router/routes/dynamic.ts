@@ -143,6 +143,31 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     ],
   },
   {
+    path: "/user-group-manage",
+    name: "UserGroupManage",
+    meta: {
+      title: "用户组管理",
+    },
+    children: [
+      {
+        path: "list",
+        name: "UserGroupList",
+        component: "/system/user-group/list/index",
+        meta: {
+          title: "用户组列表",
+        },
+      },
+      {
+        path: "user",
+        name: "UserGroupUserList",
+        component: "/system/user-group/user/index",
+        meta: {
+          title: "用户列表",
+        },
+      },
+    ],
+  },
+  {
     path: "/system-monitor",
     name: "SystemMonitor",
     meta: {

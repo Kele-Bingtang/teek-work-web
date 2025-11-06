@@ -2,9 +2,9 @@
 import type { TreeKey } from "element-plus";
 import { TreeFilter, useNamespace } from "teek";
 import { listDeptTreeList } from "@/common/api/system/dept";
-import User from "../../user/index.vue";
+import Post from "../../post/index.vue";
 
-const ns = useNamespace("dept-user");
+const ns = useNamespace("dept-post");
 
 const initRequestParams = reactive({
   deptId: "",
@@ -24,14 +24,14 @@ const handleTreeChange = (nodeId: string | TreeKey[]) => {
       </template>
     </TreeFilter>
 
-    <User :init-request-params="initRequestParams" />
+    <Post :init-request-params="initRequestParams" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 @use "@teek/styles/mixins/bem" as *;
 
-@include b(dept-user) {
+@include b(dept-post) {
   display: flex;
 
   .icon {
