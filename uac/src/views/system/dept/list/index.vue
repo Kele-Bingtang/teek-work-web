@@ -13,7 +13,7 @@ const ns = useNamespace("dept");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
-const { statusChange } = useChange(
+const { statusChange } = useChange<Dept.DeptTreeTable>(
   "deptName",
   "部门",
   (row, status) => editDept({ id: row.id, deptId: row.deptId, parentId: row.parentId, status }),
@@ -70,7 +70,7 @@ const dialogFormProps: DialogFormProps = {
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
-    height: 300,
+    height: 400,
     top: "5vh",
     closeOnClickModal: false,
   },

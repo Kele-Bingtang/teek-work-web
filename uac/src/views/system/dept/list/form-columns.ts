@@ -28,6 +28,7 @@ export const formColumns: DialogFormColumn<Dept.DeptTreeTable>[] = [
       filterable: true,
       valueKey: "id",
       defaultExpandAll: true,
+      showCheckbox: true,
       checkStrictly: true,
     },
     options: () => listDeptTreeList(),

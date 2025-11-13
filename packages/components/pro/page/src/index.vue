@@ -41,6 +41,7 @@ const props = withDefaults(defineProps<ProPageProps>(), {
   highlightCurrentRow: true,
   showHeader: true,
   pageScope: true,
+  stripe: true,
   tooltipProps: () => defaultTooltipProps,
   exportFile: undefined,
 

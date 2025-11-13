@@ -38,7 +38,7 @@
  * @param meta.query ==> 查询参数，Teek 不做任何处理，自行取出处理
  */
 
-import { Compass, Connection, View } from "@element-plus/icons-vue";
+import { Compass, Connection, View, Coin, User, Refrigerator, Mouse, Crop, MessageBox } from "@element-plus/icons-vue";
 import { HOME_URL, HOME_NAME } from "@/common/config";
 
 /**
@@ -73,7 +73,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
       title: "工作台",
       icon: Compass,
       isAffix: true,
-      tagText: "Welcome",
+      tagText: "Home",
       tagProps: { type: "success" },
     },
   },
@@ -83,6 +83,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     component: "/application/app/index",
     meta: {
       title: "应用管理",
+      icon: Coin,
     },
   },
   {
@@ -91,6 +92,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     component: "/system/tenant/index",
     meta: {
       title: "租户管理",
+      icon: Crop,
     },
   },
   {
@@ -99,6 +101,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     component: "/system/user/index",
     meta: {
       title: "用户管理",
+      icon: User,
     },
   },
   {
@@ -107,6 +110,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     component: "/system/post/index",
     meta: {
       title: "岗位管理",
+      icon: Mouse,
     },
   },
   {
@@ -114,6 +118,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     name: "DeptManage",
     meta: {
       title: "部门管理",
+      icon: Refrigerator,
     },
     children: [
       {
@@ -147,6 +152,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     name: "UserGroupManage",
     meta: {
       title: "用户组管理",
+      icon: User,
     },
     children: [
       {
@@ -218,6 +224,15 @@ export const dynamicRoutes: RouterConfigRaw[] = [
       },
     ],
   },
+  {
+    path: "/client-manage",
+    name: "ClientManage",
+    component: "/application/client/index",
+    meta: {
+      title: "客户端管理",
+      icon: MessageBox,
+    },
+  },
 
   {
     path: "/menu-manage/:appId",
@@ -244,14 +259,6 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     meta: {
       title: "字典管理",
       app: true,
-    },
-  },
-  {
-    path: "/client-manage",
-    name: "ClientManage",
-    component: "/application/client/index",
-    meta: {
-      title: "客户端管理",
     },
   },
   {

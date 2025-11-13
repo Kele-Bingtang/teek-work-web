@@ -8,6 +8,7 @@ import { addUser, editUser, removeUser, removeBatch, listPage, exportExcel } fro
 import { useChange, usePermission } from "@/composables";
 import { elFormProps, useFormColumns } from "./use-form-columns";
 import { useDictStore } from "@/pinia";
+import { listDeptTreeList } from "@/common/api/system/dept";
 
 const ns = useNamespace("user");
 
@@ -17,13 +18,11 @@ const props = defineProps<{ initRequestParams?: Recordable }>();
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 const newPassword = ref("");
 
-const formColumns = useFormColumns(computed(() => props.initRequestParams?.deptId));
-
 const { hasAuth } = usePermission();
 
 const { open } = useDialog();
 
-const { statusChange } = useChange(
+const { statusChange } = useChange<User.UserInfo>(
   "username",
   "用户",
   (row, status) => editUser({ id: row.id, userId: row.userId, status }),
@@ -35,7 +34,14 @@ const columns: PageColumn<User.UserInfo>[] = [
   { type: "index", label: "#", width: 60 },
   { prop: "username", label: "用户名称", width: 170, search: { el: "el-input" } },
   { prop: "nickname", label: "用户昵称", width: 170, search: { el: "el-input" } },
-  { prop: "dept.deptName", label: "部门", width: 170, search: { el: "el-input" } },
+  {
+    prop: "dept.deptName",
+    label: "部门",
+    width: 170,
+    isFilterOptions: false,
+    search: { el: "el-tree-select", prop: "deptId", elProps: { showCheckbox: true, checkStrictly: true } },
+    options: () => listDeptTreeList(),
+  },
   { prop: "phone", label: "手机号码", width: 130, search: { el: "el-input" } },
   { prop: "email", label: "邮箱", width: 170, search: { el: "el-input" } },
   {
@@ -65,6 +71,8 @@ const columns: PageColumn<User.UserInfo>[] = [
   { prop: "registerTime", width: 160, label: "注册时间" },
   { prop: "operation", label: "操作", width: 220, fixed: "right" },
 ];
+
+const formColumns = useFormColumns(computed(() => props.initRequestParams?.deptId));
 
 const dialogFormProps: DialogFormProps = {
   form: {

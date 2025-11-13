@@ -74,6 +74,7 @@ const updateUser = (val: any) => {
 const getDataList = async () => {
   if (props.requestApi) {
     const { data } = await props.requestApi({ ...props.requestParams });
+
     userData.value = data;
   }
 };
@@ -124,13 +125,13 @@ const transferSelectColumns: TransferTableColumn[] = [
   <div :class="ns.b()">
     <el-select-v2
       v-model="selectValue"
+      v-bind="$attrs"
       :options="userData"
       placeholder="请选择用户"
       :props="{ value: id, label: 'nickname' }"
       :multiple="multiple"
       clearable
       filterable
-      v-bind="$attrs"
       @change="handleSelectChange"
     >
       <template #default="{ item }">{{ item.nickname }} {{ item.username }}</template>

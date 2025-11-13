@@ -87,7 +87,13 @@ export const useFormColumns = (defaultValue?: ComputedRef<string>) => {
       label: "部门",
       el: "el-tree-select",
       defaultValue: defaultValue,
-      elProps: { clearable: true, defaultExpandAll: true, placeholder: "请选择 部门" },
+      elProps: {
+        clearable: true,
+        defaultExpandAll: true,
+        placeholder: "请选择 部门",
+        showCheckbox: true,
+        checkStrictly: true,
+      },
       options: () => listDeptTreeList(),
     },
     {

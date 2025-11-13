@@ -50,6 +50,7 @@ export const useFormColumns = (defaultValue: ComputedRef<string>) => {
         placeholder: "请选择 上级",
         filterable: true,
         valueKey: "id",
+        showCheckbox: true,
         checkStrictly: true,
       },
       options: () => listMenuTreeSelectByApp({ appId: defaultValue.value }),

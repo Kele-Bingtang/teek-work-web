@@ -3,13 +3,13 @@ import { useDictStore } from "@/pinia";
 import { message } from "@teek/utils";
 import { findItemNested } from "@teek/components/pro/helper";
 
-export const useChange = (
+export const useChange = <T extends Recordable = Recordable>(
   name: string,
   desc: string,
   editApi: (params: any, status: number) => Promise<httpNs.Response<boolean>>,
   listApi: () => Promise<any> | undefined
 ) => {
-  const statusChange = async (value: string | number | boolean, row: any) => {
+  const statusChange = async (value: string | number | boolean, row: T) => {
     const statusEnum = await useDictStore().getDictData("sys_normal_status");
     const filterData = findItemNested(value + "", statusEnum.data, "dictValue", "");
 

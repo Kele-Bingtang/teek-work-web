@@ -10,7 +10,7 @@ export namespace UserGroup {
     ownerId: string; // 负责人 ID
     ownerName: string; // 负责人 username
     intro: string; // 用户组描述
-    appId: string; // 应用 ID
+    status: number; // 状态
     createTime: string; // 创建时间
   }
 
@@ -22,7 +22,6 @@ export namespace UserGroup {
     userGroupId: string; // 用户组名
     validFrom: string; // 负责人 ID
     expireOn: string; // 负责人 username
-    appId: string; // 应用 ID
   }
 
   // 角色被关联数据，如被用户关联、被用户组关联
@@ -33,7 +32,6 @@ export namespace UserGroup {
     linkId: number; // 关联 ID
     expireOn: string; // 生效时间
     validFrom: string; // 过期时间
-    appId: string; // 应用 ID
     createTime: string; // 创建时间
     ownerName: string; // 负责人 nickname
     ownerId: string; // 负责人 username

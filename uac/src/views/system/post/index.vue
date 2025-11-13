@@ -4,9 +4,10 @@ import type { Post } from "@/common/api/system/post";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { ProPage, downloadByData, useNamespace } from "teek";
 import { listPage, addPost, editPost, removePost, removeBatch, exportExcel } from "@/common/api/system/post";
+import { listDeptTreeList } from "@/common/api/system/dept";
 import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
-import { elFormProps, formColumns } from "./form-columns";
+import { elFormProps, useFormColumns } from "./use-form-columns";
 
 // 部门管理的用户列表需要传入
 const props = defineProps<{ initRequestParams?: Recordable }>();
@@ -15,7 +16,7 @@ const ns = useNamespace("post");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
-const { statusChange } = useChange(
+const { statusChange } = useChange<Post.PostInfo>(
   "postName",
   "岗位",
   (row, status) => editPost({ id: row.id, postId: row.postId, status }),
@@ -26,6 +27,12 @@ const columns: PageColumn<Post.PostInfo>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "postCode", label: "岗位编码", search: { el: "el-input" } },
   { prop: "postName", label: "岗位名称", search: { el: "el-input" } },
+  {
+    prop: "deptId",
+    label: "所属部门",
+    search: { el: "el-tree-select", elProps: { showCheckbox: true, checkStrictly: true } },
+    options: () => listDeptTreeList(),
+  },
   { prop: "orderNum", label: "排序" },
   {
     prop: "status",
@@ -57,6 +64,8 @@ const columns: PageColumn<Post.PostInfo>[] = [
 
 const { hasAuth } = usePermission();
 
+const formColumns = useFormColumns(computed(() => props.initRequestParams?.deptId));
+
 const dialogFormProps: DialogFormProps = {
   form: { elFormProps, columns: formColumns },
   id: ["id", "postId"],
@@ -71,7 +80,7 @@ const dialogFormProps: DialogFormProps = {
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
-    height: 220,
+    height: 300,
     top: "5vh",
     closeOnClickModal: false,
   },

@@ -68,6 +68,7 @@ export const useFormColumns = (defaultValue: ComputedRef<string>, isCascade?: Co
         placeholder: "请选择 上级字典",
         filterable: true,
         valueKey: "id",
+        showCheckbox: true,
         checkStrictly: true,
       },
       options: () => listDataTreeList({ dictCode: defaultValue.value }),

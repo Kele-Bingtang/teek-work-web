@@ -12,7 +12,7 @@ const ns = useNamespace("tenant");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
-const { statusChange } = useChange(
+const { statusChange } = useChange<Tenant.TenantInfo>(
   "tenantName",
   "租户",
   (row, status) => editTenant({ id: row.id, tenantId: row.tenantId, status }),

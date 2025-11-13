@@ -1,7 +1,7 @@
 <script setup lang="tsx" name="UserGroup">
 import type { DialogFormProps, ProPageInstance, PageColumn } from "teek";
 import type { UserGroup } from "@/common/api/user/userGroup";
-import { ElMessageBox } from "element-plus";
+import { ElMessageBox, ElSwitch } from "element-plus";
 import {
   listPage,
   addUserGroup,
@@ -11,13 +11,20 @@ import {
   exportExcel,
 } from "@/common/api/user/userGroup";
 import { ProPage, downloadByData, useNamespace } from "teek";
-import { usePermission } from "@/composables";
+import { useChange, usePermission } from "@/composables";
 import { useDictStore } from "@/pinia";
 import { elFormProps, formColumns } from "./use-form-columns";
 
 const ns = useNamespace("user-group");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
+
+const { statusChange } = useChange<UserGroup.UserGroupInfo>(
+  "groupName",
+  "用户组",
+  (row, status) => editUserGroup({ id: row.id, groupId: row.groupId, status }),
+  () => proPageInstance.value?.search()
+);
 
 // 表格列配置项
 const columns: PageColumn<UserGroup.UserGroupInfo>[] = [
@@ -38,6 +45,30 @@ const columns: PageColumn<UserGroup.UserGroupInfo>[] = [
     label: "负责人",
     minWidth: 160,
     formatValue: (_, { row }) => `${row.ownerName} ${row.ownerId}`,
+  },
+  {
+    prop: "status",
+    label: "状态",
+    optionField: { value: "dictValue", label: "dictLabel" },
+    options: () => useDictStore().getDictData("sys_normal_status"),
+    search: { el: "el-select" },
+    render: ({ row }) => {
+      return (
+        <>
+          {row.status !== undefined && (
+            <ElSwitch
+              v-model={row.status}
+              activeValue={1}
+              inactiveValue={0}
+              activeText="启用"
+              inactiveText="停用"
+              inlinePrompt
+              onChange={value => statusChange(value, row)}
+            />
+          )}
+        </>
+      );
+    },
   },
   { prop: "createTime", label: "创建时间", width: 160 },
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
