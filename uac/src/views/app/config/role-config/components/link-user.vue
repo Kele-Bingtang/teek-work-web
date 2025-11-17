@@ -1,8 +1,9 @@
 <script setup lang="tsx" name="RoleLinkUser">
 import type { DialogFormProps, PageColumn } from "teek";
+import type { User } from "@/common/api/system/user/user";
 import { ProPage } from "teek";
-import { addUsersToRole, editUserRoleLinkInfo, removeUserFromRole } from "@/common/api/system/role";
-import { listUserLinkByRoleId, type User } from "@/common/api/user/user";
+import { addUsersToRole, editUserRoleLinkInfo, removeUsersFromRole } from "@/common/api/link/user-role-link";
+import { listUserLinkByRoleId } from "@/common/api/link/user-role-link";
 import { usePermission } from "@/composables";
 import { elFormProps, useFormColumns } from "./link-user-form-columns";
 
@@ -19,7 +20,7 @@ const requestParam = reactive({ roleId: props.roleId });
 watchEffect(() => (requestParam.roleId = props.roleId));
 
 // 表格列配置项
-const columns: PageColumn<User.UserLinkInfo>[] = [
+const columns: PageColumn<User.Info>[] = [
   { type: "selection", fixed: "left", width: 10 },
   { prop: "username", label: "用户名称", minWidth: 120, search: { el: "el-input" } },
   { prop: "nickname", label: "用户昵称", minWidth: 120, search: { el: "el-input" } },
@@ -47,8 +48,8 @@ const dialogFormProps: DialogFormProps = {
     }),
   editApi: form => editUserRoleLinkInfo({ ...form, id: form.linkId }),
   editFilterKeys: ["userId", "appId", "userIds"],
-  removeApi: form => removeUserFromRole([form.linkId]),
-  removeBatchApi: removeUserFromRole,
+  removeApi: form => removeUsersFromRole([form.linkId]),
+  removeBatchApi: removeUsersFromRole,
   disableAdd: !hasAuth("system:role:linkUser"),
   disableEdit: !hasAuth("system:role:linkUser"),
   disableRemove: !hasAuth("system:role:linkUser"),

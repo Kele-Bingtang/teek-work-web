@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace Menu {
-  export interface MenuInfo {
+  export interface Info {
     id: number; // id
     menuId: string; // 菜单 ID
     menuCode: string; // 菜单编码
@@ -19,21 +19,21 @@ export namespace Menu {
     appId: string; // 应用 ID
     status: number; // 状态
     createTime: string; // 创建时间
-    children: MenuInfo[]; // 子数据
+    children: Info[]; // 子数据
   }
 
-  export interface MenuTreeList {
+  export interface TreeList {
     id: string;
     label: string;
     parentId: string;
     weight: number;
     icon: string;
-    children: MenuTreeList[];
+    children: TreeList[];
     value: string;
   }
 
-  export interface MenuTreeTable extends MenuInfo {
-    children: MenuTreeTable[];
+  export interface TreeTable extends Info {
+    children: TreeTable[];
   }
 }
 
@@ -44,36 +44,28 @@ export const listRoutes = (appId: string) => {
 };
 
 export const listMenuTreeTableByApp = (params: { appId: string }) => {
-  return http.get<httpNs.Response<Menu.MenuInfo[]>>(`${baseUri}/treeTable`, params);
+  return http.get<httpNs.Response<Menu.Info[]>>(`${baseUri}/treeTable`, params);
 };
 
 export const listMenuTreeSelectByApp = (params: { appId: string }) => {
-  return http.get<httpNs.Response<Menu.MenuInfo[]>>(`${baseUri}/treeSelect`, params);
+  return http.get<httpNs.Response<Menu.Info[]>>(`${baseUri}/treeSelect`, params);
 };
 
-export const listMenuIdsByRoleId = (appId: string, roleId: string) => {
-  return http.get<httpNs.Response<string[]>>(`${baseUri}/listMenuIdsByRoleId/${appId}/${roleId}`);
-};
-
-export const listMenuListByRoleId = (appId: string, roleId: string) => {
-  return http.get<httpNs.Response<Menu.MenuTreeList[]>>(`${baseUri}/listMenuListByRoleId/${appId}/${roleId}`);
-};
-
-export const addMenu = (data: Menu.MenuInfo) => {
+export const addMenu = (data: Menu.Info) => {
   return http.post<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const editMenu = (data: RequiredKeyPartialOther<Menu.MenuInfo, "id">) => {
+export const editMenu = (data: RequiredKeyPartialOther<Menu.Info, "id">) => {
   return http.put<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const removeMenu = (data: Menu.MenuInfo) => {
+export const removeMenu = (data: Menu.Info) => {
   return http.delete<httpNs.Response<boolean>>(`${baseUri}/${data.id}/${data.menuId}`);
 };
 
 /**
  * 菜单导出
  */
-export const exportExcel = (params: Partial<Menu.MenuInfo>) => {
+export const exportExcel = (params: Partial<Menu.Info>) => {
   return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

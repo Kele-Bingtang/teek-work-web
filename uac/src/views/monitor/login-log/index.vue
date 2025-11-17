@@ -3,7 +3,7 @@ import type { ProPageInstance, PageColumn } from "@teek/components";
 import { ProPage, downloadByData, useNamespace } from "teek";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
-import { listPage, removeBatch, cleanAllLog, type LoginLog, exportExcel } from "@/common/api/monitor/loginLog";
+import { listPage, removeBatch, cleanAllLog, type LoginLog, exportExcel } from "@/common/api/monitor/login-log";
 import { usePermission } from "@/composables";
 
 const ns = useNamespace("login-log");
@@ -68,7 +68,7 @@ const sortChange = (data: { column: any; prop: string; order: any }) => {
   initRequestParams.orderRuleList = [{ column: data.prop, type: data.order === "descending" ? "desc" : "asc" }];
 };
 
-const columns: PageColumn<LoginLog.LoginLogInfo>[] = [
+const columns: PageColumn<LoginLog.Info>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "loginId", label: "登录编号", width: 170 },
   { prop: "username", label: "用户账号", search: { el: "el-input" } },

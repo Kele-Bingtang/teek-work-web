@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace DictData {
-  export interface DictDataInfo {
+  export interface Info {
     id: number; // 主键
     dictId: string; // 字典 ID
     parentId: string; // 父级字典 ID
@@ -15,43 +15,43 @@ export namespace DictData {
     isDefault: string; // 是否默认（Y是 N否）
     appId: string; // 应用 ID
     dictCode: string; // 字典类型
-    children: DictDataInfo[]; // 子数据
+    children: Info[]; // 子数据
   }
 }
 
 const baseUri = "/system/dict/data";
 
-export const list = (params: Partial<DictData.DictDataInfo>) => {
-  return http.get<httpNs.Response<DictData.DictDataInfo[]>>(`${baseUri}/list`, params);
+export const list = (params: Partial<DictData.Info>) => {
+  return http.get<httpNs.Response<DictData.Info[]>>(`${baseUri}/list`, params);
 };
 
-export const listPage = (params: Partial<DictData.DictDataInfo>) => {
-  return http.get<httpNs.Page<DictData.DictDataInfo[]>>(`${baseUri}/listPage`, params);
+export const listPage = (params: Partial<DictData.Info>) => {
+  return http.get<httpNs.Page<DictData.Info[]>>(`${baseUri}/listPage`, params);
 };
 
-export const listDataTreeList = (params: Partial<DictData.DictDataInfo>) => {
-  return http.get<httpNs.Response<DictData.DictDataInfo[]>>(`${baseUri}/treeList`, params);
+export const listDataTreeList = (params: Partial<DictData.Info>) => {
+  return http.get<httpNs.Response<DictData.Info[]>>(`${baseUri}/treeList`, params);
 };
 
-export const listDataTreeTable = (params: Partial<DictData.DictDataInfo>) => {
-  return http.get<httpNs.Response<DictData.DictDataInfo[]>>(`${baseUri}/treeTable`, params);
+export const listDataTreeTable = (params: Partial<DictData.Info>) => {
+  return http.get<httpNs.Response<DictData.Info[]>>(`${baseUri}/treeTable`, params);
 };
 
-export const addDictData = (data: DictData.DictDataInfo) => {
+export const addDictData = (data: DictData.Info) => {
   return http.post<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const editDictData = (data: DictData.DictDataInfo) => {
+export const editDictData = (data: DictData.Info) => {
   return http.put<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const removeDictData = (data: DictData.DictDataInfo) => {
+export const removeDictData = (data: DictData.Info) => {
   return http.delete<httpNs.Response<boolean>>(`${baseUri}/${data.id}`);
 };
 
 /**
  * 字典数据导出
  */
-export const exportExcel = (params: Partial<DictData.DictDataInfo>) => {
+export const exportExcel = (params: Partial<DictData.Info>) => {
   return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

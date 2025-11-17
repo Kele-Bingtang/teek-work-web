@@ -1,6 +1,6 @@
 <script setup lang="ts" name="DictData">
 import type { DialogFormProps, PageColumn } from "@teek/components";
-import type { DictData } from "@/common/api/system/dictData";
+import type { DictData } from "@/common/api/system/dict-data";
 import { ElMessageBox } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import { ProPage, downloadByData } from "teek";
@@ -11,7 +11,7 @@ import {
   editDictData,
   removeDictData,
   exportExcel,
-} from "@/common/api/system/dictData";
+} from "@/common/api/system/dict-data";
 import { dictDataElFormProps, useFormColumns } from "./use-form-columns";
 
 export interface DictDataProps {
@@ -28,7 +28,7 @@ const initRequestParams = reactive({
   appId: route.params.appId as string,
 });
 
-const columns: PageColumn<DictData.DictDataInfo>[] = [
+const columns: PageColumn<DictData.Info>[] = [
   { type: "index", label: "#", width: 80 },
   { prop: "dictLabel", label: "字典标签", align: "left", search: { el: "el-input" } },
   { prop: "dictValue", label: "字典键值" },

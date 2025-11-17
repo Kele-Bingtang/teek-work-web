@@ -1,7 +1,7 @@
 import type { FormRules } from "element-plus";
 import type { DialogFormColumn, ElFormProps, TransferTableColumn } from "@teek/components";
 import { User } from "@element-plus/icons-vue";
-import { listWithDisabledByGroupId } from "@/common/api/system/role";
+import { listWithDisabledByGroupId } from "@/common/api/link/user-group-role-link";
 import { TransferSelect } from "@teek/components";
 
 const rules = reactive<FormRules>({

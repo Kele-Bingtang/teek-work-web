@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace LoginLog {
-  export interface LoginLogInfo {
+  export interface Info {
     loginId: string; // 登录 ID
     userName: string; // 用户账号
     clientName: string; // 客户端名
@@ -17,8 +17,8 @@ export namespace LoginLog {
 
 const baseUri = "/monitor/loginLog";
 
-export const listPage = (params: Partial<LoginLog.LoginLogInfo>) => {
-  return http.get<httpNs.Response<LoginLog.LoginLogInfo[]>>(`${baseUri}/listPage`, params);
+export const listPage = (params: Partial<LoginLog.Info>) => {
+  return http.get<httpNs.Response<LoginLog.Info[]>>(`${baseUri}/listPage`, params);
 };
 
 export const removeBatch = (idList: string[]) => {
@@ -32,6 +32,6 @@ export const cleanAllLog = () => {
 /**
  * 登录日志导出
  */
-export const exportExcel = (params: Partial<LoginLog.LoginLogInfo>) => {
+export const exportExcel = (params: Partial<LoginLog.Info>) => {
   return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

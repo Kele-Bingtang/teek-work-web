@@ -33,7 +33,7 @@ const initRequestParams = reactive({
   clientId: "",
 });
 
-const columns: PageColumn<App.AppInfo>[] = [
+const columns: PageColumn<App.Info>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "appName", label: "应用名称", search: { el: "el-input" } },
   { prop: "appCode", label: "应用编码", search: { el: "el-input" } },

@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace Post {
-  export interface PostInfo {
+  export interface Info {
     id: number; // 主键
     postId: string; // 岗位 ID
     postCode: string; // 岗位编码
@@ -14,18 +14,18 @@ export namespace Post {
 
   export interface UserSelectPost {
     postIds: string[];
-    postList: PostInfo[];
+    postList: Info[];
   }
 }
 
 const baseUri = "/system/post";
 
-export const list = (params?: Partial<Post.PostInfo>) => {
-  return http.get<httpNs.Response<Post.PostInfo[]>>(`${baseUri}/list`, params);
+export const list = (params?: Partial<Post.Info>) => {
+  return http.get<httpNs.Response<Post.Info[]>>(`${baseUri}/list`, params);
 };
 
-export const listPage = (params?: Partial<Post.PostInfo>) => {
-  return http.get<httpNs.Page<Post.PostInfo[]>>(`${baseUri}/listPage`, params);
+export const listPage = (params?: Partial<Post.Info>) => {
+  return http.get<httpNs.Page<Post.Info[]>>(`${baseUri}/listPage`, params);
 };
 
 /**
@@ -35,15 +35,15 @@ export const userSelectPostList = (userId: string) => {
   return http.get<httpNs.Response<Post.UserSelectPost>>(`${baseUri}/userSelectPostList/${userId}`);
 };
 
-export const addPost = (data: Post.PostInfo) => {
+export const addPost = (data: Post.Info) => {
   return http.post<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const editPost = (data: RequiredKeyPartialOther<Post.PostInfo, "id">) => {
+export const editPost = (data: RequiredKeyPartialOther<Post.Info, "id">) => {
   return http.put<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const removePost = (data: Post.PostInfo) => {
+export const removePost = (data: Post.Info) => {
   return http.delete<httpNs.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -53,7 +53,7 @@ export const removePost = (data: Post.PostInfo) => {
   );
 };
 
-export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Post.PostInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Post.Info[] }) => {
   return http.delete<httpNs.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
@@ -66,6 +66,6 @@ export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: 
 /**
  * 岗位导出
  */
-export const exportExcel = (params: Partial<Post.PostInfo>) => {
+export const exportExcel = (params: Partial<Post.Info>) => {
   return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

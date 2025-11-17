@@ -1,11 +1,17 @@
 <script setup lang="tsx">
-import type { DialogFormColumn, DialogFormProps, ElFormProps, PageColumn } from "@teek/components";
-import type { User } from "@/common/api/user/user";
-import { dayjs } from "element-plus";
+import type { DialogFormColumn, DialogFormProps, ElFormProps, PageColumn, ProPageInstance } from "@teek/components";
+import type { User } from "@/common/api/system/user/user";
+import { dayjs, ElSwitch } from "element-plus";
 import { ProPage, useNamespace } from "teek";
-import { listUserLinkByGroupId, listWithDisabledByGroupId } from "@/common/api/user/user";
-import { addUsersToGroup, editUserGroupLinkInfo, removeUserFromUserGroup } from "@/common/api/user/userGroup";
-import { usePermission } from "@/composables";
+import {
+  listUserLinkByGroupId,
+  listWithDisabledByGroupId,
+  addUsersToGroup,
+  editUserGroupUserLink,
+  removeUserFromUserGroup,
+} from "@/common/api/link/user-group-user-link";
+import { useChange, usePermission } from "@/composables";
+import { useDictStore } from "@/pinia";
 
 const ns = useNamespace("user-group-user-link");
 
@@ -13,10 +19,19 @@ const props = defineProps<{ userGroupId?: string }>();
 
 const initRequestParams = reactive({ userGroupId: props.userGroupId });
 
+const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
+
 // 监听 userGroupId，变化后修改关联的表格查询默认值
 watchEffect(() => {
   if (props.userGroupId) initRequestParams.userGroupId = props.userGroupId;
 });
+
+const { statusChange } = useChange<User.UserInfo>(
+  "username",
+  "用户",
+  (row, status) => editUserGroupUserLink({ id: row.linkId, validFrom: row.validFrom, expireOn: row.expireOn, status }),
+  () => proPageInstance.value?.search()
+);
 
 const columns: PageColumn<User.UserInfo>[] = [
   { type: "selection", fixed: "left", width: 60 },
@@ -25,7 +40,31 @@ const columns: PageColumn<User.UserInfo>[] = [
   { prop: "nickname", label: "用户昵称", search: { el: "el-input" } },
   { prop: "validFrom", label: "生效时间", minWidth: 120 },
   { prop: "expireOn", label: "过期时间", minWidth: 120 },
-  { prop: "status", width: 160, label: "是否有效" },
+  {
+    prop: "status",
+    width: 160,
+    label: "是否有效",
+    optionField: { value: "dictValue", label: "dictLabel" },
+    options: () => useDictStore().getDictData("sys_normal_status"),
+    search: { el: "el-select" },
+    render: ({ row }) => {
+      return (
+        <>
+          {row.status !== undefined && (
+            <ElSwitch
+              v-model={row.status}
+              activeValue={1}
+              inactiveValue={0}
+              activeText="启用"
+              inactiveText="停用"
+              inlinePrompt
+              onChange={value => statusChange(value, row)}
+            />
+          )}
+        </>
+      );
+    },
+  },
   { prop: "createTime", width: 160, label: "注册时间" },
   { prop: "operation", label: "操作", width: 220, fixed: "right" },
 ];
@@ -92,7 +131,7 @@ const dialogFormProps: DialogFormProps = {
     elFormProps,
     columns: formColumns,
   },
-  id: ["linkId"],
+  id: ["id", "linkId"],
   addApi: model => {
     if (model.expireOnNum !== -1) {
       model.expireOn = dayjs(model.validFrom).add(model.expireOnNum, "month").format("YYYY-MM-DD");
@@ -110,7 +149,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return editUserGroupLinkInfo({ ...model, id: model.linkId });
+    return editUserGroupUserLink({ ...model, id: model.linkId });
   },
   clickEdit: model => {
     // 根据 expireOn 计算 expireOnNum，如果计算不是整数，则走 custom
@@ -138,6 +177,7 @@ const dialogFormProps: DialogFormProps = {
 <template>
   <div :class="ns.b()">
     <ProPage
+      ref="proPageInstance"
       :request-api="listUserLinkByGroupId"
       :init-request-params
       :request-immediate="false"

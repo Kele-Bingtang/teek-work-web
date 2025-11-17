@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { TreeKey } from "element-plus";
-import type { UserGroup } from "@/common/api/user/userGroup";
+import type { UserGroup } from "@/common/api/system/user/user-group";
 import type { DescriptionColumn, TabColumn } from "teek";
 import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
-import { list } from "@/common/api/user/userGroup";
+import { list } from "@/common/api/system/user/user-group";
 import LinkUser from "./components/link-user.vue";
 import { useDictStore } from "@/pinia";
 
@@ -23,7 +23,7 @@ const descriptionColumn: DescriptionColumn[] = [
   { prop: "createTime", label: "创建时间" },
 ];
 
-const descriptionData = ref<UserGroup.UserGroupInfo>();
+const descriptionData = ref<UserGroup.Info>();
 
 const activeName = ref("User");
 
@@ -39,7 +39,7 @@ const tabColumns: TabColumn[] = [
 ];
 
 // 选择 用户组 清单节点回调
-const handleTreeChange = (_: string | TreeKey[], data: UserGroup.UserGroupInfo) => {
+const handleTreeChange = (_: string | TreeKey[], data: UserGroup.Info) => {
   descriptionData.value = data;
 };
 </script>

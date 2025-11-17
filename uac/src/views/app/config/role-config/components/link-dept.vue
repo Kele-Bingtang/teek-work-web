@@ -1,8 +1,9 @@
 <script setup lang="tsx" name="LinkMenu">
 import type { FormColumn } from "teek";
-import { listDeptListByRoleId, listDeptIdsByRoleId, listDeptTreeList, type Dept } from "@/common/api/system/dept";
+import type { Dept } from "@/common/api/system/dept";
+import { listDeptTreeList } from "@/common/api/system/dept";
+import { listDeptListByRoleId, listDeptIdsByRoleId, addDeptsToRole } from "@/common/api/link/role-dept-link";
 import { ProForm, Tree, useDialog } from "teek";
-import { addDeptsToRole } from "@/common/api/system/role";
 
 export interface LinkDeptProps {
   appId: string;
@@ -11,7 +12,7 @@ export interface LinkDeptProps {
 
 const props = defineProps<LinkDeptProps>();
 
-const data = ref<Dept.DeptTreeList[]>([]);
+const data = ref<Dept.TreeList[]>([]);
 const form = ref<{ selectedDeptIds: string[] }>({ selectedDeptIds: [] });
 const selectedDeptIds = ref<string[]>([]);
 

@@ -1,6 +1,6 @@
 <script setup lang="tsx" name="UserGroup">
 import type { DialogFormProps, ProPageInstance, PageColumn } from "teek";
-import type { UserGroup } from "@/common/api/user/userGroup";
+import type { UserGroup } from "@/common/api/system/user/user-group";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import {
   listPage,
@@ -9,7 +9,7 @@ import {
   removeUserGroup,
   removeBatch,
   exportExcel,
-} from "@/common/api/user/userGroup";
+} from "@/common/api/system/user/user-group";
 import { ProPage, downloadByData, useNamespace } from "teek";
 import { useChange, usePermission } from "@/composables";
 import { useDictStore } from "@/pinia";
@@ -19,7 +19,7 @@ const ns = useNamespace("user-group");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
-const { statusChange } = useChange<UserGroup.UserGroupInfo>(
+const { statusChange } = useChange<UserGroup.Info>(
   "groupName",
   "用户组",
   (row, status) => editUserGroup({ id: row.id, groupId: row.groupId, status }),
@@ -27,7 +27,7 @@ const { statusChange } = useChange<UserGroup.UserGroupInfo>(
 );
 
 // 表格列配置项
-const columns: PageColumn<UserGroup.UserGroupInfo>[] = [
+const columns: PageColumn<UserGroup.Info>[] = [
   { type: "selection", fixed: "left", width: 10 },
   { prop: "groupName", label: "用户组名", minWidth: 120, search: { el: "el-input" } },
   { prop: "groupId", label: "用户组编码", minWidth: 120, search: { el: "el-input" } },

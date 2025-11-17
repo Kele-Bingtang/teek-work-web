@@ -14,7 +14,7 @@ const tabs = [
 const ns = useNamespace("app");
 
 const activeName = ref("all");
-const appList = ref<App.AppInfo[]>([]);
+const appList = ref<App.Info[]>([]);
 
 const dataStore = useDataStore();
 const router = useRouter();
@@ -27,8 +27,8 @@ const initApp = async () => {
 onMounted(initApp);
 const switchTab = () => {};
 
-const handleAppClick = (item: App.AppInfo) => {
-  dataStore.setAppInfo(item);
+const handleAppClick = (item: App.Info) => {
+  dataStore.setInfo(item);
   router.push(`/menu-manage/${item.appId}`);
 };
 </script>

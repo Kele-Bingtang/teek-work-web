@@ -24,7 +24,7 @@ const initRequestParams = reactive({
   appId: route.params.appId as string,
 });
 
-const columns: PageColumn<Role.RoleInfo>[] = [
+const columns: PageColumn<Role.Info>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { type: "index", label: "#", width: 80 },
   { prop: "roleCode", label: "角色编码", search: { el: "el-input" } },

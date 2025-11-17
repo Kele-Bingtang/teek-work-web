@@ -12,14 +12,14 @@ const ns = useNamespace("tenant");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
-const { statusChange } = useChange<Tenant.TenantInfo>(
+const { statusChange } = useChange<Tenant.Info>(
   "tenantName",
   "租户",
   (row, status) => editTenant({ id: row.id, tenantId: row.tenantId, status }),
   () => proPageInstance.value?.search()
 );
 
-const columns: PageColumn<Tenant.TenantInfo>[] = [
+const columns: PageColumn<Tenant.Info>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "tenantId", label: "租户编号", search: { el: "el-input" } },
   { prop: "tenantName", label: "企业名称", search: { el: "el-input" } },

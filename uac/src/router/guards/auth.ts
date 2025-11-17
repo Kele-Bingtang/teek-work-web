@@ -17,12 +17,12 @@ export const createAuthGuard = (router: Router) => {
     const { initDynamicRoutes } = useRouteFn();
     const accessToken = userStore.accessToken;
 
-    if (!to.meta.app) dataStore.clearAppInfo();
+    if (!to.meta.app) dataStore.clearInfo();
     else if (to.params.appId && dataStore.appInfo?.appId !== to.params.appId) {
       const res = await getOne(to.params.appId as string);
       if (res.status === "success") {
         const data = res.data;
-        useDataStore().setAppInfo(data);
+        useDataStore().setInfo(data);
       } else message.error(res.message);
     }
 

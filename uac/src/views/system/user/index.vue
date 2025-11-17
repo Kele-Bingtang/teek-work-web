@@ -1,10 +1,10 @@
 <script setup lang="tsx">
 import type { DialogFormProps, ProPageInstance, PageColumn } from "@teek/components";
-import type { User } from "@/common/api/user/user";
+import type { User } from "@/common/api/system/user/user";
 import { ElInput, ElMessageBox, ElSwitch } from "element-plus";
 import { Key } from "@element-plus/icons-vue";
 import { ProPage, downloadByData, useNamespace, useDialog } from "teek";
-import { addUser, editUser, removeUser, removeBatch, listPage, exportExcel } from "@/common/api/user/user";
+import { addUser, editUser, removeUser, removeBatch, listPage, exportExcel } from "@/common/api/system/user/user";
 import { useChange, usePermission } from "@/composables";
 import { elFormProps, useFormColumns } from "./use-form-columns";
 import { useDictStore } from "@/pinia";

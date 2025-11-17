@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace Dept {
-  export interface DeptInfo {
+  export interface Info {
     id: number;
     deptId: string; // 部门 ID
     parentId: string; // 父级部门 ID
@@ -18,77 +18,63 @@ export namespace Dept {
     level: string; // 部门层级
     status: number; // 状态
     createTime: string; // 创建时间
-    children: DeptInfo[]; // 子数据
+    children: Info[]; // 子数据
   }
 
-  export interface DeptTreeList {
+  export interface TreeList {
     id: string;
     label: string;
     parentId: string;
     weight: number;
     icon: string;
-    children: DeptTreeList[];
+    children: TreeList[];
     value: string;
   }
 
-  export interface DeptTreeTable extends DeptInfo {
-    children: DeptTreeTable[];
+  export interface TreeTable extends Info {
+    children: TreeTable[];
   }
 }
 
 const baseUri = "/system/dept";
 
-export const list = (params?: Partial<Dept.DeptInfo>) => {
-  return http.get<httpNs.Response<Dept.DeptInfo[]>>(`${baseUri}/list`, params);
+export const list = (params?: Partial<Dept.Info>) => {
+  return http.get<httpNs.Response<Dept.Info[]>>(`${baseUri}/list`, params);
 };
 
-export const listPage = (params?: Partial<Dept.DeptInfo>) => {
-  return http.get<httpNs.Page<Dept.DeptInfo[]>>(`${baseUri}/listPage`, params);
+export const listPage = (params?: Partial<Dept.Info>) => {
+  return http.get<httpNs.Page<Dept.Info[]>>(`${baseUri}/listPage`, params);
 };
 
 /**
  * 查询部门树列表
  */
 export const listDeptTreeList = () => {
-  return http.get<httpNs.Response<Dept.DeptTreeList[]>>(`${baseUri}/treeList`);
+  return http.get<httpNs.Response<Dept.TreeList[]>>(`${baseUri}/treeList`);
 };
 
 /**
  * 查询部门树表格
  */
 export const listDeptTreeTable = () => {
-  return http.get<httpNs.Response<Dept.DeptTreeTable[]>>(`${baseUri}/treeTable`);
+  return http.get<httpNs.Response<Dept.TreeTable[]>>(`${baseUri}/treeTable`);
 };
 
-/**
- * 通过角色 ID 查询部门 ID 列表
- */
-export const listDeptIdsByRoleId = (appId: string, roleId: string) => {
-  return http.get<httpNs.Response<string[]>>(`${baseUri}/listDeptIdsByRoleId/${appId}/${roleId}`);
-};
-
-/**
- * 通过角色 ID 查询部门列表
- */
-export const listDeptListByRoleId = (appId: string, roleId: string) => {
-  return http.get<httpNs.Response<Dept.DeptTreeList[]>>(`${baseUri}/listDeptListByRoleId/${appId}/${roleId}`);
-};
-
-export const addDept = (data: Dept.DeptInfo) => {
+export const addDept = (data: Dept.Info) => {
   return http.post<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const editDept = (data: RequiredKeyPartialOther<Dept.DeptInfo, "id">) => {
+export const editDept = (data: RequiredKeyPartialOther<Dept.Info, "id">) => {
   return http.put<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const removeDept = (data: Dept.DeptInfo) => {
+export const removeDept = (data: Dept.Info) => {
   return http.delete<httpNs.Response<boolean>>(`${baseUri}/${data.id}/${data.deptId}`);
 };
 
 /**
  * 部门导出
  */
-export const exportExcel = (params: Partial<Dept.DeptInfo>) => {
+export const exportExcel = (params: Partial<Dept.Info>) => {
   return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

@@ -1,9 +1,9 @@
 <script setup lang="tsx" name="DictType">
 import type { DialogFormProps, PageColumn } from "@teek/components";
-import type { DictType } from "@/common/api/system/dictType";
+import type { DictType } from "@/common/api/system/dict-type";
 import { ElLink, ElMessageBox } from "element-plus";
 import { ProPage, BlankDrawer, PointTag, downloadByData } from "teek";
-import { listPage, addDictType, editDictType, removeDictType, exportExcel } from "@/common/api/system/dictType";
+import { listPage, addDictType, editDictType, removeDictType, exportExcel } from "@/common/api/system/dict-type";
 import { baseOptions } from "@teek/config";
 import { useNamespace } from "@teek/composables";
 import { dictTypeElFormProps, useFormColumns } from "./use-form-columns";
@@ -12,14 +12,14 @@ import DictData from "./dict-data.vue";
 const ns = useNamespace("dict-type");
 const route = useRoute();
 
-const dictInfo = ref<DictType.DictTypeInfo>();
+const dictInfo = ref<DictType.Info>();
 const drawer = ref(false);
 
 const initRequestParams = reactive({
   appId: route.params.appId as string,
 });
 
-const clickDictCode = (row: DictType.DictTypeInfo) => {
+const clickDictCode = (row: DictType.Info) => {
   dictInfo.value = row;
   drawer.value = true;
 };
@@ -29,7 +29,7 @@ const isCascadeColorMap: Record<string, any> = {
   1: "#395ae3",
 };
 
-const columns: PageColumn<DictType.DictTypeInfo>[] = [
+const columns: PageColumn<DictType.Info>[] = [
   { type: "index", label: "#", width: 80 },
   {
     prop: "dictCode",

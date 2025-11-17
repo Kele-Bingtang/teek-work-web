@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace App {
-  export interface AppInfo {
+  export interface Info {
     id: number; // 主键
     appId: string; // 应用 ID
     appCode: string; // 应用码
@@ -18,7 +18,7 @@ export namespace App {
     clientId: string; // 客户端 ID
     user?: string;
   }
-  export interface AppTree {
+  export interface TreeList {
     appId: string; // 应用 ID
     appName: string; // 应用名
   }
@@ -27,30 +27,30 @@ export namespace App {
 const baseUri = "/system/app";
 
 export const getAppTreeList = () => {
-  return http.get<httpNs.Response<App.AppTree[]>>(`${baseUri}/treeList`);
+  return http.get<httpNs.Response<App.TreeList[]>>(`${baseUri}/treeList`);
 };
 
 export const getOne = (appId: string) => {
-  return http.get<httpNs.Response<App.AppInfo>>(`${baseUri}/getOne/${appId}`);
+  return http.get<httpNs.Response<App.Info>>(`${baseUri}/getOne/${appId}`);
 };
 
-export const listApp = (params?: Partial<App.AppInfo>) => {
-  return http.get<httpNs.Response<App.AppInfo[]>>(`${baseUri}/list`, params);
+export const listApp = (params?: Partial<App.Info>) => {
+  return http.get<httpNs.Response<App.Info[]>>(`${baseUri}/list`, params);
 };
 
-export const listAppPage = (params?: Partial<App.AppInfo>) => {
-  return http.get<httpNs.Page<App.AppInfo[]>>(`${baseUri}/listPage`, params);
+export const listAppPage = (params?: Partial<App.Info>) => {
+  return http.get<httpNs.Page<App.Info[]>>(`${baseUri}/listPage`, params);
 };
 
-export const addApp = (data: App.AppInfo) => {
+export const addApp = (data: App.Info) => {
   return http.post<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const editApp = (data: RequiredKeyPartialOther<App.AppInfo, "id">) => {
+export const editApp = (data: RequiredKeyPartialOther<App.Info, "id">) => {
   return http.put<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const removeApp = (data: App.AppInfo) => {
+export const removeApp = (data: App.Info) => {
   return http.delete<httpNs.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -60,7 +60,7 @@ export const removeApp = (data: App.AppInfo) => {
   );
 };
 
-export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: App.AppInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: App.Info[] }) => {
   return http.delete<httpNs.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
@@ -73,6 +73,6 @@ export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: 
 /**
  * 应用导出
  */
-export const exportExcel = (params: Partial<App.AppInfo>) => {
+export const exportExcel = (params: Partial<App.Info>) => {
   return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

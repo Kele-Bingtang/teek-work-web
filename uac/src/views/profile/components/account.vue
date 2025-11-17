@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Account">
-import { updatePassword } from "@/common/api/user/profile";
+import { updatePassword } from "@/common/api/system/user/profile";
 import { ElMessage, type FormInstance } from "element-plus";
 
 const password = reactive({

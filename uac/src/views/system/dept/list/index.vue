@@ -13,14 +13,14 @@ const ns = useNamespace("dept");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
-const { statusChange } = useChange<Dept.DeptTreeTable>(
+const { statusChange } = useChange<Dept.TreeTable>(
   "deptName",
   "部门",
   (row, status) => editDept({ id: row.id, deptId: row.deptId, parentId: row.parentId, status }),
   () => proPageInstance.value?.search()
 );
 
-const columns: PageColumn<Dept.DeptTreeTable>[] = [
+const columns: PageColumn<Dept.TreeTable>[] = [
   { prop: "deptName", label: "部门名称", align: "left", search: { el: "el-input" } },
   { prop: "orderNum", label: "排序", width: 80 },
   {

@@ -26,7 +26,7 @@ const { statusChange } = useChange(
   () => proPageInstance.value?.search()
 );
 
-const columns: PageColumn<Client.ClientInfo>[] = [
+const columns: PageColumn<Client.Info>[] = [
   { type: "selection", fixed: "left", width: 40 },
   { prop: "clientId", label: "客户端 ID", width: 270, search: { el: "el-input" } },
   { prop: "clientKey", label: "客户端 Key", width: 160, search: { el: "el-input" } },

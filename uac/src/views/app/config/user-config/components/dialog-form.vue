@@ -1,7 +1,7 @@
 <script setup lang="tsx" name="UserLinkDialogForm">
 import type { FormRules } from "element-plus";
 import type { ElFormProps, FormColumn, ProFormInstance, TransferTableColumn } from "teek";
-import type { DictData } from "@/common/api/system/dictData";
+import type { DictData } from "@/common/api/system/dict-data";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, dayjs } from "element-plus";
 import { User } from "@element-plus/icons-vue";
 import { ProForm, TransferSelect } from "teek";
@@ -33,7 +33,7 @@ const emits = defineEmits<EmitProps>();
 const proFormInstance = useTemplateRef<ProFormInstance>("proFormInstance");
 const dialogVisible = ref(false);
 const form = ref<{ [key: string]: any }>({});
-const expireOnOptions = ref<DictData.DictDataInfo[]>([]);
+const expireOnOptions = ref<DictData.Info[]>([]);
 const status = ref<"add" | "edit">("add");
 const transferSelectRef = shallowRef();
 

@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace Profile {
-  export interface ProfileInfo {
+  export interface Info {
     id: number;
     nickname: string;
     phone: string;
@@ -9,7 +9,7 @@ export namespace Profile {
     sex: number;
   }
 
-  export interface ProfilePassword {
+  export interface Password {
     oldPassword: string;
     newPassword: string;
     confirmPassword: string;
@@ -18,10 +18,10 @@ export namespace Profile {
 
 const baseUri = "/system/user/profile";
 
-export const editProfile = (data: Profile.ProfileInfo) => {
+export const editProfile = (data: Profile.Info) => {
   return http.put<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const updatePassword = (data: Profile.ProfilePassword) => {
+export const updatePassword = (data: Profile.Password) => {
   return http.put<httpNs.Response<boolean>>(`${baseUri}/updatePassword`, data);
 };

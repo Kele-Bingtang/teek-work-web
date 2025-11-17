@@ -1,28 +1,30 @@
 <script setup lang="tsx" name="UserLink">
-import type { UserGroup } from "@/common/api/user/userGroup";
-import type { User as UserType } from "@/common/api/user/user";
+import type { UserGroup } from "@/common/api/system/user/user-group";
+import type { User as UserType } from "@/common/api/system/user/user";
 import type { App } from "@/common/api/application/app";
+import type { Role } from "@/common/api/system/role";
 import type { DescriptionProps, ListCardInstance } from "@/components";
 import type { DialogFormInstance } from "./components/dialog-form.vue";
 import type { TreeKey } from "element-plus";
 import { ElRow, ElCol } from "element-plus";
 import { Plus, User } from "@element-plus/icons-vue";
 import { TreeFilter, message, useNamespace } from "teek";
-import { list, addUserGroupsToUser, addRolesToUser } from "@/common/api/user/user";
+import { list } from "@/common/api/system/user/user";
+import { addRolesToUser } from "@/common/api/link/user-role-link";
+import { addUserGroupsToUser } from "@/common/api/link/user-group-user-link";
 import { getAppTreeList } from "@/common/api/application/app";
 import {
   listUserGroupByUserId,
   listWithDisabledByUserId as listUserGroupWithDisabledByUserId,
   removeUserFromUserGroup,
-  editUserGroupLinkInfo,
-} from "@/common/api/user/userGroup";
+  editUserGroupUserLink,
+} from "@/common/api/link/user-group-user-link";
 import {
   editUserRoleLinkInfo,
   listRoleLinkByUserId,
   listWithDisabledByUserId as listRoleWithDisabledByUserId,
-  removeUserFromRole,
-  type Role,
-} from "@/common/api/system/role";
+  removeUsersFromRole,
+} from "@/common/api/link/user-role-link";
 import { Description, ListCard } from "@/components";
 import { usePermission } from "@/composables";
 import DialogForm from "./components/dialog-form.vue";
@@ -36,14 +38,14 @@ const roleListCardInstance = useTemplateRef<ListCardInstance>("roleListCardInsta
 const userGroupDialogFormInstance = useTemplateRef<DialogFormInstance>("userGroupDialogFormInstance");
 const roleDialogFormInstance = useTemplateRef<DialogFormInstance>("roleDialogFormInstance");
 
-const userInfo = ref<UserType.UserInfo>();
+const userInfo = ref<UserType.Info>();
 
 const descriptionData = ref<DescriptionProps>({
   title: "",
   data: [],
 });
 const appId = ref("");
-const appTreeList = ref<App.AppTree[]>([]);
+const appTreeList = ref<App.TreeList[]>([]);
 
 onBeforeMount(() => {
   getAppTreeList().then(res => {
@@ -53,7 +55,7 @@ onBeforeMount(() => {
 });
 
 // 点击用户列表的回调
-const handleTreeChange = (_: string | TreeKey[], data: UserType.UserInfo) => {
+const handleTreeChange = (_: string | TreeKey[], data: UserType.Info) => {
   userInfo.value = data;
   descriptionData.value.title = data.nickname;
   descriptionData.value.data = [
@@ -89,7 +91,7 @@ const userGroupConfirm = async (form: any, status: "add" | "edit", callback: () 
       }
     });
   } else {
-    editUserGroupLinkInfo(form).then((res: any) => {
+    editUserGroupUserLink(form).then((res: any) => {
       if (res.status === "success") {
         message.success("修改成功");
         // 刷新外面的用户组列表
@@ -132,12 +134,12 @@ const roleConfirm = async (form: any, status: "add" | "edit", callback: () => vo
 };
 
 // 编辑用户组的回调
-const userGroupEdit = (item: UserGroup.UserGroupLinkInfo) => {
+const userGroupEdit = (item: UserGroup.LinkUserInfo) => {
   userGroupDialogFormInstance.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
 };
 
 // 删除用户组的回调
-const userGroupDelete = (item: UserGroup.UserGroupLinkInfo) => {
+const userGroupDelete = (item: UserGroup.LinkUserInfo) => {
   removeUserFromUserGroup([item.linkId + ""]).then((res: any) => {
     if (res.status === "success") {
       message.success("删除成功");
@@ -147,13 +149,13 @@ const userGroupDelete = (item: UserGroup.UserGroupLinkInfo) => {
 };
 
 // 编辑角色的回调
-const roleEdit = (item: Role.RoleLinkInfo) => {
+const roleEdit = (item: Role.LinkInfo) => {
   roleDialogFormInstance.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
 };
 
 // 删除角色的回调
-const roleDelete = (item: Role.RoleLinkInfo) => {
-  removeUserFromRole([item.linkId + ""]).then((res: any) => {
+const roleDelete = (item: Role.LinkInfo) => {
+  removeUsersFromRole([item.linkId + ""]).then((res: any) => {
     if (res.status === "success") {
       message.success("删除成功");
       roleListCardInstance.value?.getDataList();

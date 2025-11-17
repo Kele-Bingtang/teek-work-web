@@ -1,7 +1,7 @@
 import type { Role } from "@/common/api/system/role";
 import type { DialogFormColumn } from "@teek/components";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, type FormRules, dayjs } from "element-plus";
-import { listWithDisabledByRoleId } from "@/common/api/user/user";
+import { listWithDisabledByRoleId } from "@/common/api/link/user-role-link";
 import { useDictStore } from "@/pinia";
 
 const rules = reactive<FormRules>({
@@ -25,7 +25,7 @@ export const useFormColumns = (requestParams: { roleId: string }) => {
     else form.expireOn = dayjs().add(value, "year").format("YYYY-MM-DD");
   };
 
-  const columns: DialogFormColumn<Role.RoleLinkUser>[] = [
+  const columns: DialogFormColumn<Role.LinkUsers>[] = [
     {
       prop: "userIds",
       label: "用户选择",

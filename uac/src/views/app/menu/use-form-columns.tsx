@@ -1,5 +1,6 @@
-import { listMenuTreeSelectByApp, type Menu } from "@/common/api/system/menu";
 import type { DialogFormColumn } from "@teek/components";
+import type { Menu } from "@/common/api/system/menu";
+import { listMenuTreeSelectByApp } from "@/common/api/system/menu";
 import { ElInput, ElOption, ElSelect, type FormRules } from "element-plus";
 import { httpPrefix, httpsPrefix } from "@/common/config";
 import { layoutFormColumns } from "./layout-columns";
@@ -29,7 +30,7 @@ export const elFormProps = {
 };
 
 export const useFormColumns = (defaultValue: ComputedRef<string>) => {
-  const columns: DialogFormColumn<Menu.MenuInfo>[] = [
+  const columns: DialogFormColumn<Menu.Info>[] = [
     {
       prop: "base",
       label: "基础配置",
@@ -153,7 +154,7 @@ export const useFormColumns = (defaultValue: ComputedRef<string>) => {
     ...iframeFormColumns,
   ];
 
-  const getLabel = (model: Menu.MenuInfo) => {
+  const getLabel = (model: Menu.Info) => {
     if (model.menuType === "C") return "目录";
     else if (model.menuType === "M") return "菜单";
     else if (model.menuType === "F") return "按钮";

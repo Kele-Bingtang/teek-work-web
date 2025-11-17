@@ -26,7 +26,7 @@ const initRequestParams = reactive({
   appId: route.params.appId as string,
 });
 
-const columns: PageColumn<Menu.MenuInfo>[] = [
+const columns: PageColumn<Menu.Info>[] = [
   { prop: "menuName", label: "菜单名称", align: "left", search: { el: "el-input" } },
   {
     prop: "icon",

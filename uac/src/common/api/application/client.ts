@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace Client {
-  export interface ClientInfo {
+  export interface Info {
     id: number; // 主键
     clientId: string; // 客户端 ID
     clientKey: string; // 客户端 Key
@@ -15,7 +15,7 @@ export namespace Client {
     createTime: string; // 创建时间
   }
 
-  export interface ClientTree {
+  export interface TreeList {
     clientId: string; // 客户端 ID
     clientName: string; // 客户端名称
   }
@@ -24,30 +24,30 @@ export namespace Client {
 const baseUri = "/system/client";
 
 export const getClientTreeList = () => {
-  return http.get<Client.ClientTree>(`${baseUri}/treeList`);
+  return http.get<Client.TreeList>(`${baseUri}/treeList`);
 };
 
-export const list = (params?: Partial<Client.ClientInfo>) => {
-  return http.get<httpNs.Response<Client.ClientInfo[]>>(`${baseUri}/list`, params);
+export const list = (params?: Partial<Client.Info>) => {
+  return http.get<httpNs.Response<Client.Info[]>>(`${baseUri}/list`, params);
 };
 
-export const listPage = (params?: Partial<Client.ClientInfo>) => {
-  return http.get<httpNs.Page<Client.ClientInfo[]>>(`${baseUri}/listPage`, params);
+export const listPage = (params?: Partial<Client.Info>) => {
+  return http.get<httpNs.Page<Client.Info[]>>(`${baseUri}/listPage`, params);
 };
 
 export const listClientGrantTypeList = (clientId: string) => {
-  return http.get<httpNs.Response<Client.ClientInfo[]>>(`${baseUri}/grantTypeList/${clientId}`);
+  return http.get<httpNs.Response<Client.Info[]>>(`${baseUri}/grantTypeList/${clientId}`);
 };
 
-export const addClient = (data: Client.ClientInfo) => {
+export const addClient = (data: Client.Info) => {
   return http.post<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const editClient = (data: RequiredKeyPartialOther<Client.ClientInfo, "id">) => {
+export const editClient = (data: RequiredKeyPartialOther<Client.Info, "id">) => {
   return http.put<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const removeClient = (data: Client.ClientInfo) => {
+export const removeClient = (data: Client.Info) => {
   return http.delete<httpNs.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -57,7 +57,7 @@ export const removeClient = (data: Client.ClientInfo) => {
   );
 };
 
-export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Client.ClientInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Client.Info[] }) => {
   return http.delete<httpNs.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
@@ -70,6 +70,6 @@ export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: 
 /**
  * 客户端导出
  */
-export const exportExcel = (params: Partial<Client.ClientInfo>) => {
+export const exportExcel = (params: Partial<Client.Info>) => {
   return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

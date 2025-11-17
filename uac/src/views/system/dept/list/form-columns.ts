@@ -3,7 +3,7 @@ import type { DialogFormColumn } from "@teek/components";
 import type { FormRules } from "element-plus";
 import { useFormRules } from "@/composables";
 import { listDeptTreeList } from "@/common/api/system/dept";
-import { list } from "@/common/api/user/user";
+import { list } from "@/common/api/system/user/user";
 
 const { validatePhone } = useFormRules();
 
@@ -18,7 +18,7 @@ export const elFormProps = {
   rules: rules,
 };
 
-export const formColumns: DialogFormColumn<Dept.DeptTreeTable>[] = [
+export const formColumns: DialogFormColumn<Dept.TreeTable>[] = [
   {
     prop: "parentId",
     label: "上级部门",

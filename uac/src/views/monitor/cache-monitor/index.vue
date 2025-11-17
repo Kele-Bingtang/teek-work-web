@@ -7,7 +7,7 @@ import MemoryChart from "./components/memory-chart.vue";
 
 const ns = useNamespace("cache-monitor");
 
-const cacheInfo = ref<Cache.CacheInfo>({
+const cacheInfo = ref<Cache.Info>({
   info: undefined,
   dbSize: 0,
   commandStats: undefined,

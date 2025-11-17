@@ -16,14 +16,14 @@ const ns = useNamespace("post");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
-const { statusChange } = useChange<Post.PostInfo>(
+const { statusChange } = useChange<Post.Info>(
   "postName",
   "岗位",
   (row, status) => editPost({ id: row.id, postId: row.postId, status }),
   () => proPageInstance.value?.search()
 );
 
-const columns: PageColumn<Post.PostInfo>[] = [
+const columns: PageColumn<Post.Info>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "postCode", label: "岗位编码", search: { el: "el-input" } },
   { prop: "postName", label: "岗位名称", search: { el: "el-input" } },

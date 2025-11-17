@@ -2,19 +2,19 @@ import type { App } from "@/common/api/application/app";
 import { defineStore } from "pinia";
 
 export const useDataStore = defineStore("dataStore", () => {
-  const appInfo = ref<App.AppInfo>();
+  const appInfo = ref<App.Info>();
 
-  const setAppInfo = (teamInfoParam: App.AppInfo) => {
+  const setInfo = (teamInfoParam: App.Info) => {
     appInfo.value = teamInfoParam;
   };
 
-  const clearAppInfo = () => {
+  const clearInfo = () => {
     appInfo.value = undefined;
   };
 
   return {
     appInfo,
-    setAppInfo,
-    clearAppInfo,
+    setInfo,
+    clearInfo,
   };
 });

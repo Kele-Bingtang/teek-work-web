@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace Tenant {
-  export interface TenantInfo {
+  export interface Info {
     id: number; // 主键
     tenantId: string; // 租户编号
     licenseNumber: string; // 统一社会信用代码
@@ -23,23 +23,23 @@ export namespace Tenant {
 
 const baseUri = "/system/tenant";
 
-export const list = (params: Partial<Tenant.TenantInfo>) => {
-  return http.get<httpNs.Response<Tenant.TenantInfo[]>>(`${baseUri}/list`, params);
+export const list = (params: Partial<Tenant.Info>) => {
+  return http.get<httpNs.Response<Tenant.Info[]>>(`${baseUri}/list`, params);
 };
 
-export const listPage = (params: Partial<Tenant.TenantInfo>) => {
-  return http.get<httpNs.Page<Tenant.TenantInfo[]>>(`${baseUri}/listPage`, params);
+export const listPage = (params: Partial<Tenant.Info>) => {
+  return http.get<httpNs.Page<Tenant.Info[]>>(`${baseUri}/listPage`, params);
 };
 
-export const addTenant = (data: Tenant.TenantInfo) => {
+export const addTenant = (data: Tenant.Info) => {
   return http.post<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const editTenant = (data: RequiredKeyPartialOther<Tenant.TenantInfo, "id">) => {
+export const editTenant = (data: RequiredKeyPartialOther<Tenant.Info, "id">) => {
   return http.put<httpNs.Response<boolean>>(baseUri, data);
 };
 
-export const removeTenant = (data: Tenant.TenantInfo) => {
+export const removeTenant = (data: Tenant.Info) => {
   return http.delete<httpNs.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -49,7 +49,7 @@ export const removeTenant = (data: Tenant.TenantInfo) => {
   );
 };
 
-export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Tenant.TenantInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Tenant.Info[] }) => {
   return http.delete<httpNs.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
@@ -62,6 +62,6 @@ export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: 
 /**
  * 租户导出
  */
-export const exportExcel = (params: Partial<Tenant.TenantInfo>) => {
+export const exportExcel = (params: Partial<Tenant.Info>) => {
   return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace OnlineUser {
-  export interface OnlineUserInfo {
+  export interface Info {
     id: number; // 主键
     userId: string; // 用户 ID
     username: string; // 用户名
@@ -23,8 +23,8 @@ export namespace OnlineUser {
 
 const baseUri = "/monitor/online";
 
-export const listPage = (params: Partial<OnlineUser.OnlineUserInfo>) => {
-  return http.get<httpNs.Response<OnlineUser.OnlineUserInfo[]>>(`${baseUri}/listPage`, params);
+export const listPage = (params: Partial<OnlineUser.Info>) => {
+  return http.get<httpNs.Response<OnlineUser.Info[]>>(`${baseUri}/listPage`, params);
 };
 
 export const forceLogout = (username: string) => {

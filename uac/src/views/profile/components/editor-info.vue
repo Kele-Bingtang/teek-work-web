@@ -5,7 +5,7 @@ import { ProForm } from "teek";
 import { useFormRules } from "@/composables";
 import { useUserStore, useDictStore } from "@/pinia";
 import { ElMessage } from "element-plus";
-import { editProfile } from "@/common/api/user/profile";
+import { editProfile } from "@/common/api/system/user/profile";
 
 const props = defineProps<{ user: Auth.LoginUserInfo }>();
 

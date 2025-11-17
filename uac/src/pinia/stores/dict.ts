@@ -1,10 +1,10 @@
-import type { DictData } from "@/common/api/system/dictData";
+import type { DictData } from "@/common/api/system/dict-data";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { list, listDataTreeList } from "@/common/api/system/dictData";
+import { list, listDataTreeList } from "@/common/api/system/dict-data";
 
 export interface Dict {
-  [key: string]: DictData.DictDataInfo[];
+  [key: string]: DictData.Info[];
 }
 
 export const useDictStore = defineStore("dictStore", () => {

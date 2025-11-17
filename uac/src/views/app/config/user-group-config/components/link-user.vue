@@ -1,9 +1,13 @@
 <script setup lang="tsx" name="UserGroupLinkUser">
 import type { DialogFormProps, PageColumn } from "teek";
-import type { User } from "@/common/api/user/user";
+import type { User } from "@/common/api/system/user/user";
 import { ProPage } from "teek";
-import { addUsersToGroup, editUserGroupLinkInfo, removeUserFromUserGroup } from "@/common/api/user/userGroup";
-import { listUserLinkByGroupId } from "@/common/api/user/user";
+import {
+  listUserLinkByGroupId,
+  addUsersToGroup,
+  removeUserFromUserGroup,
+  editUserGroupUserLink,
+} from "@/common/api/link/user-group-user-link";
 import { usePermission } from "@/composables";
 import { elFormProps, useFormColumns } from "./link-user-form-columns";
 
@@ -20,7 +24,7 @@ const requestParam = reactive({ userGroupId: props.userGroupId });
 watchEffect(() => (requestParam.userGroupId = props.userGroupId));
 
 // 表格列配置项
-const columns: PageColumn<User.UserLinkInfo>[] = [
+const columns: PageColumn<User.LinkInfo>[] = [
   { type: "selection", fixed: "left", width: 10 },
   { prop: "username", label: "用户名称", minWidth: 120, search: { el: "el-input" } },
   { prop: "nickname", label: "用户昵称", minWidth: 120, search: { el: "el-input" } },
@@ -46,7 +50,7 @@ const dialogFormProps: DialogFormProps = {
       userGroupId: requestParam.userGroupId,
       appId: props.appId,
     }),
-  editApi: form => editUserGroupLinkInfo({ ...form, id: form.linkId }),
+  editApi: form => editUserGroupUserLink({ ...form, id: form.linkId }),
   editFilterKeys: ["userId", "appId", "userIds"],
   removeApi: form => removeUserFromUserGroup([form.linkId]),
   removeBatchApi: removeUserFromUserGroup,

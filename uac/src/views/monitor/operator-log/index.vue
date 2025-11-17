@@ -1,10 +1,10 @@
 <script setup lang="tsx" name="OperatorLog">
 import type { ProPageInstance, PageColumn } from "teek";
-import type { OperaLog } from "@/common/api/monitor/operaLog";
+import type { OperaLog } from "@/common/api/monitor/opera-log";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
 import { ProPage, downloadByData, useNamespace } from "teek";
-import { listPage, removeBatch, cleanAllLog, exportExcel } from "@/common/api/monitor/operaLog";
+import { listPage, removeBatch, cleanAllLog, exportExcel } from "@/common/api/monitor/opera-log";
 import { useDictStore } from "@/pinia";
 import { usePermission } from "@/composables";
 
@@ -70,7 +70,7 @@ const sortChange = (data: { column: any; prop: string; order: any }) => {
   initRequestParams.orderRuleList = [{ column: data.prop, type: data.order === "descending" ? "desc" : "asc" }];
 };
 
-const columns: PageColumn<OperaLog.OperaLogInfo>[] = [
+const columns: PageColumn<OperaLog.Info>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "operaId", label: "操作编号", width: 170 },
   { prop: "title", label: "模块标题", search: { el: "el-input" } },

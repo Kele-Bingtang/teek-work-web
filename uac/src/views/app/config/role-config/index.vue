@@ -20,7 +20,7 @@ const ns = useNamespace("role-link");
 const treeFilterInstance = useTemplateRef<TreeFilterInstance>("treeFilterInstance");
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 const activeName = ref("User");
-const clickRowInfo = ref<Role.RoleInfo>();
+const clickRowInfo = ref<Role.Info>();
 const requestParam = reactive({ appId: "" });
 
 const { statusChange } = useChange(
@@ -31,17 +31,17 @@ const { statusChange } = useChange(
 );
 
 // 表格行点击回调
-const handleRowClick = (row: Role.RoleInfo) => {
+const handleRowClick = (row: Role.Info) => {
   clickRowInfo.value = row;
 };
 
 // ProTable 获取数据后的回调
-const transformData = (data: Role.RoleInfo[]) => {
+const transformData = (data: Role.Info[]) => {
   clickRowInfo.value = data[0] || undefined;
   data[0] && proPageInstance.value?.proTableInstance?.getElTableInstance()?.setCurrentRow(data[0]);
 };
 
-const columns: PageColumn<Role.RoleInfo>[] = [
+const columns: PageColumn<Role.Info>[] = [
   { type: "selection", fixed: "left", width: 40 },
   { prop: "roleCode", label: "角色编码", search: { el: "el-input" } },
   { prop: "roleName", label: "角色名称", search: { el: "el-input" } },

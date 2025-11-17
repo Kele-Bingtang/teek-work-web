@@ -2,8 +2,8 @@
 import type { FormColumn } from "teek";
 import type { Menu } from "@/common/api/system/menu";
 import { ProForm, Tree, useDialog } from "teek";
-import { listMenuListByRoleId, listMenuIdsByRoleId, listMenuTreeSelectByApp } from "@/common/api/system/menu";
-import { addMenusToRole } from "@/common/api/system/role";
+import { listMenuTreeSelectByApp } from "@/common/api/system/menu";
+import { listMenuListByRoleId, listMenuIdsByRoleId, addMenusToRole } from "@/common/api/link/role-menu-link";
 
 export interface LinkMenuProps {
   appId: string;
@@ -13,7 +13,7 @@ export interface LinkMenuProps {
 
 const props = defineProps<LinkMenuProps>();
 
-const data = ref<Menu.MenuTreeList[]>([]);
+const data = ref<Menu.TreeList[]>([]);
 const form = ref<{ selectedMenuIds: string[] }>({ selectedMenuIds: [] });
 const selectedMenuIds = ref<string[]>([]);
 

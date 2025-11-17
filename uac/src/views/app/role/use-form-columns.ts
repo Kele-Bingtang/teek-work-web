@@ -1,7 +1,8 @@
 import type { FormRules } from "element-plus";
 import type { Role } from "@/common/api/system/role";
 import type { DialogFormColumn } from "@teek/components";
-import { listMenuIdsByRoleId, listMenuTreeSelectByApp } from "@/common/api/system/menu";
+import { listMenuTreeSelectByApp } from "@/common/api/system/menu";
+import { listMenuIdsByRoleId } from "@/common/api/link/role-menu-link";
 
 const rules = reactive<FormRules>({
   appId: [{ required: true, message: "请选择 App", trigger: "blur" }],
@@ -14,7 +15,7 @@ export const elFormProps = {
   rules: rules,
 };
 
-export const formColumns: DialogFormColumn<Role.RoleInfo>[] = [
+export const formColumns: DialogFormColumn<Role.Info>[] = [
   {
     prop: "roleCode",
     label: "角色编码",

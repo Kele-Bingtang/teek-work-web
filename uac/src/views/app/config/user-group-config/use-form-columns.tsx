@@ -1,9 +1,9 @@
 import type { FormRules } from "element-plus";
 import type { DialogFormColumn } from "teek";
-import type { UserGroup } from "@/common/api/user/userGroup";
-import type { User } from "@/common/api/user/user";
+import type { UserGroup } from "@/common/api/system/user/user-group";
+import type { User } from "@/common/api/system/user/user";
 import { UserSelect } from "teek";
-import { list } from "@/common/api/user/user";
+import { list } from "@/common/api/system/user/user";
 
 const rules = reactive<FormRules>({
   groupName: [{ required: true, message: "请输入用户组名", trigger: "blur" }],
@@ -15,7 +15,7 @@ export const elFormProps = {
 };
 
 export const useFormColumns = () => {
-  const columns: DialogFormColumn<UserGroup.UserGroupInfo & { user: User.UserInfo }>[] = [
+  const columns: DialogFormColumn<UserGroup.Info & { user: User.Info }>[] = [
     {
       prop: "groupName",
       label: "用户组名",

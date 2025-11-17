@@ -1,7 +1,7 @@
 import { http } from "@/common/http";
 
 export namespace OperaLog {
-  export interface OperaLogInfo {
+  export interface Info {
     id: string; // 主键
     operaId: string; // 日志 ID
     title: string; // 模块标题
@@ -24,8 +24,8 @@ export namespace OperaLog {
 
 const baseUri = "/monitor/operaLog";
 
-export const listPage = (params: Partial<OperaLog.OperaLogInfo>) => {
-  return http.get<httpNs.Response<OperaLog.OperaLogInfo[]>>(`${baseUri}/listPage`, params);
+export const listPage = (params: Partial<OperaLog.Info>) => {
+  return http.get<httpNs.Response<OperaLog.Info[]>>(`${baseUri}/listPage`, params);
 };
 
 export const removeBatch = (idList: string[]) => {
@@ -39,6 +39,6 @@ export const cleanAllLog = () => {
 /**
  * 操作日志导出
  */
-export const exportExcel = (params: Partial<OperaLog.OperaLogInfo>) => {
+export const exportExcel = (params: Partial<OperaLog.Info>) => {
   return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

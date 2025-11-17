@@ -1,7 +1,7 @@
 import type { FormProps, FormRules } from "element-plus";
 import type { DialogFormColumn } from "@teek/components";
-import type { DictType } from "@/common/api/system/dictType";
-import { listDataTreeList, type DictData } from "@/common/api/system/dictData";
+import type { DictType } from "@/common/api/system/dict-type";
+import { listDataTreeList, type DictData } from "@/common/api/system/dict-data";
 import { useDictStore } from "@/pinia";
 import { baseOptions } from "@teek/config";
 
@@ -30,7 +30,7 @@ export const dictDataElFormProps = {
 export const useFormColumns = (defaultValue: ComputedRef<string>, isCascade?: ComputedRef<number>) => {
   const { getDictData } = useDictStore();
 
-  const dictTypeColumns: DialogFormColumn<DictType.DictTypeInfo>[] = [
+  const dictTypeColumns: DialogFormColumn<DictType.Info>[] = [
     {
       prop: "dictCode",
       label: "字典编码",
@@ -59,7 +59,7 @@ export const useFormColumns = (defaultValue: ComputedRef<string>, isCascade?: Co
     },
   ];
 
-  const dictDataColumns: DialogFormColumn<DictData.DictDataInfo>[] = [
+  const dictDataColumns: DialogFormColumn<DictData.Info>[] = [
     {
       prop: "parentId",
       label: "上级字典",

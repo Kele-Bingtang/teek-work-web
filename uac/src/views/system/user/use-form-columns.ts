@@ -1,5 +1,5 @@
 import type { DialogFormColumn, ElFormProps } from "@teek/components";
-import type { User } from "@/common/api/user/user";
+import type { User } from "@/common/api/system/user/user";
 import type { FormRules } from "element-plus";
 import { useDictStore } from "@/pinia";
 import { listDeptTreeList } from "@/common/api/system/dept";

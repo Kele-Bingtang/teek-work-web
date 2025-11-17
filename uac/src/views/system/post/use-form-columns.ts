@@ -14,7 +14,7 @@ export const elFormProps = {
 };
 
 export const useFormColumns = (defaultValue?: ComputedRef<string>) => {
-  const columns: DialogFormColumn<Post.PostInfo>[] = [
+  const columns: DialogFormColumn<Post.Info>[] = [
     {
       prop: "deptId",
       label: "部门",

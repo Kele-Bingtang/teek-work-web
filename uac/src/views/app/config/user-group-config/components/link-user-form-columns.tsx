@@ -1,8 +1,8 @@
 import type { FormRules } from "element-plus";
 import type { DialogFormColumn } from "@teek/components";
-import type { UserGroup } from "@/common/api/user/userGroup";
+import type { UserGroup } from "@/common/api/system/user/user-group";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, dayjs } from "element-plus";
-import { listWithDisabledByGroupId } from "@/common/api/user/user";
+import { listWithDisabledByGroupId } from "@/common/api/link/user-group-user-link";
 import { useDictStore } from "@/pinia";
 
 const rules = reactive<FormRules>({
@@ -26,7 +26,7 @@ export const useFormColumns = (requestParams: { userGroupId: string }) => {
     else form.expireOn = dayjs().add(value, "year").format("YYYY-MM-DD");
   };
 
-  const columns: DialogFormColumn<UserGroup.UserGroupLinkUser>[] = [
+  const columns: DialogFormColumn<UserGroup.LinkUsers>[] = [
     {
       prop: "userIds",
       label: "用户选择",

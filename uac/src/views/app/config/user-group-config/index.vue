@@ -1,6 +1,6 @@
 <script setup lang="tsx" name="UserGroup">
 import type { DialogFormProps, ProPageInstance, PageColumn } from "teek";
-import type { UserGroup } from "@/common/api/user/userGroup";
+import type { UserGroup } from "@/common/api/system/user/user-group";
 import { ElMessageBox, type TreeKey } from "element-plus";
 import {
   listPage,
@@ -9,7 +9,7 @@ import {
   removeUserGroup,
   removeBatch,
   exportExcel,
-} from "@/common/api/user/userGroup";
+} from "@/common/api/system/user/user-group";
 import { ProPage, TreeFilter, downloadByData, useNamespace } from "teek";
 import { getAppTreeList } from "@/common/api/application/app";
 import { usePermission } from "@/composables";
@@ -25,25 +25,25 @@ const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 const requestParam = reactive({ appId: "" });
 
 const activeName = ref("User");
-const clickRowInfo = ref<UserGroup.UserGroupInfo>();
+const clickRowInfo = ref<UserGroup.Info>();
 
 const descriptionData = ref([{ label: "负责人：", value: "", span: 7 }]);
 
 // 表格行点击回调
-const handleRowClick = (row: UserGroup.UserGroupInfo) => {
+const handleRowClick = (row: UserGroup.Info) => {
   clickRowInfo.value = row;
   descriptionData.value[0].value = row?.ownerId ? `${row?.ownerName} ${row?.ownerId}` : "";
 };
 
 // ProTable 获取数据后的回调
-const transformData = (data: UserGroup.UserGroupInfo[]) => {
+const transformData = (data: UserGroup.Info[]) => {
   clickRowInfo.value = clickRowInfo.value || data[0] || undefined;
   descriptionData.value[0].value = data[0]?.ownerId ? `${data[0]?.ownerName} ${data[0]?.ownerId}` : "";
   data[0] && proPageInstance.value?.proTableInstance?.getElTableInstance()?.setCurrentRow(data[0]);
 };
 
 // 表格列配置项
-const columns: PageColumn<UserGroup.UserGroupInfo>[] = [
+const columns: PageColumn<UserGroup.Info>[] = [
   { type: "selection", fixed: "left", width: 10 },
   { prop: "groupName", label: "用户组名", minWidth: 120, search: { el: "el-input" } },
   { prop: "intro", label: "描述", minWidth: 120 },

@@ -18,7 +18,7 @@ export const elFormProps = {
   rules: rules,
 };
 
-export const formColumns: DialogFormColumn<Tenant.TenantInfo>[] = [
+export const formColumns: DialogFormColumn<Tenant.Info>[] = [
   {
     prop: "tenantName",
     label: "企业名称",
