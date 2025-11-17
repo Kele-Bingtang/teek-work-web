@@ -7,7 +7,7 @@ import top.teek.uac.core.bo.LoginUserBO;
 import top.teek.uac.core.constant.AuthConstant;
 import top.teek.redis.constants.AuthRedisConstant;
 import top.teek.uac.core.exception.AuthException;
-import top.teek.uac.system.service.SysLoginLogService;
+import top.teek.uac.system.service.monitor.SysLoginLogService;
 import top.teek.web.utils.ServletUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

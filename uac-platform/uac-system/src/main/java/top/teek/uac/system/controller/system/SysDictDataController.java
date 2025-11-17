@@ -12,7 +12,7 @@ import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.SysDictDataDTO;
 import top.teek.uac.system.model.vo.SysDictDataVO;
-import top.teek.uac.system.service.SysDictDataService;
+import top.teek.uac.system.service.system.SysDictDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;

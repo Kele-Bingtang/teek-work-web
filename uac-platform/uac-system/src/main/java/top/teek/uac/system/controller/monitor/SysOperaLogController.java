@@ -9,7 +9,7 @@ import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.SysOperaLogDTO;
 import top.teek.uac.system.model.vo.SysOperaLogVO;
-import top.teek.uac.system.service.SysOperaLogService;
+import top.teek.uac.system.service.monitor.SysOperaLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;

@@ -2,7 +2,7 @@ package top.teek.uac.system.controller.monitor;
 
 import top.teek.core.http.HttpResult;
 import top.teek.core.http.Response;
-import top.teek.uac.system.model.vo.extra.CacheInfo;
+import top.teek.uac.system.model.vo.extra.CacheInfoVO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.connection.RedisServerCommands;
@@ -28,7 +28,7 @@ public class CacheController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('system:cache:list')")
-    public Response<CacheInfo> list() {
+    public Response<CacheInfoVO> list() {
 
         RedisServerCommands redisServerCommands = redisTemplate.getRequiredConnectionFactory().getConnection().serverCommands();
         // 获取 Redis 缓存命令统计信息
@@ -45,10 +45,10 @@ public class CacheController {
             });
         }
 
-        CacheInfo cacheInfo =  new CacheInfo();
-        cacheInfo.setInfo(redisServerCommands.info()); // 获取 Redis 缓存完整信息
-        cacheInfo.setDbSize(redisServerCommands.dbSize()); // 获取 Redis 缓存中可用键 Key 的总数
-        cacheInfo.setCommandStats(pieList);
-        return HttpResult.ok(cacheInfo);
+        CacheInfoVO cacheInfoVO =  new CacheInfoVO();
+        cacheInfoVO.setInfo(redisServerCommands.info()); // 获取 Redis 缓存完整信息
+        cacheInfoVO.setDbSize(redisServerCommands.dbSize()); // 获取 Redis 缓存中可用键 Key 的总数
+        cacheInfoVO.setCommandStats(pieList);
+        return HttpResult.ok(cacheInfoVO);
     }
 }

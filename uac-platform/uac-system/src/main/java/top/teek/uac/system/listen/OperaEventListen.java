@@ -1,7 +1,7 @@
 package top.teek.uac.system.listen;
 
 import top.teek.uac.core.log.event.OperaLogEvent;
-import top.teek.uac.system.service.SysOperaLogService;
+import top.teek.uac.system.service.monitor.SysOperaLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

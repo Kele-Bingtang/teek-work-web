@@ -33,7 +33,7 @@
         ${ew.getCustomSqlSegment}
     </select>
 
-    <select id="listUserGroupByRoleId" resultType="top.teek.uac.system.model.vo.link.UserGroupLinkVO">
+    <select id="listUserGroupByRoleId" resultType="top.teek.uac.system.model.vo.link.UserGroupLinkUserVO">
         select tsug.group_name, tsug.intro, tsug.owner_id, tsug.owner_name, tsug.app_id, tugrl.id as link_id, tugrl.create_time, tugrl.app_id
         from t_sys_user_group tsug
         join t_user_group_role_link tugrl on tsug.group_id = tugrl.user_group_id and tugrl.is_deleted = 0 and tsug.app_id = tugrl.app_id

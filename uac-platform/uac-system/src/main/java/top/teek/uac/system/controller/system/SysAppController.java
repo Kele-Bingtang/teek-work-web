@@ -12,7 +12,6 @@ import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.SysAppDTO;
 import top.teek.uac.system.model.vo.SysAppVO;
 import top.teek.uac.system.model.vo.extra.AppTreeVO;
-import top.teek.uac.system.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
@@ -21,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.teek.uac.system.service.*;
+import top.teek.uac.system.service.system.*;
 
 import java.util.List;
 import java.util.Objects;

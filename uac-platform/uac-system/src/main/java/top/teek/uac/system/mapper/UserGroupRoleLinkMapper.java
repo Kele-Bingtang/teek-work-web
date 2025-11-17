@@ -1,11 +1,11 @@
 package top.teek.uac.system.mapper;
 
-import top.teek.uac.system.model.po.UserGroupLink;
+import top.teek.uac.system.model.po.UserGroupUserLink;
 import top.teek.uac.system.model.po.UserGroupRoleLink;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
 import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
+import top.teek.uac.system.model.vo.link.UserGroupLinkUserVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -22,9 +22,9 @@ import java.util.List;
  */
 public interface UserGroupRoleLinkMapper extends BaseMapper<UserGroupRoleLink> {
 
-    IPage<RoleLinkVO> listRoleLinkByGroupId(@Param("page") Page<UserGroupLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupLink> queryWrapper);
+    IPage<RoleLinkVO> listRoleLinkByGroupId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupUserLink> queryWrapper);
 
-    IPage<UserGroupLinkVO> listUserGroupByRoleId(@Param("page") Page<UserGroupLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupLink> queryWrapper);
+    IPage<UserGroupLinkUserVO> listUserGroupByRoleId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupUserLink> queryWrapper);
 
     List<RoleBindSelectVO> listWithDisabledByGroupId(@Param("userGroupId") String userGroupId);
 

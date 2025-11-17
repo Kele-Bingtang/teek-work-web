@@ -16,17 +16,9 @@ import top.teek.mp.base.TablePage;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.SysUserGroupDTO;
-import top.teek.uac.system.model.dto.UserGroupLinkDTO;
-import top.teek.uac.system.model.dto.link.UserGroupLinkInfoDTO;
-import top.teek.uac.system.model.dto.link.UserGroupLinkRoleDTO;
-import top.teek.uac.system.model.dto.link.UserGroupLinkUserDTO;
 import top.teek.uac.system.model.vo.SysUserGroupVO;
 import top.teek.uac.system.model.vo.extra.UserGroupTreeVO;
-import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
-import top.teek.uac.system.service.SysUserGroupService;
-import top.teek.uac.system.service.UserGroupLinkService;
-import top.teek.uac.system.service.UserGroupRoleLinkService;
+import top.teek.uac.system.service.system.SysUserGroupService;
 
 import java.util.List;
 
@@ -41,8 +33,6 @@ import java.util.List;
 public class SysUserGroupController {
 
     private final SysUserGroupService sysUserGroupService;
-    private final UserGroupLinkService userGroupLinkService;
-    private final UserGroupRoleLinkService userGroupRoleLinkService;
 
     @GetMapping("/list")
     @Operation(summary = "用户组列表查询", description = "通过主键查询用户组列表")
@@ -66,79 +56,6 @@ public class SysUserGroupController {
     public Response<List<UserGroupTreeVO>> listTreeList() {
         List<UserGroupTreeVO> userGroupTreeVOList = sysUserGroupService.listTreeList();
         return HttpResult.ok(userGroupTreeVOList);
-    }
-
-    @GetMapping("/listUserGroupByUserId/{appId}/{userId}")
-    @Operation(summary = "用户组列表查询", description = "查询某个用户所在的用户组列表")
-    @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<List<UserGroupLinkVO>> listUserGroupByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<UserGroupLinkVO> tablePage = userGroupLinkService.listUserGroupByUserId(userId);
-        return HttpResult.ok(tablePage);
-    }
-
-    @GetMapping("/listUserGroupByRoleId/{roleId}")
-    @Operation(summary = "用户组列表查询", description = "查询某个角色绑定的用户组列表")
-    @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<TablePage<UserGroupLinkVO>> listUserGroupByRoleId(@PathVariable String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<UserGroupLinkVO> tablePage = userGroupRoleLinkService.listUserGroupByRoleId(roleId, userGroupLinkInfoDTO, pageQuery);
-        return HttpResult.ok(tablePage);
-    }
-
-    @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
-    @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组存在用户，则 disabled 属性为 true")
-    @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<List<UserGroupBindSelectVO>> listWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<UserGroupBindSelectVO> sysUserGroupVOList = userGroupLinkService.listWithDisabledByUserId(appId, userId);
-        return HttpResult.ok(sysUserGroupVOList);
-    }
-
-    @GetMapping("listWithDisabledByRoleId/{roleId}")
-    @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true")
-    @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<List<UserGroupBindSelectVO>> listWithDisabledByRoleId(@PathVariable String roleId) {
-        List<UserGroupBindSelectVO> sysUserGroupVOList = userGroupRoleLinkService.listWithDisabledByRoleId(roleId);
-        return HttpResult.ok(sysUserGroupVOList);
-    }
-
-    @PostMapping("/addRolesToUserGroup")
-    @Operation(summary = "添加角色到用户组", description = "添加角色到用户组（多个角色）")
-    @OperateLog(title = "用户组角色关联管理", businessType = BusinessType.INSERT)
-    @PreAuthorize("hasAuthority('system:userGroup:add')")
-    public Response<Boolean> addRolesToUserGroup(@Validated(RestGroup.AddGroup.class) @RequestBody UserGroupLinkRoleDTO userGroupLinkRoleDTO) {
-        if (userGroupRoleLinkService.checkRolesExistUserGroup(userGroupLinkRoleDTO)) {
-            return HttpResult.failMessage("添加角色到用户组失败，用户组已存在于角色中");
-        }
-        boolean result = userGroupRoleLinkService.addRolesToUserGroup(userGroupLinkRoleDTO);
-        return HttpResult.ok(result);
-    }
-
-    @PostMapping("/addUsersToGroup")
-    @Operation(summary = "添加用户到用户组", description = "添加用户到用户组（多个用户）")
-    @OperateLog(title = "用户用户组关联管理", businessType = BusinessType.INSERT)
-    @PreAuthorize("hasAuthority('system:userGroup:add')")
-    public Response<Boolean> addUsersToUserGroup(@Validated(RestGroup.AddGroup.class) @RequestBody UserGroupLinkUserDTO userGroupLinkUserDTO) {
-        if (userGroupLinkService.checkUsersExistUserGroup(userGroupLinkUserDTO)) {
-            return HttpResult.failMessage("添加用户到用户组失败，用户已存在于用户组中");
-        }
-        boolean result = userGroupLinkService.addUsersToUserGroup(userGroupLinkUserDTO);
-        return HttpResult.ok(result);
-    }
-
-    @DeleteMapping("/removeUserFromUserGroup/{ids}")
-    @Operation(summary = "移出用户组", description = "将用户移出项目组")
-    @OperateLog(title = "用户用户组关联管理", businessType = BusinessType.DELETE)
-    @PreAuthorize("hasAuthority('system:userGroup:remove')")
-    public Response<Boolean> removeUserFromUserGroup(@PathVariable Long[] ids) {
-        boolean result = userGroupLinkService.removeUserFromUserGroup(List.of(ids));
-        return HttpResult.ok(result);
-    }
-
-    @PutMapping("/editUserGroupUserLink")
-    @Operation(summary = "用户关联用户信息修改", description = "修改用户组和用户䣌关联信息")
-    @OperateLog(title = "用户用户组关联管理", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAuthority('system:userGroup:edit')")
-    public Response<Boolean> editUserGroupUserLink(@Validated(RestGroup.EditGroup.class) @RequestBody UserGroupLinkDTO userGroupLinkDTO) {
-        return HttpResult.ok(userGroupLinkService.updateOne(userGroupLinkDTO));
     }
 
     @PostMapping

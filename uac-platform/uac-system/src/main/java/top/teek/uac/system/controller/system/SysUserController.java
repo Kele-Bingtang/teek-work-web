@@ -1,5 +1,13 @@
 package top.teek.uac.system.controller.system;
 
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import top.teek.core.http.HttpResult;
 import top.teek.core.http.Response;
 import top.teek.core.validate.RestGroup;
@@ -12,24 +20,9 @@ import top.teek.uac.core.helper.UacHelper;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.SysUserDTO;
-import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
-import top.teek.uac.system.model.dto.link.UserLinkRoleDTO;
-import top.teek.uac.system.model.dto.link.UserLinkUserGroupDTO;
 import top.teek.uac.system.model.vo.SysUserVO;
-import top.teek.uac.system.model.vo.link.UserBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserLinkVO;
-import top.teek.uac.system.service.SysUserService;
-import top.teek.uac.system.service.UserGroupLinkService;
-import top.teek.uac.system.service.UserRoleLinkService;
+import top.teek.uac.system.service.system.SysUserService;
 import top.teek.utils.StringUtil;
-import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,8 +39,6 @@ public class SysUserController {
 
     private final PasswordEncoder passwordEncoder;
     private final SysUserService sysUserService;
-    private final UserGroupLinkService userGroupLinkService;
-    private final UserRoleLinkService userRoleLinkService;
 
     @GetMapping("/list")
     @Operation(summary = "用户列表查询", description = "通过条件查询用户列表）")
@@ -63,63 +54,6 @@ public class SysUserController {
     public Response<TablePage<SysUserVO>> listPage(SysUserDTO sysUserDTO, PageQuery pageQuery) {
         TablePage<SysUserVO> tablePage = sysUserService.listPage(sysUserDTO, pageQuery);
         return HttpResult.ok(tablePage);
-    }
-
-
-    @GetMapping("listUserLinkByRoleId/{roleId}")
-    @Operation(summary = "用户列表查询", description = "通过角色 ID 查询用户列表（分页）")
-    @PreAuthorize("hasAuthority('system:user:query')")
-    public Response<TablePage<UserLinkVO>> listUserLinkByRoleId(@PathVariable String roleId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<UserLinkVO> userLinkVOList = userRoleLinkService.listUserLinkByRoleId(roleId, userLinkInfoDTO, pageQuery);
-        return HttpResult.ok(userLinkVOList);
-    }
-
-    @GetMapping("listUserLinkByGroupId/{userGroupId}")
-    @Operation(summary = "用户列表查询", description = "通过用户组 ID 查询用户列表（分页）")
-    @PreAuthorize("hasAuthority('system:user:query')")
-    public Response<TablePage<UserLinkVO>> listUserLinkByGroupId(@PathVariable String userGroupId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<UserLinkVO> tablePage = userGroupLinkService.listUserLinkByGroupId(userGroupId, userLinkInfoDTO, pageQuery);
-        return HttpResult.ok(tablePage);
-    }
-
-    @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
-    @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true")
-    @PreAuthorize("hasAuthority('system:user:query')")
-    public Response<List<UserBindSelectVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
-        List<UserBindSelectVO> userBindSelectVOList = userGroupLinkService.listWithDisabledByGroupId(userGroupId);
-        return HttpResult.ok(userBindSelectVOList);
-    }
-
-    @GetMapping("/listWithDisabledByRoleId/{roleId}")
-    @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true")
-    @PreAuthorize("hasAuthority('system:user:query')")
-    public Response<List<UserBindSelectVO>> listWithDisabledByRoleId(@PathVariable String roleId) {
-        List<UserBindSelectVO> userBindSelectVOList = userRoleLinkService.listWithDisabledByRoleId(roleId);
-        return HttpResult.ok(userBindSelectVOList);
-    }
-
-    @PostMapping("/addUserGroupsToUser")
-    @Operation(summary = "添加用户组到用户", description = "添加用户组到用户（多个用户组）")
-    @OperateLog(title = "用户用户组管理", businessType = BusinessType.INSERT)
-    @PreAuthorize("hasAuthority('system:user:add')")
-    public Response<Boolean> addUserGroupsToUser(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkUserGroupDTO userLinkUserGroupDTO) {
-        if (userGroupLinkService.checkUserExistUserGroups(userLinkUserGroupDTO)) {
-            return HttpResult.failMessage("添加用户到用户组失败，用户已存在于用户组中");
-        }
-        boolean result = userGroupLinkService.addUserGroupsToUser(userLinkUserGroupDTO);
-        return HttpResult.ok(result);
-    }
-
-    @PostMapping("/addRolesToUser")
-    @Operation(summary = "添加角色到用户", description = "添加角色到用户（多个角色）")
-    @OperateLog(title = "用户角色管理", businessType = BusinessType.INSERT)
-    @PreAuthorize("hasAuthority('system:user:add')")
-    public Response<Boolean> addRolesToUser(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkRoleDTO userLinkRoleDTO) {
-        if (userRoleLinkService.checkUserExistRoles(userLinkRoleDTO)) {
-            return HttpResult.failMessage("添加用户到角色失败，用户已存在于角色中");
-        }
-        boolean result = userRoleLinkService.addRolesToUser(userLinkRoleDTO);
-        return HttpResult.ok(result);
     }
 
     @PostMapping

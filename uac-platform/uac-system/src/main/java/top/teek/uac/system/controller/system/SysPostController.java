@@ -12,9 +12,9 @@ import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.SysPostDTO;
 import top.teek.uac.system.model.vo.SysPostVO;
-import top.teek.uac.system.model.vo.extra.UserSelectPostVo;
-import top.teek.uac.system.service.SysPostService;
-import top.teek.uac.system.service.UserPostLinkService;
+import top.teek.uac.system.model.vo.extra.UserSelectPostVO;
+import top.teek.uac.system.service.system.SysPostService;
+import top.teek.uac.system.service.link.UserPostLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
@@ -56,8 +56,8 @@ public class SysPostController {
     @GetMapping("/userSelectPostList/{userId}")
     @Operation(summary = "角色岗位列表查询", description = "查询岗位列表和已选择的岗位列表")
     @PreAuthorize("hasAuthority('system:post:query')")
-    public Response<UserSelectPostVo> userSelectPostList(@PathVariable String userId) {
-        UserSelectPostVo userSelectPostVo = sysPostService.userSelectPostList(userId);
+    public Response<UserSelectPostVO> userSelectPostList(@PathVariable String userId) {
+        UserSelectPostVO userSelectPostVo = sysPostService.userSelectPostList(userId);
         return HttpResult.ok(userSelectPostVo);
     }
 

@@ -39,12 +39,12 @@ public class UserLinkVO {
     private LocalDate expireOn;
 
     /**
+     * 状态 1 正常 0 异常
+     */
+    private Integer status;
+
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;
-
-    /**
-     * 应用 ID
-     */
-    private String appId;
 }

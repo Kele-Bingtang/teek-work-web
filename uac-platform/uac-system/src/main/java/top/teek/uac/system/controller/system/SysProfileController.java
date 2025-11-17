@@ -11,7 +11,7 @@ import top.teek.uac.system.model.dto.SysUserDTO;
 import top.teek.uac.system.model.dto.profile.ProfileInfoDTO;
 import top.teek.uac.system.model.dto.profile.UserPasswordDTO;
 import top.teek.uac.system.model.po.SysUser;
-import top.teek.uac.system.service.SysUserService;
+import top.teek.uac.system.service.system.SysUserService;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
 import lombok.RequiredArgsConstructor;

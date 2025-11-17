@@ -2,7 +2,7 @@ package top.teek.uac.system.export;
 
 import top.teek.excel.dict.ExcelDictHandler;
 import top.teek.uac.system.model.po.SysDictData;
-import top.teek.uac.system.service.SysDictDataService;
+import top.teek.uac.system.service.system.SysDictDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

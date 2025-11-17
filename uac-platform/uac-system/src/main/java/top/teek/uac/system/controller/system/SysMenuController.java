@@ -13,8 +13,8 @@ import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.SysMenuDTO;
 import top.teek.uac.system.model.vo.SysMenuVO;
 import top.teek.uac.system.model.vo.router.RouterVO;
-import top.teek.uac.system.service.RoleMenuLinkService;
-import top.teek.uac.system.service.SysMenuService;
+import top.teek.uac.system.service.link.RoleMenuLinkService;
+import top.teek.uac.system.service.system.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -76,22 +76,8 @@ public class SysMenuController {
         List<SysMenuVO> treeTable = sysMenuService.listMenuTreeTable(sysMenuDTO);
         return HttpResult.ok(treeTable);
     }
-    
-    @GetMapping("/listMenuIdsByRoleId/{appId}/{roleId}")
-    @Operation(summary = "菜单列表查询", description = "通过角色 ID 查询菜单 ID 列表")
-    @PreAuthorize("hasAuthority('system:menu:query')")
-    public Response<List<String>> listMenuIdsByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<String> menuIds = roleMenuLinkService.listMenuIdsByRoleId(roleId, appId, null);
-        return HttpResult.ok(menuIds);
-    }
 
-    @GetMapping("/listMenuListByRoleId/{appId}/{roleId}")
-    @Operation(summary = "菜单列表查询", description = "通过角色 ID 查询菜单 ID 列表")
-    @PreAuthorize("hasAuthority('system:menu:query')")
-    public Response<List<Tree<String>>> listMenuListByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<Tree<String>> sysMenuVOList = sysMenuService.listMenuListByRoleId(roleId, appId);
-        return HttpResult.ok(sysMenuVOList);
-    }
+    
 
     @PostMapping
     @Operation(summary = "菜单新增", description = "新增菜单")

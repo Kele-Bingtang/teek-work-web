@@ -18,7 +18,7 @@ import top.teek.uac.core.helper.UacHelper;
 import top.teek.uac.system.model.po.SysApp;
 import top.teek.uac.system.model.po.SysClient;
 import top.teek.uac.system.model.po.SysTenant;
-import top.teek.uac.system.service.SysTenantService;
+import top.teek.uac.system.service.system.SysTenantService;
 import top.teek.web.utils.ServletUtil;
 import top.teek.utils.StringUtil;
 import lombok.RequiredArgsConstructor;

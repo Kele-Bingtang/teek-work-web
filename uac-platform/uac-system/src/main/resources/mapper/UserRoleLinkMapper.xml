@@ -27,7 +27,7 @@
     </sql>
     
     <select id="listUserLinkByRoleId" resultType="top.teek.uac.system.model.vo.link.UserLinkVO">
-        select tsu.username, tsu.nickname, turl.id as link_id, turl.valid_from, turl.expire_on, turl.create_time, turl.app_id
+        select tsu.username, tsu.nickname, turl.id as link_id, turl.valid_from, turl.expire_on, turl.create_time, turl.app_id, turl.status
         from t_sys_user tsu
         join t_user_role_link turl on tsu.user_id = turl.user_id and turl.is_deleted = 0
         ${ew.getCustomSqlSegment}
