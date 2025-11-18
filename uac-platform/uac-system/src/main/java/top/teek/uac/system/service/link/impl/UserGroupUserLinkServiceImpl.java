@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * @author Teeker
  * @date 2023-11-11 23:40:21
- * @note 针对表【t_user_group_link(用户关联用户组表)】的数据库操作Service实现
+ * @note 针对表【t_user_group_user_link(用户关联用户组表)】的数据库操作Service实现
  */
 @Service
 @RequiredArgsConstructor
@@ -88,8 +88,8 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
     @Override
     public List<UserGroupLinkUserVO> listUserGroupByUserId(String userId) {
         QueryWrapper<SysUserGroup> wrapper = Wrappers.query();
-        wrapper.eq("tugl.is_deleted", ColumnConstant.NON_DELETED)
-                .eq("tugl.user_id", userId);
+        wrapper.eq("tugul.is_deleted", ColumnConstant.NON_DELETED)
+                .eq("tugul.user_id", userId);
 
         return baseMapper.listUserGroupByUserId(wrapper);
     }
@@ -98,7 +98,7 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
     public TablePage<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
         QueryWrapper<UserGroupUserLink> queryWrapper = Wrappers.query();
         queryWrapper.eq("tsu.is_deleted", 0)
-                .eq("tugl.user_group_id", userGroupId)
+                .eq("tugul.user_group_id", userGroupId)
                 .like(StringUtil.hasText(userLinkInfoDTO.getUsername()), "tsu.username", userLinkInfoDTO.getUsername())
                 .like(StringUtil.hasText(userLinkInfoDTO.getNickname()), "tsu.nickname", userLinkInfoDTO.getNickname());
         IPage<UserLinkVO> userLinkVOIPage = baseMapper.listUserLinkByGroupId(pageQuery.buildPage(), queryWrapper);

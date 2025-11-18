@@ -1,14 +1,16 @@
 package top.teek.uac.system.model.vo;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Data;
 import top.teek.excel.annotation.ExcelDictFormat;
 import top.teek.excel.convert.ExcelDictConvert;
 import top.teek.uac.system.export.NormalStatusHandler;
-import com.alibaba.excel.annotation.ExcelProperty;
-import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Teeker
@@ -43,6 +45,12 @@ public class SysRoleVO implements Serializable {
      */
     @ExcelProperty("角色名称")
     private String roleName;
+
+    /**
+     * 责任人
+     */
+    @ExcelIgnore
+    private List<String> ownerId;
 
     /**
      * 状态

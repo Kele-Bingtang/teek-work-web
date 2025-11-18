@@ -44,6 +44,11 @@ public class SysRoleDTO {
     private String roleName;
 
     /**
+     * 责任人
+     */
+    private List<String> ownerId;
+
+    /**
      * 角色介绍
      */
     private String intro;

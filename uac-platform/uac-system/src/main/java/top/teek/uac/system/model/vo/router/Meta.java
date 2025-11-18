@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -130,4 +131,13 @@ public class Meta {
      */
     private Boolean useTooltip;
 
+    /**
+     * 菜单标签名
+     */
+    private String tagText;
+
+    /**
+     * 菜单标签的属性，ElTag 组件的 props
+     */
+    private Map<String, Object> tagProps;
 }

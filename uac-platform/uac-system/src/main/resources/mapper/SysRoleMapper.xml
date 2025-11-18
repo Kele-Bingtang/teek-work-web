@@ -46,14 +46,14 @@
         SELECT tsr.*
         FROM t_sys_role tsr
                  JOIN t_user_group_role_link tugrl ON tugrl.role_id = tsr.role_id
-                 JOIN t_user_group_link tugl
-                      ON tugrl.user_group_id = tugl.user_group_id AND tugrl.is_deleted = 0 AND tugrl.status = 1 AND
-                         tugl.is_deleted = 0 AND tugl.status = 1
+                 JOIN t_user_group_user_link tugul
+                      ON tugrl.user_group_id = tugul.user_group_id AND tugrl.is_deleted = 0 AND tugrl.status = 1 AND
+                         tugul.is_deleted = 0 AND tugul.status = 1
                  JOIN t_sys_user_group tsug
-                      ON tugl.user_group_id = tsug.group_id AND tsug.is_deleted = 0 AND tsug.status = 1
+                      ON tugul.user_group_id = tsug.group_id AND tsug.is_deleted = 0 AND tsug.status = 1
         WHERE tsr.is_deleted = 0
           AND tsr.status = 1
-          and tugl.user_id = #{userId}
+          and tugul.user_id = #{userId}
         UNION
         -- 查询用户所在部门关联角色的角色信息
         SELECT tsr.*

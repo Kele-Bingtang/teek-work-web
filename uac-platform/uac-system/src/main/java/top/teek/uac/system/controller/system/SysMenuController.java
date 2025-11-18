@@ -77,8 +77,6 @@ public class SysMenuController {
         return HttpResult.ok(treeTable);
     }
 
-    
-
     @PostMapping
     @Operation(summary = "菜单新增", description = "新增菜单")
     @OperateLog(title = "菜单管理", businessType = BusinessType.INSERT)
