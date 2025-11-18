@@ -6,7 +6,8 @@ import { ProPage, downloadByData, useNamespace } from "teek";
 import { listPage, addRole, editRole, removeRole, removeBatch, exportExcel } from "@/common/api/system/role";
 import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
-import { elFormProps, formColumns } from "./use-form-columns";
+import { elFormProps, useFormColumns } from "./use-form-columns";
+import { listMenuIdsByRoleId } from "@/common/api/link/role-menu-link";
 
 const ns = useNamespace("role");
 
@@ -63,7 +64,7 @@ const { hasAuth } = usePermission();
 const dialogFormProps: DialogFormProps = {
   form: {
     elFormProps,
-    columns: formColumns,
+    columns: useFormColumns().columns,
   },
   id: ["id", "roleId"],
   addApi: data => addRole({ ...data, appId: initRequestParams.appId }),
@@ -74,6 +75,11 @@ const dialogFormProps: DialogFormProps = {
   disableEdit: !hasAuth("system:role:edit"),
   disableRemove: !hasAuth("system:role:remove"),
   disableRemoveBatch: !hasAuth("system:role:remove"),
+  clickEdit: async model => {
+    // 编辑时获取该角色绑定的菜单 ID 集合
+    const res = await listMenuIdsByRoleId(model.appId, model.roleId);
+    model.selectedMenuIds = res.data || [];
+  },
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
@@ -106,11 +112,3 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
     ></ProPage>
   </div>
 </template>
-
-<style lang="scss" scoped>
-@use "@teek/styles/mixins/bem" as *;
-
-@include b(role) {
-  display: flex;
-}
-</style>

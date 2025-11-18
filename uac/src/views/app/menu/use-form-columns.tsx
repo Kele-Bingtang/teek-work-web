@@ -1,4 +1,4 @@
-import type { DialogFormColumn } from "@teek/components";
+import type { DialogFormColumn, ElFormProps } from "@teek/components";
 import type { Menu } from "@/common/api/system/menu";
 import { listMenuTreeSelectByApp } from "@/common/api/system/menu";
 import { ElInput, ElOption, ElSelect, type FormRules } from "element-plus";
@@ -8,15 +8,15 @@ import { iframeFormColumns } from "./iframe-columns";
 
 const rules = reactive<FormRules>({
   appId: [{ required: true, message: "请选择 App", trigger: "blur" }],
-  menuCode: [{ required: true, message: "请输入菜单编码", trigger: "blur" }],
-  menuName: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
-  path: [{ required: true, message: "请输入菜单/路由地址", trigger: "blur" }],
+  menuCode: [{ required: true, message: "请输入资源编码", trigger: "blur" }],
+  menuName: [{ required: true, message: "请输入资源名称", trigger: "blur" }],
+  path: [{ required: true, message: "请输入资源/路由地址", trigger: "blur" }],
 });
 
 export const menuTypeEnum = [
-  { value: "C", label: "目录" },
-  { value: "M", label: "菜单" },
-  { value: "F", label: "按钮" },
+  { value: "C", label: "目录", tagType: "warning" },
+  { value: "M", label: "菜单", tagType: "primary" },
+  { value: "F", label: "按钮", tagType: "info" },
 ];
 
 export const commonEnum = [
@@ -24,7 +24,7 @@ export const commonEnum = [
   { value: 0, label: "否" },
 ];
 
-export const elFormProps = {
+export const elFormProps: ElFormProps = {
   labelWidth: 80,
   rules: rules,
 };
@@ -35,10 +35,11 @@ export const useFormColumns = (defaultValue: ComputedRef<string>) => {
       prop: "base",
       label: "基础配置",
       el: "ElDivider",
+      colProps: { span: 24 },
     },
     {
       prop: "menuType",
-      label: "菜单类型",
+      label: "资源类型",
       el: "el-radio-group",
       options: menuTypeEnum,
       defaultValue: "C",
@@ -80,15 +81,13 @@ export const useFormColumns = (defaultValue: ComputedRef<string>) => {
               v-model={model.path}
               placeholder="请输入 路由地址(如 user-manage)"
               v-slots={{
-                prepend: () => {
-                  return (
-                    <ElSelect v-model={model.pathPrefix} style="width: 120px">
-                      <ElOption value="" />
-                      <ElOption value={httpPrefix} />
-                      <ElOption value={httpsPrefix} />
-                    </ElSelect>
-                  );
-                },
+                prepend: () => (
+                  <ElSelect v-model={model.pathPrefix} style="width: 120px">
+                    <ElOption value="" />
+                    <ElOption value={httpPrefix} />
+                    <ElOption value={httpsPrefix} />
+                  </ElSelect>
+                ),
               }}
             ></ElInput>
           </>
@@ -134,16 +133,18 @@ export const useFormColumns = (defaultValue: ComputedRef<string>) => {
       label: "介绍",
       el: "el-input",
       elProps: { type: "textarea", clearable: true, placeholder: "请输入 介绍" },
+      colProps: { span: 24 },
     },
     {
       prop: "iframe",
       label: "META 配置",
       el: "ElDivider",
       destroy: model => model.menuType === "F",
+      colProps: { span: 24 },
     },
     {
-      label: "显示",
       prop: "useMeta",
+      label: "显示",
       el: "el-radio",
       destroy: model => model.menuType === "F",
       options: commonEnum,

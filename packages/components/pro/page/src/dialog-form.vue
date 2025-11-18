@@ -310,7 +310,7 @@ defineExpose({ handleAdd, handleEdit, handleRemove, handleRemoveBatch });
     v-model:visible="dialogFormVisible"
     v-model="model"
     :form="{ ...form, notCleanModelKeys, columns: newColumn }"
-    :dialog="dialogProps"
+    :dialog="{ destroyOnClose: true, ...dialogProps }"
     @confirm="handleConfirm(model, status)"
     @cancel="dialogFormVisible = false"
   >

@@ -4,8 +4,9 @@ import type { DialogFormColumn } from "@teek/components";
 import { listDeptTreeList } from "@/common/api/system/dept";
 
 const rules = reactive<FormRules>({
-  postCode: [{ required: true, message: "请输入部门编码", trigger: "blur" }],
-  postName: [{ required: true, message: "请输入部门名称", trigger: "blur" }],
+  deptId: [{ required: true, message: "请选择部门", trigger: "blur" }],
+  postCode: [{ required: true, message: "请输入岗位编码", trigger: "blur" }],
+  postName: [{ required: true, message: "请输入岗位名称", trigger: "blur" }],
 });
 
 export const elFormProps = {

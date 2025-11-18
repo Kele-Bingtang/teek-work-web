@@ -17,7 +17,7 @@ const route = useRoute();
 
 const { statusChange } = useChange(
   "menuName",
-  "菜单",
+  "资源",
   (row, status) => editMenu({ id: row.id, menuId: row.menuId, parentId: row.parentId, status }),
   () => proPageInstance.value?.search()
 );
@@ -27,16 +27,16 @@ const initRequestParams = reactive({
 });
 
 const columns: PageColumn<Menu.Info>[] = [
-  { prop: "menuName", label: "菜单名称", align: "left", search: { el: "el-input" } },
+  { prop: "menuName", label: "资源名称", align: "left", search: { el: "el-input" } },
   {
     prop: "icon",
     label: "图标",
     width: 60,
     render: ({ row }) => <Icon icon={row.icon}></Icon>,
   },
-  { prop: "orderNum", label: "排序", width: 80 },
-  { prop: "component", label: "组件路径", width: 200 },
+  { prop: "path", label: "组件路径", width: 200 },
   { prop: "permission", label: "权限标识", width: 180 },
+  { prop: "menuType", label: "类型", width: 80, options: menuTypeEnum, el: "el-tag" },
   {
     prop: "status",
     label: "状态",
@@ -62,45 +62,61 @@ const columns: PageColumn<Menu.Info>[] = [
       );
     },
   },
-  { prop: "menuType", label: "类型", width: 80, options: menuTypeEnum },
+  { prop: "orderNum", label: "排序", width: 80 },
   { prop: "intro", label: "介绍", width: 180 },
   { prop: "createTime", label: "创建时间", width: 160 },
   { prop: "operation", label: "操作", width: 200, fixed: "right" },
 ];
 
 const installMeta = (data: any) => {
-  if (data.meta) {
-    const keys = Object.keys(data.meta);
-    keys?.forEach((key: any) => {
-      if (data.meta[key] === "default") delete data.meta[key];
-    });
-    return data.meta;
-  }
+  if (!data.meta) return;
+
+  const keys = Object.keys(data.meta);
+  keys?.forEach(key => {
+    if (data.meta[key] === "default") delete data.meta[key];
+  });
+
+  return data.meta;
 };
 
 const { hasAuth } = usePermission();
 
 const dialogFormProps: DialogFormProps = {
+  dialog: {
+    title: (_, status) => (status === "add" ? "新增" : "编辑"),
+    width: "50%",
+    height: model => (model?.useMeta ? 700 : 500),
+    top: "5vh",
+    closeOnClickModal: false,
+  },
   form: {
     elFormProps,
     columns: useFormColumns(computed(() => initRequestParams.appId)).columns,
-    notCleanModelKeys: ["meta"],
+    colProps: { span: 12 }, // 一行两个表单
   },
   id: ["id", "menuId"],
-  addApi: data =>
-    addMenu({
+  addApi: data => {
+    const pathPrefix = data.pathPrefix;
+    delete data.pathPrefix;
+
+    return addMenu({
       ...data,
-      path: (data.pathPrefix || "") + (data.path || ""),
+      path: (pathPrefix || "") + (data.path || ""),
       meta: installMeta(data),
       appId: initRequestParams.appId,
-    }),
-  editApi: data =>
-    editMenu({
+    });
+  },
+  editApi: data => {
+    const pathPrefix = data.pathPrefix;
+    delete data.pathPrefix;
+
+    return editMenu({
       ...data,
-      path: (data.pathPrefix || "") + (data.path || ""),
+      path: (pathPrefix || "") + (data.path || ""),
       meta: installMeta(data),
       appId: initRequestParams.appId,
-    }),
+    });
+  },
   removeApi: removeMenu,
   clickEdit: model => {
     if ([httpPrefix, httpsPrefix].find(item => model.path?.includes(item))) {
@@ -108,8 +124,10 @@ const dialogFormProps: DialogFormProps = {
       model.path = model.path.split("//")[1];
     } else model.pathPrefix = "";
 
+    // 初始化 meta 相关表单
     if (!model.meta) model.useMeta = 0;
     const m = { ...model.meta } as Recordable;
+    // 删除资源内置的属性
     ["title", "icon", "rank"].forEach(key => delete m[key]);
 
     for (const key in m) {
@@ -121,14 +139,6 @@ const dialogFormProps: DialogFormProps = {
   disableAdd: !hasAuth("system:menu:add"),
   disableEdit: !hasAuth("system:menu:edit"),
   disableRemove: !hasAuth("system:menu:remove"),
-  apiFilterKeys: ["pathPrefix"],
-  dialog: {
-    title: (_, status) => (status === "add" ? "新增" : "编辑"),
-    width: "45%",
-    height: 670,
-    top: "5vh",
-    closeOnClickModal: false,
-  },
 };
 
 const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
@@ -142,12 +152,8 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 
 <template>
   <div :class="ns.b()">
-    <div :class="ns.em('table', 'empty')" v-if="!initRequestParams.appId">
-      <el-empty description="请先选择一个应用" />
-    </div>
     <ProPage
       ref="proPageInstance"
-      v-show="initRequestParams.appId"
       :request-api="listMenuTreeTableByApp"
       :columns
       :init-request-params="initRequestParams"
@@ -170,18 +176,3 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
     </ProPage>
   </div>
 </template>
-
-<style lang="scss" scoped>
-@use "@teek/styles/mixins/bem" as *;
-@use "@teek/styles/mixins/function" as *;
-
-@include b(menu) {
-  @include m(empty) {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background-color: cssVar(bg-color);
-  }
-}
-</style>

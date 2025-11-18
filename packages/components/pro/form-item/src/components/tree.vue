@@ -48,9 +48,16 @@ watch(defaultExpandAll, val => {
 });
 
 watch(isSelectAll, val => {
+  const treeInstanceConst = treeInstance.value;
   // true 全选，false 全不选
-  if (val) treeInstance.value?.setCheckedNodes(props.data);
-  else treeInstance.value?.setCheckedNodes([]);
+  if (val) {
+    treeInstanceConst?.setCheckedNodes(props.data);
+    checkedList.value =
+      props.checkBaseValueType === "nodes" ? treeInstanceConst?.getCheckedNodes() : treeInstanceConst?.getCheckedKeys();
+  } else {
+    treeInstanceConst?.setCheckedNodes([]);
+    checkedList.value = [];
+  }
   // 关闭处于全选和全不选期间的状态
   indeterminate.value = false;
 });
@@ -103,12 +110,14 @@ watch(checkedList, val => val?.length && setChecked(val), { immediate: true });
     <el-checkbox v-if="select" v-model="isSelectAll" :indeterminate="indeterminate" label="全选/全不选" />
     <el-checkbox v-if="select" v-model="checkStrictly" label="父子联动" />
   </div>
+
   <el-input
     v-if="search"
     v-model="filterText"
-    :style="{ width: $attrs.searchWidth || '98.5%' }"
+    :style="{ width: $attrs.searchWidth || '98.5%', marginBottom: '10px' }"
     :placeholder="($attrs.searchPlaceholder as string) || '请输入关键词进行筛选'"
   />
+
   <el-tree
     ref="treeInstance"
     :show-checkbox="select"

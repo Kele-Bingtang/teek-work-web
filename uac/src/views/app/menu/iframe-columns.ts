@@ -19,6 +19,7 @@ export const iframeFormColumns: DialogFormColumn[] = [
     labelSize: "small",
     el: "ElDivider",
     destroy: destroy,
+    colProps: { span: 24 },
   },
   {
     prop: "meta.frameSrc",
@@ -26,6 +27,7 @@ export const iframeFormColumns: DialogFormColumn[] = [
     el: "el-input",
     destroy: destroy,
     formItemProps: { labelWidth: 100 },
+    colProps: { span: 24 },
   },
   {
     prop: "meta.frameLoading",

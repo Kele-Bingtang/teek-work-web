@@ -87,10 +87,10 @@ defineExpose(expose);
     <ProForm
       ref="proFormInstance"
       v-model="model"
-      :row-props="{ gutter: 0 }"
       :show-footer="false"
       v-bind="form"
       @change="handleChange"
+      style="padding: 10px"
     >
       <template v-if="$slots['form-footer']" #footer="{ handleSubmit, handleReset }">
         <slot name="form-footer" v-bind="{ handleSubmit, handleReset, model }" />
