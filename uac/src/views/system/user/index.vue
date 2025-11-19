@@ -22,14 +22,14 @@ const { hasAuth } = usePermission();
 
 const { open } = useDialog();
 
-const { statusChange } = useChange<User.UserInfo>(
+const { statusChange } = useChange<User.Info>(
   "username",
   "用户",
   (row, status) => editUser({ id: row.id, userId: row.userId, status }),
   () => proPageInstance.value?.search()
 );
 
-const columns: PageColumn<User.UserInfo>[] = [
+const columns: PageColumn<User.Info>[] = [
   { type: "selection", fixed: "left", width: 60 },
   { type: "index", label: "#", width: 60 },
   { prop: "username", label: "用户名称", width: 170, search: { el: "el-input" } },

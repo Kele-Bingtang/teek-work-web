@@ -181,7 +181,6 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       @change="handleTreeChange"
       id="appId"
       label="appName"
-      :enable-total="false"
       default-first
     >
       <template #default="{ node }">

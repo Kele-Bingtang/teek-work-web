@@ -98,7 +98,6 @@ const handleTreeChange = (nodeId: string | TreeKey[]) => {
       @change="handleTreeChange"
       id="appModule"
       label="appModule"
-      :enableTotal="false"
       defaultFirst
     >
       <template #default="{ node }">

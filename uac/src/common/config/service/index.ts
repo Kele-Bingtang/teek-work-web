@@ -3,6 +3,9 @@ import { defineServiceConfig } from "./override-config";
 
 // 可以在这里覆盖框架默认的配置
 const overrideServiceConfig: DeepPartial<ServiceConfig> = {
+  layout: {
+    name: "User Account Control",
+  },
   router: {
     routeUseI18n: false,
   },

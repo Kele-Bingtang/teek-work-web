@@ -17,7 +17,7 @@ const handleTreeChange = (nodeId: string | TreeKey[]) => {
 
 <template>
   <div :class="ns.b()">
-    <TreeFilter :requestApi="listDeptTreeList" @change="handleTreeChange" id="value" class="user-tree">
+    <TreeFilter :requestApi="listDeptTreeList" @change="handleTreeChange" id="value" class="user-tree" default-first>
       <template #default="{ node }">
         <Icon v-if="node.data.icon" :icon="node.data.icon" class="icon"></Icon>
         <span>{{ node.label }}</span>

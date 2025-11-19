@@ -1,165 +1,67 @@
 <script setup lang="tsx" name="UserLink">
-import type { UserGroup } from "@/common/api/system/user/user-group";
-import type { User as UserType } from "@/common/api/system/user/user";
-import type { App } from "@/common/api/application/app";
-import type { Role } from "@/common/api/system/role";
-import type { DescriptionProps, ListCardInstance } from "@/components";
-import type { DialogFormInstance } from "./components/dialog-form.vue";
+import type { User } from "@/common/api/system/user/user";
+import type { DescriptionColumn, TabColumn } from "teek";
 import type { TreeKey } from "element-plus";
-import { ElRow, ElCol } from "element-plus";
-import { Plus, User } from "@element-plus/icons-vue";
-import { TreeFilter, message, useNamespace } from "teek";
+import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
 import { list } from "@/common/api/system/user/user";
-import { addRolesToUser } from "@/common/api/link/user-role-link";
-import { addUserGroupsToUser } from "@/common/api/link/user-group-user-link";
-import { getAppTreeList } from "@/common/api/application/app";
-import {
-  listUserGroupByUserId,
-  listWithDisabledByUserId as listUserGroupWithDisabledByUserId,
-  removeUserFromUserGroup,
-  editUserGroupUserLink,
-} from "@/common/api/link/user-group-user-link";
-import {
-  editUserRoleLinkInfo,
-  listRoleLinkByUserId,
-  listWithDisabledByUserId as listRoleWithDisabledByUserId,
-  removeUsersFromRole,
-} from "@/common/api/link/user-role-link";
-import { Description, ListCard } from "@/components";
-import { usePermission } from "@/composables";
-import DialogForm from "./components/dialog-form.vue";
+import { useDictStore } from "@/pinia";
+import { captureText } from "@/common/utils";
 
 const ns = useNamespace("user-link");
 
-const { hasAuth } = usePermission();
+const avatarBgColor = [
+  "#f56a00",
+  "#e6a23c",
+  "#6f7ad3",
+  "#1989fa",
+  "#5cb87a",
+  "#e6a23c",
+  "#f56a00",
+  "#e6a23c",
+  "#6f7ad3",
+  "#1989fa",
+  "#5cb87a",
+];
 
-const userGroupListCardInstance = useTemplateRef<ListCardInstance>("userGroupListCardInstance");
-const roleListCardInstance = useTemplateRef<ListCardInstance>("roleListCardInstance");
-const userGroupDialogFormInstance = useTemplateRef<DialogFormInstance>("userGroupDialogFormInstance");
-const roleDialogFormInstance = useTemplateRef<DialogFormInstance>("roleDialogFormInstance");
+const userInfo = ref<User.Info>();
 
-const userInfo = ref<UserType.Info>();
-
-const descriptionData = ref<DescriptionProps>({
+const descriptionData = reactive({
   title: "",
-  data: [],
+  avatarBgColor: "",
+  data: {} as User.Info,
+  columns: [] as DescriptionColumn[],
 });
-const appId = ref("");
-const appTreeList = ref<App.TreeList[]>([]);
 
-onBeforeMount(() => {
-  getAppTreeList().then(res => {
-    appId.value = res.data[0]?.appId;
-    appTreeList.value = res.data;
-  });
-});
+const tabColumns: TabColumn[] = [
+  { prop: "UserGroup", label: "已加入群组" },
+  { prop: "Role", label: "已有角色" },
+];
 
 // 点击用户列表的回调
-const handleTreeChange = (_: string | TreeKey[], data: UserType.Info) => {
+const handleTreeChange = (_: string | TreeKey[], data: User.Info & { avatarBgColor: string }) => {
   userInfo.value = data;
-  descriptionData.value.title = data.nickname;
-  descriptionData.value.data = [
-    { label: "用户名", value: data.username },
-    { label: "性别", value: data.sex === 1 ? "男" : data.sex === 2 ? "女" : "保密" },
-    { label: "电话", value: data.phone },
-    { label: "邮箱", value: data.email },
-    { label: "注册时间", value: data.registerTime, span: 4 },
+  descriptionData.title = data.nickname || data.username;
+  descriptionData.avatarBgColor = data.avatarBgColor;
+  descriptionData.data = data;
+  descriptionData.columns = [
+    { prop: "username", label: "用户名:" },
+    {
+      prop: "sex",
+      label: "性别:",
+      options: () => useDictStore().getDictData("sys_user_sex"),
+      optionField: { value: "dictValue", label: "dictLabel" },
+    },
+    { prop: "phone", label: "电话:" },
+    { prop: "email", label: "邮箱:" },
+    { prop: "registerTime", label: "注册时间:" },
   ];
 };
 
-// 点击新增用户组按钮的回调
-const handleAddUserGroup = () => userGroupDialogFormInstance.value?.openAdd();
-
-// 点击新增角色按钮的回调
-const handleAddRole = () => roleDialogFormInstance.value?.openAdd();
-
-// 新增用户组的弹框确认回调
-const userGroupConfirm = async (form: any, status: "add" | "edit", callback: () => void) => {
-  if (status === "add") {
-    addUserGroupsToUser({
-      ...form,
-      userGroupIds: form.transferIds,
-      appId: appId.value,
-      userId: userInfo.value?.userId || "",
-    }).then((res: any) => {
-      if (res.status === "success") {
-        message.success("新增成功");
-        // 刷新外面的用户组列表
-        userGroupListCardInstance.value?.getDataList();
-        // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
-        callback();
-      }
-    });
-  } else {
-    editUserGroupUserLink(form).then((res: any) => {
-      if (res.status === "success") {
-        message.success("修改成功");
-        // 刷新外面的用户组列表
-        userGroupListCardInstance.value?.getDataList();
-        // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
-        callback();
-      }
-    });
-  }
-};
-
-// 新增角色的弹框确认回调
-const roleConfirm = async (form: any, status: "add" | "edit", callback: () => void) => {
-  if (status === "add") {
-    addRolesToUser({
-      ...form,
-      roleIds: form.transferIds,
-      appId: appId.value,
-      userId: userInfo.value?.userId || "",
-    }).then((res: any) => {
-      if (res.status === "success") {
-        message.success("新增成功");
-        // 刷新外面的用户组列表
-        roleListCardInstance.value?.getDataList();
-        // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
-        callback();
-      }
-    });
-  } else {
-    editUserRoleLinkInfo(form).then((res: any) => {
-      if (res.status === "success") {
-        message.success("修改成功");
-        // 刷新外面的用户组列表
-        roleListCardInstance.value?.getDataList();
-        // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
-        callback();
-      }
-    });
-  }
-};
-
-// 编辑用户组的回调
-const userGroupEdit = (item: UserGroup.LinkUserInfo) => {
-  userGroupDialogFormInstance.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
-};
-
-// 删除用户组的回调
-const userGroupDelete = (item: UserGroup.LinkUserInfo) => {
-  removeUserFromUserGroup([item.linkId + ""]).then((res: any) => {
-    if (res.status === "success") {
-      message.success("删除成功");
-      userGroupListCardInstance.value?.getDataList();
-    }
-  });
-};
-
-// 编辑角色的回调
-const roleEdit = (item: Role.LinkInfo) => {
-  roleDialogFormInstance.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
-};
-
-// 删除角色的回调
-const roleDelete = (item: Role.LinkInfo) => {
-  removeUsersFromRole([item.linkId + ""]).then((res: any) => {
-    if (res.status === "success") {
-      message.success("删除成功");
-      roleListCardInstance.value?.getDataList();
-    }
+const transformData = (data: Recordable) => {
+  return data?.map((item: any, index: number) => {
+    // 添加头像背景色
+    item.avatarBgColor = avatarBgColor[index % avatarBgColor.length];
+    return item;
   });
 };
 </script>
@@ -169,117 +71,74 @@ const roleDelete = (item: Role.LinkInfo) => {
     <TreeFilter
       title="用户列表"
       :requestApi="list"
+      :transform-data
       @change="(value, data: any) => handleTreeChange(value, data)"
       id="userId"
-      label="username"
-      :enable-total="false"
-      style="width: 300px"
+      label="nickname"
       default-first
+      :show-total="false"
+      show-num
+      :class="ns.e('user')"
     >
       <template #default="{ node }">
-        <el-icon style="margin-right: 10px"><User /></el-icon>
-        <span>{{ node.label }}{{ node.data.nickname ? `（${node.data.nickname}）` : "" }}</span>
+        <el-avatar style="margin-right: 10px" :size="34" :style="{ backgroundColor: node.data.avatarBgColor }">
+          {{ captureText(node.data.nickname || node.data.username) }}
+        </el-avatar>
+        <span>{{ node.label || node.data.username }}</span>
       </template>
     </TreeFilter>
 
-    <div :class="ns.e('right')">
-      <Description :title="descriptionData.title" :data="descriptionData.data">
-        <template #extra>
-          <div>
-            <el-select
-              v-model="appId"
-              placeholder="请选择 App 清单"
-              size="small"
-              style="width: 120px; margin-right: 10px"
-            >
-              <el-option v-for="item in appTreeList" :key="item.appId" :label="item.appName" :value="item.appId" />
-            </el-select>
-          </div>
-        </template>
-      </Description>
+    <el-card shadow="never" :class="[ns.e('right'), ns.join('card-minimal')]">
+      <div class="flx-align-center">
+        <el-avatar :size="50" style="font-size: 24px" :style="{ backgroundColor: descriptionData.avatarBgColor }">
+          {{ captureText(descriptionData.title) }}
+        </el-avatar>
 
-      <el-row :gutter="10" :class="ns.em('right', 'body')" v-if="userInfo">
-        <el-col :span="6" style="height: 100%">
-          <ListCard
-            ref="userGroupListCardInstance"
-            title="用户组"
-            :request-api="listUserGroupByUserId"
-            :request-params="{ appId: appId, userId: userInfo?.userId }"
-            value="groupId"
-            label="groupName"
-            @edit="userGroupEdit"
-            @remove="userGroupDelete"
-            :use-edit="hasAuth('system:user:edit')"
-            :use-remove="hasAuth('system:user:remove')"
-          >
-            <template #extra>
-              <el-button v-auth="['system:user:add']" link :icon="Plus" @click="handleAddUserGroup">新增</el-button>
-            </template>
-          </ListCard>
-        </el-col>
-        <el-col :span="6" style="height: 100%">
-          <ListCard
-            ref="roleListCardInstance"
-            title="角色"
-            :data="[]"
-            :request-api="listRoleLinkByUserId"
-            :request-params="{ appId: appId, userId: userInfo?.userId }"
-            value="roleId"
-            label="roleName"
-            @edit="roleEdit"
-            @remove="roleDelete"
-            :use-edit="hasAuth('system:user:edit')"
-            :use-remove="hasAuth('system:user:remove')"
-          >
-            <template #extra>
-              <el-button v-auth="['system:user:add']" link :icon="Plus" @click="handleAddRole">新增</el-button>
-            </template>
-          </ListCard>
-        </el-col>
-      </el-row>
+        <ProDescriptions
+          :title="descriptionData.title"
+          :columns="descriptionData.columns"
+          :data="descriptionData.data"
+          :column="5"
+          :class="ns.e('descriptions')"
+        />
+      </div>
 
-      <DialogForm
-        ref="userGroupDialogFormInstance"
-        id="groupId"
-        :transfer-select-column="[{ prop: 'groupName', label: '用户组名' }]"
-        :transfer-api="listUserGroupWithDisabledByUserId"
-        :request-params="{ appId: appId, userId: userInfo?.userId }"
-        transfer-placeholder="用户组"
-        @confirm="userGroupConfirm"
-      />
-
-      <DialogForm
-        ref="roleDialogFormInstance"
-        id="roleId"
-        :transfer-select-column="[{ prop: 'roleName', label: '角色名' }]"
-        :transfer-api="listRoleWithDisabledByUserId"
-        :request-params="{ appId: appId, userId: userInfo?.userId }"
-        transfer-placeholder="角色"
-        @confirm="roleConfirm"
-      />
-    </div>
+      <ProTabs :columns="tabColumns" />
+    </el-card>
   </div>
 </template>
 
 <style lang="scss" scoped>
 @use "@teek/styles/mixins/bem" as *;
+@use "@teek/styles/mixins/namespace" as *;
 
 @include b(user-link) {
   display: flex;
   width: 100%;
   height: 100%;
 
+  @include e(user) {
+    width: 300px;
+
+    :deep(.#{$el-namespace}-tree-node__content) {
+      height: 46px !important;
+      padding-left: 10px !important;
+
+      .#{$el-namespace}-tree-node__expand-icon {
+        display: none;
+      }
+    }
+  }
+
   @include e(right) {
     width: 100%;
-    padding: 10px;
-    background-color: #ffffff;
 
-    @include m(body) {
-      display: flex;
-      height: calc(100vh - 215px);
+    @include e(descriptions) {
+      flex: 1;
+      padding-left: 16px;
 
-      :deep(.#{$el-namespace}-menu-item) {
-        height: 32px;
+      :deep(.#{$el-namespace}-descriptions__header) {
+        margin-bottom: 10px;
       }
     }
   }

@@ -25,8 +25,6 @@ const descriptionColumn: DescriptionColumn[] = [
 
 const descriptionData = ref<UserGroup.Info>();
 
-const activeName = ref("User");
-
 const tabColumns: TabColumn[] = [
   {
     prop: "User",
@@ -52,7 +50,6 @@ const handleTreeChange = (_: string | TreeKey[], data: UserGroup.Info) => {
       @change="(value, data: any) => handleTreeChange(value, data)"
       id="groupId"
       label="groupName"
-      :enable-total="false"
       default-first
     ></TreeFilter>
 
@@ -66,7 +63,7 @@ const handleTreeChange = (_: string | TreeKey[], data: UserGroup.Info) => {
         border
       />
 
-      <ProTabs v-model="activeName" :columns="tabColumns" card style="margin-top: 10px" />
+      <ProTabs :columns="tabColumns" card style="margin-top: 10px" />
     </div>
   </div>
 </template>

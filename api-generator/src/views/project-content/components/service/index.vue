@@ -30,7 +30,6 @@ mittBus.on("initTreeData", () => {
       @change="handleTreeChange"
       id="categoryId"
       label="categoryName"
-      :enableTotal="false"
       defaultFirst
     >
       <template #default="{ node }">

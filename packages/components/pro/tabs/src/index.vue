@@ -21,7 +21,7 @@ const tabPaneInstances = shallowRef<Record<string, TabPaneInstance>>({});
 
 const availableColumns = computed(() => props.columns.filter(column => !toValue(column.hidden)) || []);
 
-const prop = (column: TabColumn) => column.prop || column.name + "" || "";
+const prop = (column: TabColumn) => (column.name || column.prop || "") as string;
 
 // 设置 TabPane 的实例
 const setTabPaneInstance = (el: any, prop: string) => {
@@ -41,23 +41,29 @@ defineExpose(expose);
   <el-tabs
     v-if="availableColumns.length"
     ref="elTabsInstance"
+    :modelValue="prop(availableColumns[0])"
     v-bind="$attrs"
     :class="[ns.b(), { [ns.join('card-minimal')]: card }]"
   >
     <template v-for="column in availableColumns" :key="prop(column)">
-      <el-tab-pane
-        v-show="!toValue(column.hidden)"
-        :ref="el => setTabPaneInstance(el, prop(column))"
-        v-bind="column"
-        :name="prop(column)"
-      >
+      <el-tab-pane :ref="el => setTabPaneInstance(el, prop(column))" v-bind="column" :name="prop(column)">
         <template #default>
           <!-- 自定义 Render 函数渲染 -->
-          <component v-if="column.render" :is="column.render()" v-bind="{ ...column.elProps }" />
+          <component
+            v-show="!toValue(column.hidden)"
+            v-if="column.render"
+            :is="column.render()"
+            v-bind="{ ...column.elProps }"
+          />
           <!-- 自定义内容插槽，插槽名为 column.prop || column.name -->
           <slot v-else-if="$slots[prop(column)]" :name="prop(column)" />
 
-          <component v-else-if="column.el" :is="column.el" v-bind="unref(column.elProps)">
+          <component
+            v-show="!toValue(column.hidden)"
+            v-else-if="column.el"
+            :is="column.el"
+            v-bind="unref(column.elProps)"
+          >
             <template v-for="(slot, key) in column.elSlots" :key="key" #[key]="data">
               <component :is="slot" v-bind="{ ...data }" />
             </template>

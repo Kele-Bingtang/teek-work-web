@@ -132,6 +132,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       @change="handleTreeChange"
       id="clientId"
       label="clientName"
+      show-total
       class="role-tree"
     >
       <template #default="{ node }">

@@ -6,5 +6,6 @@ export interface DescriptionItem {
 
 export interface DescriptionProps {
   title?: string;
+  avatarBgColor?: string;
   data?: DescriptionItem[];
 }
