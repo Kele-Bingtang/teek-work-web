@@ -64,7 +64,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Response<Object> handleError(MethodArgumentNotValidException e) {
         log.warn("参数验证失败：{}", e.getMessage());
         return handleError(e.getBindingResult());

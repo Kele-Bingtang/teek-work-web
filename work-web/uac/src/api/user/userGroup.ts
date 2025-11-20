@@ -86,18 +86,18 @@ export const listUserGroupByRoleId = (params: { roleId: string }) => {
 /**
  * 查询所有用户组列表，如果用户组存在用户，则 disabled 属性为 true
  */
-export const listWithDisabledByUserId = (params: { appId: string; userId: string }) => {
+export const listWithSelectedByUserId = (params: { appId: string; userId: string }) => {
   return http.get<http.Response<UserGroup.UserGroupBindSelect[]>>(
-    `${baseUri}/listWithDisabledByUserId/${params.appId}/${params.userId}`
+    `${baseUri}/listWithSelectedByUserId/${params.appId}/${params.userId}`
   );
 };
 
 /**
  * 查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true
  */
-export const listWithDisabledByRoleId = (params: { roleId: string }) => {
+export const listWithSelectedByRoleId = (params: { roleId: string }) => {
   return http.get<http.Response<UserGroup.UserGroupBindSelect[]>>(
-    `${baseUri}/listWithDisabledByRoleId/${params.roleId}`
+    `${baseUri}/listWithSelectedByRoleId/${params.roleId}`
   );
 };
 

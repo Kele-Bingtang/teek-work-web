@@ -27,7 +27,7 @@
     </sql>
 
     <select id="listUserGroupByUserId" resultType="top.teek.uac.system.model.vo.link.UserGroupLinkUserVO">
-        select tsug.group_name, tsug.app_id, tugul.id as link_id, tugul.valid_from, tugul.expire_on, tugul.create_time
+        select tsug.group_id ,tsug.group_name, tsug.group_type, tsug.owner_id, tsug.owner_name, tugul.id as link_id, tugul.valid_from, tugul.expire_on, tugul.status
         from t_sys_user_group tsug
         join t_user_group_user_link tugul on tsug.group_id = tugul.user_group_id and tugul.is_deleted = 0
         ${ew.getCustomSqlSegment}
@@ -40,14 +40,14 @@
         ${ew.getCustomSqlSegment}
     </select>
 
-    <select id="selectWithDisabledByUserId" resultType="top.teek.uac.system.model.vo.link.UserGroupBindSelectVO">
+    <select id="selectWithSelectedByUserId" resultType="top.teek.uac.system.model.vo.link.UserGroupBindSelectVO">
         select tsug.group_id, tsug.group_name, case when tugul.user_id is not null then 1 else 0 end as disabled
         from t_sys_user_group tsug
         left join t_user_group_user_link tugul on tsug.group_id = tugul.user_group_id and tugul.user_id = #{userId} and tugul.is_deleted = 0
-        where tsug.app_id = #{appId} and tsug.is_deleted = 0
+        where tsug.is_deleted = 0
     </select>
 
-    <select id="listWithDisabledByGroupId" resultType="top.teek.uac.system.model.vo.link.UserBindSelectVO">
+    <select id="listWithSelectedByGroupId" resultType="top.teek.uac.system.model.vo.link.UserBindSelectVO">
         select tsu.user_id, tsu.username, tsu.nickname, case when tugul.user_group_id is not null then 1 else 0 end as disabled
         from t_sys_user tsu
         left join t_user_group_user_link tugul on tsu.user_id = tugul.user_id and tugul.is_deleted = 0 and tugul.user_group_id = #{userGroupId}

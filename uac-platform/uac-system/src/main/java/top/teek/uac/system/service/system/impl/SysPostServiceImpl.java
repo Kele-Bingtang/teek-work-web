@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
@@ -10,6 +10,8 @@ import top.teek.uac.system.model.po.UserPostLink;
 import top.teek.uac.system.model.vo.SysPostVO;
 import top.teek.uac.system.model.vo.extra.UserSelectPostVO;
 import top.teek.uac.system.service.link.UserPostLinkService;
+import top.teek.uac.system.service.system.SysDeptService;
+import top.teek.uac.system.service.system.SysPostService;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;

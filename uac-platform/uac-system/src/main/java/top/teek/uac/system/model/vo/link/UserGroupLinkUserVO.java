@@ -3,7 +3,6 @@ package top.teek.uac.system.model.vo.link;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * @author Teeker
@@ -12,6 +11,10 @@ import java.time.LocalDateTime;
  */
 @Data
 public class UserGroupLinkUserVO {
+    /**
+     * 用户组 ID
+     */
+    private String groupId;
 
     /**
      * 用户组名
@@ -19,9 +22,9 @@ public class UserGroupLinkUserVO {
     private String groupName;
 
     /**
-     * 用户组描述
+     * 群组类型
      */
-    private String intro;
+    private String groupType;
 
     /**
      * 负责人 ID
@@ -49,12 +52,7 @@ public class UserGroupLinkUserVO {
     private LocalDate expireOn;
 
     /**
-     * 应用 ID
+     * 状态（0 异用 1 正常）
      */
-    private String appId;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
+    private Integer status;
 }

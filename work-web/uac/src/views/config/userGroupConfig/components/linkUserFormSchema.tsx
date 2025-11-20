@@ -1,4 +1,4 @@
-import { listWithDisabledByGroupId } from "@/api/user/user";
+import { listWithSelectedByGroupId } from "@/api/user/user";
 import type { UserGroup } from "@/api/user/userGroup";
 import { useLayoutStore } from "@/stores";
 import type { DialogFormSchemaProps } from "@work/components";
@@ -30,7 +30,7 @@ export const useFormSchema = (requestParams: { userGroupId: string }) => {
       prop: "userIds",
       label: "用户选择",
       el: "user-select",
-      props: { requestApi: listWithDisabledByGroupId, requestParams: requestParams, multiple: true },
+      props: { requestApi: listWithSelectedByGroupId, requestParams: requestParams, multiple: true },
       destroyIn: ["edit"],
     },
     {

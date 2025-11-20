@@ -12,6 +12,7 @@ import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
+import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.dto.UserGroupUserLinkDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkUsersDTO;
 import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
@@ -44,27 +45,27 @@ public class UserGroupUserLinkController {
         return HttpResult.ok(tablePage);
     }
 
-    @GetMapping("/listUserGroupByUserId/{appId}/{userId}")
+    @GetMapping("/listUserGroupByUserId/{userId}")
     @Operation(summary = "用户组列表查询", description = "查询某个用户所在的用户组列表")
     @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<List<UserGroupLinkUserVO>> listUserGroupByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<UserGroupLinkUserVO> tablePage = userGroupUserLinkService.listUserGroupByUserId(userId);
+    public Response<List<UserGroupLinkUserVO>> listUserGroupByUserId(@PathVariable String userId, SysUserGroupDTO sysUserGroupDTO) {
+        List<UserGroupLinkUserVO> tablePage = userGroupUserLinkService.listUserGroupByUserId(userId, sysUserGroupDTO);
         return HttpResult.ok(tablePage);
     }
 
-    @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
+    @GetMapping("/listWithSelectedByGroupId/{userGroupId}")
     @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true")
     @PreAuthorize("hasAuthority('system:user:query')")
-    public Response<List<UserBindSelectVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
-        List<UserBindSelectVO> userBindSelectVOList = userGroupUserLinkService.listWithDisabledByGroupId(userGroupId);
+    public Response<List<UserBindSelectVO>> listWithSelectedByGroupId(@PathVariable String userGroupId) {
+        List<UserBindSelectVO> userBindSelectVOList = userGroupUserLinkService.listWithSelectedByGroupId(userGroupId);
         return HttpResult.ok(userBindSelectVOList);
     }
 
-    @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
+    @GetMapping("listWithSelectedByUserId/{userId}")
     @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组存在用户，则 disabled 属性为 true")
     @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<List<UserGroupBindSelectVO>> listWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<UserGroupBindSelectVO> sysUserGroupVOList = userGroupUserLinkService.listWithDisabledByUserId(appId, userId);
+    public Response<List<UserGroupBindSelectVO>> listWithSelectedByUserId(@PathVariable String userId) {
+        List<UserGroupBindSelectVO> sysUserGroupVOList = userGroupUserLinkService.listWithSelectedByUserId(userId);
         return HttpResult.ok(sysUserGroupVOList);
     }
 

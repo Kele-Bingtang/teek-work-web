@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
@@ -11,6 +11,7 @@ import top.teek.uac.system.model.vo.SysUserGroupVO;
 import top.teek.uac.system.model.vo.extra.UserGroupTreeVO;
 import top.teek.uac.system.service.link.UserGroupUserLinkService;
 import top.teek.uac.system.service.link.UserGroupRoleLinkService;
+import top.teek.uac.system.service.system.SysUserGroupService;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -57,6 +58,7 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
                 .eq(StringUtil.hasText(sysUserGroupDTO.getGroupName()), SysUserGroup::getGroupName, sysUserGroupDTO.getGroupName())
                 .eq(StringUtil.hasText(sysUserGroupDTO.getGroupType()), SysUserGroup::getGroupType, sysUserGroupDTO.getGroupType())
                 .like(StringUtil.hasText(sysUserGroupDTO.getGroupId()), SysUserGroup::getGroupId, sysUserGroupDTO.getGroupId())
+                .eq(Objects.nonNull(sysUserGroupDTO.getStatus()), SysUserGroup::getStatus, sysUserGroupDTO.getStatus())
                 .orderByAsc(SysUserGroup::getCreateTime);
     }
 

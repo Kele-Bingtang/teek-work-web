@@ -2,6 +2,7 @@ package top.teek.uac.system.service.link;
 
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
+import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.dto.UserGroupUserLinkDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkUsersDTO;
 import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
@@ -66,7 +67,7 @@ public interface UserGroupUserLinkService extends IService<UserGroupUserLink> {
      * @param userId 用户 ID
      * @return 用户组列表
      */
-    List<UserGroupLinkUserVO> listUserGroupByUserId(String userId);
+    List<UserGroupLinkUserVO> listUserGroupByUserId(String userId, SysUserGroupDTO sysUserGroupDTO);
 
     /**
      * 查询用户组下的用户列表
@@ -79,11 +80,10 @@ public interface UserGroupUserLinkService extends IService<UserGroupUserLink> {
     /**
      * 下拉查询用户列表，如果用户组绑定了用户，则 disabled 属性为 true
      *
-     * @param appId  应用 ID
      * @param userId 用户 ID
      * @return 用户组列表
      */
-    List<UserGroupBindSelectVO> listWithDisabledByUserId(String appId, String userId);
+    List<UserGroupBindSelectVO> listWithSelectedByUserId(String userId);
 
     /**
      * 下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true
@@ -91,7 +91,7 @@ public interface UserGroupUserLinkService extends IService<UserGroupUserLink> {
      * @param userGroupId 用户组 ID
      * @return 用户列表
      */
-    List<UserBindSelectVO> listWithDisabledByGroupId(String userGroupId);
+    List<UserBindSelectVO> listWithSelectedByGroupId(String userGroupId);
 
     /**
      * 修改用户组和用户的关联信息

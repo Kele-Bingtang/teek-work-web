@@ -106,13 +106,13 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
     }
 
     @Override
-    public List<RoleBindSelectVO> listWithDisabledByGroupId(String userGroupId) {
-        return baseMapper.listWithDisabledByGroupId(userGroupId);
+    public List<RoleBindSelectVO> listWithSelectedByGroupId(String userGroupId) {
+        return baseMapper.listWithSelectedByGroupId(userGroupId);
     }
 
     @Override
-    public List<UserGroupBindSelectVO> listWithDisabledByRoleId(String roleId) {
-        return baseMapper.listWithDisabledByRoleId(roleId);
+    public List<UserGroupBindSelectVO> listWithSelectedByRoleId(String roleId) {
+        return baseMapper.listWithSelectedByRoleId(roleId);
     }
 
 }

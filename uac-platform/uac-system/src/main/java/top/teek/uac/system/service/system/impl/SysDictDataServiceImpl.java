@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
@@ -13,6 +13,7 @@ import top.teek.uac.system.model.dto.SysDictDataDTO;
 import top.teek.uac.system.model.po.SysDictData;
 import top.teek.uac.system.model.po.SysDictType;
 import top.teek.uac.system.model.vo.SysDictDataVO;
+import top.teek.uac.system.service.system.SysDictDataService;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
 import top.teek.utils.TreeBuildUtil;

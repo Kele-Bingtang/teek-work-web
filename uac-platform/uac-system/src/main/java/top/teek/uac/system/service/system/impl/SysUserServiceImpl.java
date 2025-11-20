@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import top.teek.core.constants.ColumnConstant;
 import top.teek.uac.core.event.LoginInfoEvent;
@@ -16,6 +16,8 @@ import top.teek.uac.system.model.vo.SysUserVO;
 import top.teek.uac.system.service.link.UserGroupUserLinkService;
 import top.teek.uac.system.service.link.UserPostLinkService;
 import top.teek.uac.system.service.link.UserRoleLinkService;
+import top.teek.uac.system.service.system.SysDeptService;
+import top.teek.uac.system.service.system.SysUserService;
 import top.teek.utils.MapstructUtil;
 import top.teek.web.utils.ServletUtil;
 import top.teek.utils.StringUtil;

@@ -1,5 +1,5 @@
 import type { Role } from "@/api/system/role";
-import { listWithDisabledByRoleId } from "@/api/user/user";
+import { listWithSelectedByRoleId } from "@/api/user/user";
 import { useLayoutStore } from "@/stores";
 import type { DialogFormSchemaProps } from "@work/components";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, type FormRules, dayjs } from "element-plus";
@@ -30,7 +30,7 @@ export const useFormSchema = (requestParams: { roleId: string }) => {
       prop: "userIds",
       label: "用户选择",
       el: "user-select",
-      props: { requestApi: listWithDisabledByRoleId, requestParams: requestParams, multiple: true },
+      props: { requestApi: listWithSelectedByRoleId, requestParams: requestParams, multiple: true },
       destroyIn: ["edit"],
     },
     {

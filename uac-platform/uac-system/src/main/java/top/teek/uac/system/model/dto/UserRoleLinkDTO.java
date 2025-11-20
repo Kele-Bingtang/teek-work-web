@@ -38,13 +38,13 @@ public class UserRoleLinkDTO {
     /**
      * 生效时间
      */
-    @NotNull(message = "生效时间不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotNull(message = "生效时间不能为空", groups = {RestGroup.AddGroup.class})
     private LocalDate validFrom;
 
     /**
      * 过期时间
      */
-    @NotNull(message = "过期时间不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotNull(message = "过期时间不能为空", groups = {RestGroup.AddGroup.class})
     private LocalDate expireOn;
 
     /**
@@ -52,4 +52,9 @@ public class UserRoleLinkDTO {
      */
     @NotNull(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
+
+    /**
+     * 状态（0 异用 1 正常）
+     */
+    private Integer status;
 }

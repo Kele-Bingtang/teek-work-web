@@ -110,17 +110,17 @@ export const listRoleLinkByGroupId = (params: { userGroupId: string }) => {
 /**
  * 查询所有角色列表，如果角色绑定了用户，则 disabled 属性为 true
  */
-export const listWithDisabledByUserId = (params: { appId: string; userId: string }) => {
+export const listWithSelectedByUserId = (params: { appId: string; userId: string }) => {
   return http.get<http.Response<Role.RoleBindSelect[]>>(
-    `${baseUri}/listWithDisabledByUserId/${params.appId}/${params.userId}`
+    `${baseUri}/listWithSelectedByUserId/${params.appId}/${params.userId}`
   );
 };
 
 /**
  * 查询所有角色列表，如果角色绑定了用户组，则 disabled 属性为 true
  */
-export const listWithDisabledByGroupId = (params: { userGroupId: string }) => {
-  return http.get<http.Response<Role.RoleBindSelect[]>>(`${baseUri}/listWithDisabledByGroupId/${params.userGroupId}`);
+export const listWithSelectedByGroupId = (params: { userGroupId: string }) => {
+  return http.get<http.Response<Role.RoleBindSelect[]>>(`${baseUri}/listWithSelectedByGroupId/${params.userGroupId}`);
 };
 
 /**

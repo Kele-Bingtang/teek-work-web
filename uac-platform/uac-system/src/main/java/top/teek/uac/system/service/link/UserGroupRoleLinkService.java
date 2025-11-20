@@ -81,7 +81,7 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
      * @param userGroupId 用户组 ID
      * @return 角色列表
      */
-    List<RoleBindSelectVO> listWithDisabledByGroupId(String userGroupId);
+    List<RoleBindSelectVO> listWithSelectedByGroupId(String userGroupId);
     
     /**
      * 查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true
@@ -89,6 +89,6 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
      * @param roleId 角色 ID
      * @return 用户组列表
      */
-    List<UserGroupBindSelectVO> listWithDisabledByRoleId(String roleId);
+    List<UserGroupBindSelectVO> listWithSelectedByRoleId(String roleId);
 
 }

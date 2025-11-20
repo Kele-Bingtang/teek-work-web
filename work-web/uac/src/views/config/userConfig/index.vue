@@ -101,7 +101,7 @@ import { TreeFilter, message } from "work";
 import { list, addUserGroupsToUser, addRolesToUser, type User as UserType } from "@/api/user/user";
 import {
   listUserGroupByUserId,
-  listWithDisabledByUserId as listUserGroupWithDisabledByUserId,
+  listWithSelectedByUserId as listUserGroupWithDisabledByUserId,
   removeUserFromUserGroup,
   editUserGroupLinkInfo,
   type UserGroup,
@@ -109,7 +109,7 @@ import {
 import {
   editUserRoleLinkInfo,
   listRoleLinkByUserId,
-  listWithDisabledByUserId as listRoleWithDisabledByUserId,
+  listWithSelectedByUserId as listRoleWithDisabledByUserId,
   removeUserFromRole,
   type Role,
 } from "@/api/system/role";

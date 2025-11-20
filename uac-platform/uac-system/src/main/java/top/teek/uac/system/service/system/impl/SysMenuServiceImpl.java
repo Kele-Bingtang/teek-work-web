@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
@@ -19,6 +19,7 @@ import top.teek.uac.system.model.vo.SysMenuVO;
 import top.teek.uac.system.model.vo.router.Meta;
 import top.teek.uac.system.model.vo.router.RouterVO;
 import top.teek.uac.system.service.link.RoleMenuLinkService;
+import top.teek.uac.system.service.system.SysMenuService;
 import top.teek.utils.ListUtil;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;

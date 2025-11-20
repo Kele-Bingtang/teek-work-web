@@ -26,9 +26,9 @@ public interface UserGroupUserLinkMapper extends BaseMapper<UserGroupUserLink> {
 
     IPage<UserLinkVO> listUserLinkByGroupId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupUserLink> queryWrapper);
 
-    List<UserGroupBindSelectVO> selectWithDisabledByUserId(@Param("appId") String appId, @Param("userId") String userId);
+    List<UserGroupBindSelectVO> selectWithSelectedByUserId(@Param("userId") String userId);
 
-    List<UserBindSelectVO> listWithDisabledByGroupId(@Param("userGroupId") String userGroupId);
+    List<UserBindSelectVO> listWithSelectedByGroupId(@Param("userGroupId") String userGroupId);
 
 }
 

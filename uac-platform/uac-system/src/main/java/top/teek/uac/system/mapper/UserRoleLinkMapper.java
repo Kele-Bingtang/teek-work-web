@@ -29,7 +29,7 @@ public interface UserRoleLinkMapper extends BaseMapper<UserRoleLink> {
 
     List<RoleBindSelectVO> selectWithDisabledByUserId(@Param("appId") String appId, @Param("userId") String userId);
 
-    List<UserBindSelectVO> listWithDisabledByRoleId(@Param("roleId") String roleId);
+    List<UserBindSelectVO> listWithSelectedByRoleId(@Param("roleId") String roleId);
 }
 
 

@@ -52,19 +52,19 @@ public class UserGroupRoleLinkController {
         return HttpResult.ok(tablePage);
     }
 
-    @GetMapping("listWithDisabledByRoleId/{roleId}")
+    @GetMapping("listWithSelectedByRoleId/{roleId}")
     @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true")
     @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<List<UserGroupBindSelectVO>> listWithDisabledByRoleId(@PathVariable String roleId) {
-        List<UserGroupBindSelectVO> sysUserGroupVOList = userGroupRoleLinkService.listWithDisabledByRoleId(roleId);
+    public Response<List<UserGroupBindSelectVO>> listWithSelectedByRoleId(@PathVariable String roleId) {
+        List<UserGroupBindSelectVO> sysUserGroupVOList = userGroupRoleLinkService.listWithSelectedByRoleId(roleId);
         return HttpResult.ok(sysUserGroupVOList);
     }
 
-    @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
+    @GetMapping("/listWithSelectedByGroupId/{userGroupId}")
     @Operation(summary = "角色列表查询", description = "查询所有角色列表（查询所有角色列表，如果角色绑定了用户组，则 disabled 属性为 true）")
     @PreAuthorize("hasAuthority('system:role:query')")
-    public Response<List<RoleBindSelectVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
-        List<RoleBindSelectVO> roleBindSelectVOList = userGroupRoleLinkService.listWithDisabledByGroupId(userGroupId);
+    public Response<List<RoleBindSelectVO>> listWithSelectedByGroupId(@PathVariable String userGroupId) {
+        List<RoleBindSelectVO> roleBindSelectVOList = userGroupRoleLinkService.listWithSelectedByGroupId(userGroupId);
         return HttpResult.ok(roleBindSelectVOList);
     }
     

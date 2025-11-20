@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
@@ -22,6 +22,7 @@ import top.teek.uac.system.model.dto.SysDeptDTO;
 import top.teek.uac.system.model.po.SysDept;
 import top.teek.uac.system.model.vo.SysDeptVO;
 import top.teek.uac.system.service.link.RoleDeptLinkService;
+import top.teek.uac.system.service.system.SysDeptService;
 import top.teek.utils.ListUtil;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;

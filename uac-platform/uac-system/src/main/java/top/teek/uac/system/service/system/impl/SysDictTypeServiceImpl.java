@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import top.teek.cache.helper.CacheHelper;
 import top.teek.mp.base.PageQuery;
@@ -8,6 +8,8 @@ import top.teek.uac.system.mapper.SysDictTypeMapper;
 import top.teek.uac.system.model.dto.SysDictTypeDTO;
 import top.teek.uac.system.model.po.SysDictType;
 import top.teek.uac.system.model.vo.SysDictTypeVO;
+import top.teek.uac.system.service.system.SysDictDataService;
+import top.teek.uac.system.service.system.SysDictTypeService;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;

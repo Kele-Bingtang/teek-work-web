@@ -74,15 +74,15 @@ export const listPage = (params: Partial<User.UserInfo>) => {
 /**
  * 下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true
  */
-export const listWithDisabledByGroupId = (params: { userGroupId: string }) => {
-  return http.get<http.Response<User.UserBindSelect[]>>(`${baseUri}/listWithDisabledByGroupId/${params.userGroupId}`);
+export const listWithSelectedByGroupId = (params: { userGroupId: string }) => {
+  return http.get<http.Response<User.UserBindSelect[]>>(`${baseUri}/listWithSelectedByGroupId/${params.userGroupId}`);
 };
 
 /**
  * 下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true
  */
-export const listWithDisabledByRoleId = (params: { roleId: string }) => {
-  return http.get<http.Response<User.UserBindSelect[]>>(`${baseUri}/listWithDisabledByRoleId/${params.roleId}`);
+export const listWithSelectedByRoleId = (params: { roleId: string }) => {
+  return http.get<http.Response<User.UserBindSelect[]>>(`${baseUri}/listWithSelectedByRoleId/${params.roleId}`);
 };
 
 /**

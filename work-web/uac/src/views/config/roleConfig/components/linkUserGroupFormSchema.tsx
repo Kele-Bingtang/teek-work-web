@@ -2,7 +2,7 @@ import type { DialogFormSchemaProps, TransferTableColumn } from "@work/component
 import type { FormRules } from "element-plus";
 import { TransferSelect } from "work";
 import { User } from "@element-plus/icons-vue";
-import { listWithDisabledByRoleId } from "@/api/user/userGroup";
+import { listWithSelectedByRoleId } from "@/api/user/userGroup";
 
 const rules = reactive<FormRules>({
   groupIds: [{ required: true, message: "请选择用户组", trigger: "blur" }],
@@ -27,7 +27,7 @@ export const useFormSchema = (requestParams: { roleId: string }) => {
           <TransferSelect
             v-model={model.userGroupIds}
             columns={transferSelectColumn}
-            request-api={listWithDisabledByRoleId}
+            request-api={listWithSelectedByRoleId}
             request-params={requestParams}
             multiple
             list-icon={User}

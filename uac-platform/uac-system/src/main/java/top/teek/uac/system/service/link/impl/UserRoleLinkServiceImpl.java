@@ -4,6 +4,7 @@ import top.teek.core.constants.ColumnConstant;
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.system.mapper.UserRoleLinkMapper;
+import top.teek.uac.system.model.dto.SysRoleDTO;
 import top.teek.uac.system.model.dto.UserRoleLinkDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUsersDTO;
 import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
@@ -25,7 +26,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Teeker
@@ -84,6 +87,14 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
     @Override
     public boolean updateOne(UserRoleLinkDTO userRoleLinkDTO) {
         UserRoleLink userRoleLink = MapstructUtil.convert(userRoleLinkDTO, UserRoleLink.class);
+        if (Objects.isNull(userRoleLink.getValidFrom())) {
+            // 默认为当前时间
+            userRoleLink.setValidFrom(LocalDate.now());
+        }
+        if (Objects.isNull(userRoleLink.getExpireOn())) {
+            // 默认为 3 年
+            userRoleLink.setExpireOn(LocalDate.now().plusYears(3));
+        }
         return baseMapper.updateById(userRoleLink) > 0;
     }
 
@@ -105,22 +116,26 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
     }
 
     @Override
-    public List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId) {
+    public List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId, SysRoleDTO sysRoleDTO) {
         QueryWrapper<SysRole> wrapper = Wrappers.query();
         wrapper.eq("turl.is_deleted", ColumnConstant.NON_DELETED)
                 .eq("tsr.app_id", appId)
-                .eq("turl.user_id", userId);
+                .eq("turl.user_id", userId)
+                .eq(StringUtil.hasText(sysRoleDTO.getRoleCode()), "tsr.role_code", sysRoleDTO.getRoleCode())
+                .eq(StringUtil.hasText(sysRoleDTO.getRoleName()),"tsr.role_name", sysRoleDTO.getRoleName())
+                .eq(Objects.nonNull(sysRoleDTO.getStatus()), "tsr.status", sysRoleDTO.getStatus())
+                .orderByAsc("turl.create_time");
         return baseMapper.listRoleLinkByUserId(wrapper);
     }
 
     @Override
-    public List<RoleBindSelectVO> listWithDisabledByUserId(String appId, String userId) {
+    public List<RoleBindSelectVO> listWithSelectedByUserId(String appId, String userId) {
         return baseMapper.selectWithDisabledByUserId(appId, userId);
     }
 
     @Override
-    public List<UserBindSelectVO> listWithDisabledByRoleId(String roleId) {
-        return baseMapper.listWithDisabledByRoleId(roleId);
+    public List<UserBindSelectVO> listWithSelectedByRoleId(String roleId) {
+        return baseMapper.listWithSelectedByRoleId(roleId);
     }
 }
 

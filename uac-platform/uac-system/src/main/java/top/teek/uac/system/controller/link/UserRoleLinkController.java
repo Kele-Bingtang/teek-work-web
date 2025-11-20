@@ -12,6 +12,7 @@ import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
+import top.teek.uac.system.model.dto.SysRoleDTO;
 import top.teek.uac.system.model.dto.UserRoleLinkDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUsersDTO;
 import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
@@ -39,16 +40,16 @@ public class UserRoleLinkController {
     @GetMapping("/listRoleLinkByUserId/{appId}/{userId}")
     @Operation(summary = "角色列表查询", description = "查询某个用户所在的角色列表")
     @PreAuthorize("hasAuthority('system:role:query')")
-    public Response<List<RoleLinkVO>> listRoleListByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<RoleLinkVO> roleLinkVOS = userRoleLinkService.listRoleLinkByUserId(appId, userId);
+    public Response<List<RoleLinkVO>> listRoleListByUserId(@PathVariable String appId, @PathVariable String userId, SysRoleDTO sysRoleDTO) {
+        List<RoleLinkVO> roleLinkVOS = userRoleLinkService.listRoleLinkByUserId(appId, userId, sysRoleDTO);
         return HttpResult.ok(roleLinkVOS);
     }
 
-    @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
+    @GetMapping("listWithSelectedByUserId/{appId}/{userId}")
     @Operation(summary = "角色列表查询", description = "查询所有角色列表，如果角色绑定了用户，则 disabled 属性为 true")
     @PreAuthorize("hasAuthority('system:role:query')")
-    public Response<List<RoleBindSelectVO>> listWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<RoleBindSelectVO> roleBindSelectVOList = userRoleLinkService.listWithDisabledByUserId(appId, userId);
+    public Response<List<RoleBindSelectVO>> listWithSelectedByUserId(@PathVariable String appId, @PathVariable String userId) {
+        List<RoleBindSelectVO> roleBindSelectVOList = userRoleLinkService.listWithSelectedByUserId(appId, userId);
         return HttpResult.ok(roleBindSelectVOList);
     }
 
@@ -60,11 +61,11 @@ public class UserRoleLinkController {
         return HttpResult.ok(userLinkVOList);
     }
 
-    @GetMapping("/listWithDisabledByRoleId/{roleId}")
+    @GetMapping("/listWithSelectedByRoleId/{roleId}")
     @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true")
     @PreAuthorize("hasAuthority('system:user:query')")
-    public Response<List<UserBindSelectVO>> listWithDisabledByRoleId(@PathVariable String roleId) {
-        List<UserBindSelectVO> userBindSelectVOList = userRoleLinkService.listWithDisabledByRoleId(roleId);
+    public Response<List<UserBindSelectVO>> listWithSelectedByRoleId(@PathVariable String roleId) {
+        List<UserBindSelectVO> userBindSelectVOList = userRoleLinkService.listWithSelectedByRoleId(roleId);
         return HttpResult.ok(userBindSelectVOList);
     }
 

@@ -26,9 +26,9 @@ public interface UserGroupRoleLinkMapper extends BaseMapper<UserGroupRoleLink> {
 
     IPage<UserGroupLinkUserVO> listUserGroupByRoleId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupUserLink> queryWrapper);
 
-    List<RoleBindSelectVO> listWithDisabledByGroupId(@Param("userGroupId") String userGroupId);
+    List<RoleBindSelectVO> listWithSelectedByGroupId(@Param("userGroupId") String userGroupId);
 
-    List<UserGroupBindSelectVO> listWithDisabledByRoleId(@Param("roleId") String roleId);
+    List<UserGroupBindSelectVO> listWithSelectedByRoleId(@Param("roleId") String roleId);
     
 }
 

@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import top.teek.cache.helper.CacheHelper;
@@ -15,6 +15,7 @@ import top.teek.uac.system.model.vo.SysTenantVO;
 import top.teek.uac.system.service.link.RoleDeptLinkService;
 import top.teek.uac.system.service.link.RoleMenuLinkService;
 import top.teek.uac.system.service.link.UserRoleLinkService;
+import top.teek.uac.system.service.system.*;
 import top.teek.utils.ListUtil;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;

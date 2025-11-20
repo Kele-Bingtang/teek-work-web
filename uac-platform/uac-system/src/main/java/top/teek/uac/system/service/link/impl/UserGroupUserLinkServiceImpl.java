@@ -1,9 +1,17 @@
 package top.teek.uac.system.service.link.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.teek.core.constants.ColumnConstant;
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.system.mapper.UserGroupUserLinkMapper;
+import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.dto.UserGroupUserLinkDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkUsersDTO;
 import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
@@ -18,15 +26,10 @@ import top.teek.uac.system.service.link.UserGroupUserLinkService;
 import top.teek.utils.ListUtil;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.Db;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Teeker
@@ -86,10 +89,16 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
     }
 
     @Override
-    public List<UserGroupLinkUserVO> listUserGroupByUserId(String userId) {
+    public List<UserGroupLinkUserVO> listUserGroupByUserId(String userId, SysUserGroupDTO sysUserGroupDTO) {
         QueryWrapper<SysUserGroup> wrapper = Wrappers.query();
         wrapper.eq("tugul.is_deleted", ColumnConstant.NON_DELETED)
-                .eq("tugul.user_id", userId);
+                .eq("tugul.user_id", userId)
+                .eq(StringUtil.hasText(sysUserGroupDTO.getGroupName()), "tsug.group_id", sysUserGroupDTO.getGroupName())
+                .like(StringUtil.hasText(sysUserGroupDTO.getGroupId()), "tsug.group_id", sysUserGroupDTO.getGroupId())
+                .eq(StringUtil.hasText(sysUserGroupDTO.getGroupType()), "tsug.group_type", sysUserGroupDTO.getGroupType())
+                .eq(Objects.nonNull(sysUserGroupDTO.getStatus()), "tugul.status", sysUserGroupDTO.getStatus())
+                .orderByAsc("tugul.create_time");
+        ;
 
         return baseMapper.listUserGroupByUserId(wrapper);
     }
@@ -107,19 +116,27 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
     }
 
     @Override
-    public List<UserGroupBindSelectVO> listWithDisabledByUserId(String appId, String userId) {
-        return baseMapper.selectWithDisabledByUserId(appId, userId);
+    public List<UserGroupBindSelectVO> listWithSelectedByUserId(String userId) {
+        return baseMapper.selectWithSelectedByUserId(userId);
     }
 
     @Override
-    public List<UserBindSelectVO> listWithDisabledByGroupId(String userGroupId) {
-        return baseMapper.listWithDisabledByGroupId(userGroupId);
+    public List<UserBindSelectVO> listWithSelectedByGroupId(String userGroupId) {
+        return baseMapper.listWithSelectedByGroupId(userGroupId);
     }
 
 
     @Override
     public boolean updateOne(UserGroupUserLinkDTO userGroupUserLinkDTO) {
         UserGroupUserLink userGroupUserLink = MapstructUtil.convert(userGroupUserLinkDTO, UserGroupUserLink.class);
+        if (Objects.isNull(userGroupUserLink.getValidFrom())) {
+            // 默认为当前时间
+            userGroupUserLink.setValidFrom(LocalDate.now());
+        }
+        if (Objects.isNull(userGroupUserLink.getExpireOn())) {
+            // 默认为 3 年
+            userGroupUserLink.setExpireOn(LocalDate.now().plusYears(3));
+        }
         return baseMapper.updateById(userGroupUserLink) > 0;
     }
 }

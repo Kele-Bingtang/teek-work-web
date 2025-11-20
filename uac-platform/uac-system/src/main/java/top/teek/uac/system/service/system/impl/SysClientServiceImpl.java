@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import cn.hutool.crypto.SecureUtil;
 import top.teek.mp.base.PageQuery;
@@ -8,6 +8,7 @@ import top.teek.uac.system.model.dto.SysClientDTO;
 import top.teek.uac.system.model.po.SysClient;
 import top.teek.uac.system.model.vo.SysClientVO;
 import top.teek.uac.system.model.vo.extra.ClientTreeVO;
+import top.teek.uac.system.service.system.SysClientService;
 import top.teek.utils.IdsUtil;
 import top.teek.utils.ListUtil;
 import top.teek.utils.MapstructUtil;

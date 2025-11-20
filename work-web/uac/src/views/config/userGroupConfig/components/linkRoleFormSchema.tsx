@@ -1,4 +1,4 @@
-import { listWithDisabledByGroupId } from "@/api/system/role";
+import { listWithSelectedByGroupId } from "@/api/system/role";
 import { TransferSelect, type DialogFormSchemaProps, type TransferTableColumn } from "@work/components";
 import type { FormRules } from "element-plus";
 import { User } from "@element-plus/icons-vue";
@@ -25,7 +25,7 @@ export const useFormSchema = (requestParams: { userGroupId: string }) => {
           <TransferSelect
             v-model={model.roleIds}
             columns={transferSelectColumn}
-            request-api={listWithDisabledByGroupId}
+            request-api={listWithSelectedByGroupId}
             request-params={requestParams}
             multiple
             list-icon={User}

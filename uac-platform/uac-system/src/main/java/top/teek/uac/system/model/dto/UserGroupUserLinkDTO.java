@@ -35,13 +35,13 @@ public class UserGroupUserLinkDTO {
     /**
      * 生效时间
      */
-    @NotNull(message = "生效时间不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotNull(message = "生效时间不能为空", groups = {RestGroup.AddGroup.class})
     private LocalDate validFrom;
 
     /**
      * 失效时间
      */
-    @NotNull(message = "过期时间不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotNull(message = "过期时间不能为空", groups = {RestGroup.AddGroup.class})
     private LocalDate expireOn;
 
     /**

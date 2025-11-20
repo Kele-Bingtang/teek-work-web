@@ -3,7 +3,6 @@ package top.teek.uac.system.model.vo.link;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * @author Teeker
@@ -22,6 +21,11 @@ public class RoleLinkVO {
      * 角色名
      */
     private String roleName;
+
+    /**
+     * 负责人 ID
+     */
+    private String ownerId;
 
     /**
      * 关联 ID
@@ -44,7 +48,7 @@ public class RoleLinkVO {
     private String appId;
 
     /**
-     * 创建时间
+     * 状态（0 异用 1 正常）
      */
-    private LocalDateTime createTime;
+    private Integer status;
 }

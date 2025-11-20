@@ -2,6 +2,7 @@ package top.teek.uac.system.service.link;
 
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
+import top.teek.uac.system.model.dto.SysRoleDTO;
 import top.teek.uac.system.model.dto.UserRoleLinkDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUsersDTO;
 import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
@@ -74,20 +75,21 @@ public interface UserRoleLinkService extends IService<UserRoleLink> {
     /**
      * 根据应用 ID、用户 ID 查询角色列表
      *
-     * @param appId  应用ID
-     * @param userId 用户ID
+     * @param appId  应用 ID
+     * @param userId 用户 ID
+     * @param sysRoleDTO 角色信息
      * @return 角色列表
      */
-    List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId);
+    List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId, SysRoleDTO sysRoleDTO);
 
     /**
      * 根据应用 ID、用户 ID 查询角色列表，如果角色绑定了用户，则 disabled 属性为 false
      *
-     * @param appId  应用ID
-     * @param userId 用户ID
+     * @param appId  应用 ID
+     * @param userId 用户 ID
      * @return 角色列表
      */
-    List<RoleBindSelectVO> listWithDisabledByUserId(String appId, String userId);
+    List<RoleBindSelectVO> listWithSelectedByUserId(String appId, String userId);
 
     /**
      * 下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true
@@ -95,6 +97,6 @@ public interface UserRoleLinkService extends IService<UserRoleLink> {
      * @param roleId 角色 ID
      * @return 用户列表
      */
-    List<UserBindSelectVO> listWithDisabledByRoleId(String roleId);
+    List<UserBindSelectVO> listWithSelectedByRoleId(String roleId);
 
 }

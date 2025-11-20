@@ -1,4 +1,4 @@
-package top.teek.uac.system.service.system;
+package top.teek.uac.system.service.system.impl;
 
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
@@ -7,6 +7,7 @@ import top.teek.uac.system.model.dto.SysAppDTO;
 import top.teek.uac.system.model.po.SysApp;
 import top.teek.uac.system.model.vo.SysAppVO;
 import top.teek.uac.system.model.vo.extra.AppTreeVO;
+import top.teek.uac.system.service.system.SysAppService;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
