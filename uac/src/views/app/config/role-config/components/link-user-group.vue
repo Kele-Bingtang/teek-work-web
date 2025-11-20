@@ -23,7 +23,7 @@ const requestParam = reactive({ roleId: props.roleId });
 watchEffect(() => (requestParam.roleId = props.roleId));
 
 // 表格列配置项
-const columns: PageColumn<UserGroup.LinkUserInfo>[] = [
+const columns: PageColumn<UserGroup.LinkInfo>[] = [
   { type: "selection", fixed: "left", width: 10 },
   { prop: "groupName", label: "用户组名", minWidth: 120, search: { el: "el-input", key: "userGroupName" } },
   { prop: "intro", label: "描述", minWidth: 120 },

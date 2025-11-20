@@ -8,7 +8,7 @@ const baseUri = "/system/userGroupRoleLink";
  * 查询某个角色绑定的用户组列表
  */
 export const listUserGroupByRoleId = (params: { roleId: string }) => {
-  return http.get<httpNs.Response<UserGroup.LinkUserInfo[]>>(`${baseUri}/listUserGroupByRoleId/${params.roleId}`, {
+  return http.get<httpNs.Response<UserGroup.LinkInfo[]>>(`${baseUri}/listUserGroupByRoleId/${params.roleId}`, {
     ...params,
     roleId: undefined,
   });
@@ -27,15 +27,15 @@ export const listRoleLinkByGroupId = (params: { userGroupId: string }) => {
 /**
  * 查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true
  */
-export const listWithDisabledByRoleId = (params: { roleId: string }) => {
-  return http.get<httpNs.Response<UserGroup.BindSelect[]>>(`${baseUri}/listWithDisabledByRoleId/${params.roleId}`);
+export const listWithSelectedByRoleId = (params: { roleId: string }) => {
+  return http.get<httpNs.Response<UserGroup.BindSelect[]>>(`${baseUri}/listWithSelectedByRoleId/${params.roleId}`);
 };
 
 /**
  * 查询所有角色列表，如果角色绑定了用户组，则 disabled 属性为 true
  */
-export const listWithDisabledByGroupId = (params: { userGroupId: string }) => {
-  return http.get<httpNs.Response<Role.BindSelect[]>>(`${baseUri}/listWithDisabledByGroupId/${params.userGroupId}`);
+export const listWithSelectedByGroupId = (params: { userGroupId: string }) => {
+  return http.get<httpNs.Response<Role.BindSelect[]>>(`${baseUri}/listWithSelectedByGroupId/${params.userGroupId}`);
 };
 
 /**

@@ -14,8 +14,8 @@ export namespace UserGroup {
     createTime: string; // 创建时间
   }
 
-  // 角色被关联数据，如被用户关联、被用户组关联
-  export interface LinkUserInfo {
+  // 与用户关联信息
+  export interface LinkInfo {
     id: number;
     groupId: string; // 用户组 ID
     groupName: string; // 用户组名

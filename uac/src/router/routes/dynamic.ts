@@ -271,7 +271,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     },
     children: [
       {
-        path: "user-config",
+        path: "user-config/:appId",
         name: "UserConfig",
         component: "/app/config/user-config/index",
         meta: {
@@ -280,7 +280,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
         },
       },
       {
-        path: "user-group-config",
+        path: "user-group-config/:appId",
         name: "UserGroupConfig",
         component: "/app/config/user-group-config/index",
         meta: {
@@ -289,7 +289,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
         },
       },
       {
-        path: "role-config",
+        path: "role-config/:appId",
         name: "RoleConfig",
         component: "/app/config/role-config/index",
         meta: {

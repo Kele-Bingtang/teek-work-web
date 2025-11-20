@@ -6,6 +6,8 @@ import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
 import { list } from "@/common/api/system/user/user";
 import { useDictStore } from "@/pinia";
 import { captureText } from "@/common/utils";
+import UserGroup from "./components/user-group.vue";
+import Role from "./components/role.vue";
 
 const ns = useNamespace("user-link");
 
@@ -33,8 +35,23 @@ const descriptionData = reactive({
 });
 
 const tabColumns: TabColumn[] = [
-  { prop: "UserGroup", label: "已加入群组" },
-  { prop: "Role", label: "已有角色" },
+  {
+    prop: "UserGroup",
+    label: "已加入群组",
+    el: UserGroup,
+    elProps: computed(() => ({
+      userId: descriptionData.data.userId,
+    })),
+  },
+  {
+    prop: "Role",
+    label: "已有角色",
+    lazy: true,
+    el: Role,
+    elProps: computed(() => ({
+      userId: descriptionData.data.userId,
+    })),
+  },
 ];
 
 // 点击用户列表的回调
@@ -81,7 +98,11 @@ const transformData = (data: Recordable) => {
       :class="ns.e('user')"
     >
       <template #default="{ node }">
-        <el-avatar style="margin-right: 10px" :size="34" :style="{ backgroundColor: node.data.avatarBgColor }">
+        <el-avatar
+          style="margin-right: 10px; font-size: 16px"
+          :size="34"
+          :style="{ backgroundColor: node.data.avatarBgColor }"
+        >
           {{ captureText(node.data.nickname || node.data.username) }}
         </el-avatar>
         <span>{{ node.label || node.data.username }}</span>
@@ -90,7 +111,7 @@ const transformData = (data: Recordable) => {
 
     <el-card shadow="never" :class="[ns.e('right'), ns.join('card-minimal')]">
       <div class="flx-align-center">
-        <el-avatar :size="50" style="font-size: 24px" :style="{ backgroundColor: descriptionData.avatarBgColor }">
+        <el-avatar :size="56" style="font-size: 28px" :style="{ backgroundColor: descriptionData.avatarBgColor }">
           {{ captureText(descriptionData.title) }}
         </el-avatar>
 

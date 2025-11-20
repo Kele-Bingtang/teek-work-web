@@ -25,7 +25,7 @@ export const elFormProps: ElFormProps = {
 export const useFormColumns = (defaultValue?: ComputedRef<string>) => {
   const { getDictData } = useDictStore();
 
-  const columns: DialogFormColumn<User.UserInfo>[] = [
+  const columns: DialogFormColumn<User.Info>[] = [
     {
       prop: "username",
       label: "用户名称",

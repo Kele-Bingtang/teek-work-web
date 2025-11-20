@@ -25,7 +25,7 @@ export namespace Role {
     validFrom: string; // 生效时间
     expireOn: string; // 过期时间
     appId: string; // 应用 ID
-    createTime: string; // 创建时间
+    status: number; // 状态
   }
 
   // 角色关联用户组信息（多个用户组）

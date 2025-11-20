@@ -1,49 +1,52 @@
 <script setup lang="tsx">
-import type { DialogFormColumn, DialogFormProps, ElFormProps, PageColumn, ProPageInstance } from "@teek/components";
-import type { User } from "@/common/api/system/user/user";
-import { dayjs, ElSwitch } from "element-plus";
-import { ProPage, useNamespace } from "teek";
-import {
-  listUserLinkByGroupId,
-  listWithSelectedByGroupId,
-  addUsersToGroup,
-  editUserGroupUserLink,
-  removeUserFromUserGroup,
-} from "@/common/api/link/user-group-user-link";
-import { useChange, usePermission } from "@/composables";
+import type { DialogFormProps, ProPageInstance, PageColumn, DialogFormColumn, ElFormProps } from "teek";
+import type { Role } from "@/common/api/system/role";
+import { dayjs, ElMessageBox, ElSwitch } from "element-plus";
+import { ProPage, downloadByData, useNamespace } from "teek";
 import { useDictStore } from "@/pinia";
+import { useChange, usePermission } from "@/composables";
+import { exportExcel } from "@/common/api/system/role";
+import { listMenuIdsByRoleId } from "@/common/api/link/role-menu-link";
+import {
+  listWithSelectedByUserId,
+  listRoleLinkByUserId,
+  addRolesToUser,
+  editUserRoleLink,
+  removeUsersFromRole,
+} from "@/common/api/link/user-role-link";
 
-const ns = useNamespace("user-group-user-link");
+const props = defineProps<{ userId?: string }>();
 
-const props = defineProps<{ userGroupId?: string }>();
-
-const initRequestParams = reactive({ userGroupId: props.userGroupId });
+const ns = useNamespace("role");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
+const route = useRoute();
 
-// 监听 userGroupId，变化后修改关联的表格查询默认值
-watchEffect(() => {
-  if (props.userGroupId) initRequestParams.userGroupId = props.userGroupId;
+const initRequestParams = reactive({
+  appId: route.params.appId as string,
+  userId: props.userId || "",
 });
 
-const { statusChange } = useChange<User.Info>(
-  "username",
-  "用户",
-  (row, status) => editUserGroupUserLink({ id: row.linkId, status }),
+watchEffect(() => {
+  if (props.userId) initRequestParams.userId = props.userId;
+});
+
+const { statusChange } = useChange(
+  "roleName",
+  "角色",
+  (row, status) => editUserRoleLink({ id: row.linkId, status }),
   () => proPageInstance.value?.search()
 );
 
-const columns: PageColumn<User.Info>[] = [
-  { type: "selection", fixed: "left", width: 60 },
-  { type: "index", label: "#", width: 60 },
-  { prop: "username", label: "用户名称", search: { el: "el-input" } },
-  { prop: "nickname", label: "用户昵称", search: { el: "el-input" } },
-  { prop: "validFrom", label: "生效时间", minWidth: 120 },
-  { prop: "expireOn", label: "过期时间", minWidth: 120 },
+const columns: PageColumn<Role.Info>[] = [
+  { type: "selection", fixed: "left", width: 80 },
+  { type: "index", label: "#", width: 80 },
+  { prop: "roleCode", label: "角色编码", search: { el: "el-input" } },
+  { prop: "roleName", label: "角色名称", search: { el: "el-input" } },
+  { prop: "ownerId", label: "负责人" },
   {
     prop: "status",
-    width: 160,
-    label: "是否有效",
+    label: "状态",
     optionField: { value: "dictValue", label: "dictLabel" },
     options: () => useDictStore().getDictData("sys_normal_status"),
     search: { el: "el-select" },
@@ -65,8 +68,7 @@ const columns: PageColumn<User.Info>[] = [
       );
     },
   },
-  { prop: "createTime", width: 160, label: "注册时间" },
-  { prop: "operation", label: "操作", width: 220, fixed: "right" },
+  { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
 const elFormProps: ElFormProps = {
@@ -74,7 +76,7 @@ const elFormProps: ElFormProps = {
   rules: {
     validFrom: [{ required: true, message: "请选择生效时间", trigger: "blur" }],
     expireOnNum: [{ required: true, message: "请选择期限", trigger: "blur" }],
-    userIds: [{ required: true, message: "请选择用户", trigger: "blur" }],
+    roleIds: [{ required: true, message: "请选择角色", trigger: "blur" }],
   },
 };
 
@@ -109,13 +111,12 @@ const formColumns: DialogFormColumn[] = [
     hidden: model => model.expireOnNum !== -1,
   },
   {
-    prop: "userIds",
-    label: "用户",
+    prop: "roleIds",
+    label: "角色",
     el: "el-transfer",
-    options: () =>
-      initRequestParams.userGroupId ? listWithSelectedByGroupId({ userGroupId: initRequestParams.userGroupId }) : [],
+    options: () => (initRequestParams.userId ? listWithSelectedByUserId(initRequestParams) : []),
     elProps: {
-      props: { key: "userId", label: "nickname" },
+      props: { key: "roleId", label: "roleName" },
       filterable: true,
       titles: ["Source", "Target"],
     },
@@ -125,11 +126,10 @@ const formColumns: DialogFormColumn[] = [
 
 const { hasAuth } = usePermission();
 
-// 新增、编辑弹框配置项
 const dialogFormProps: DialogFormProps = {
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
-    width: "50%",
+    width: "45%",
     height: (_, status) => (status === "add" ? 470 : 170),
     top: "5vh",
     closeOnClickModal: false,
@@ -145,10 +145,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addUsersToGroup({
-      ...model,
-      userGroupId: initRequestParams.userGroupId,
-    });
+    return addRolesToUser({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {
@@ -156,7 +153,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return editUserGroupUserLink({ ...model, id: model.linkId });
+    return editUserRoleLink({ ...model, id: model.linkId });
   },
   clickEdit: model => {
     // 根据 expireOn 计算 expireOnNum，如果计算不是整数，则走 custom
@@ -164,38 +161,34 @@ const dialogFormProps: DialogFormProps = {
     if (limit % 1 !== 0) model.expireOnNum = -1;
     else model.expireOnNum = limit;
   },
-  editFilterKeys: ["userIds"],
-  removeApi: removeUserFromUserGroup,
-  removeBatchApi: removeUserFromUserGroup,
-  disableAdd: !hasAuth("system:userGroup:linkUser"),
-  disableEdit: !hasAuth("system:userGroup:linkUser"),
-  disableRemove: !hasAuth("system:userGroup:linkUser"),
-  disableRemoveBatch: !hasAuth("system:userGroup:linkUser"),
+  removeApi: removeUsersFromRole,
+  removeBatchApi: removeUsersFromRole,
+  disableAdd: !hasAuth("system:role:add"),
+  disableEdit: !hasAuth("system:role:edit"),
+  disableRemove: !hasAuth("system:role:remove"),
+  disableRemoveBatch: !hasAuth("system:role:remove"),
+};
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `role_${new Date().getTime()}.xlsx`);
+    });
+  });
 };
 </script>
 
 <template>
   <div :class="ns.b()">
     <ProPage
-      ref="proPageInstance"
-      :request-api="listUserLinkByGroupId"
-      :init-request-params
-      :request-immediate="false"
+      ref="proTableRef"
+      :request-api="listRoleLinkByUserId"
       :columns
+      :init-request-params="initRequestParams"
       :dialog-form-props
       row-key="linkId"
-      :card="false"
+      :export-file
+      :disabled-tool-button="!hasAuth('system:role:export') ? ['export'] : []"
     ></ProPage>
   </div>
 </template>
-
-<style lang="scss" scoped>
-@use "@teek/styles/mixins/bem" as *;
-@use "@teek/styles/mixins/namespace" as *;
-
-@include b(user-group-user-link) {
-  :deep(.#{$el-namespace}-transfer) {
-    --el-transfer-panel-width: 300px;
-  }
-}
-</style>

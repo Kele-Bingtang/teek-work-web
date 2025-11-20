@@ -2,7 +2,7 @@
 import type { DialogFormProps, PageColumn } from "teek";
 import type { User } from "@/common/api/system/user/user";
 import { ProPage } from "teek";
-import { addUsersToRole, editUserRoleLinkInfo, removeUsersFromRole } from "@/common/api/link/user-role-link";
+import { addUsersToRole, editUserRoleLink, removeUsersFromRole } from "@/common/api/link/user-role-link";
 import { listUserLinkByRoleId } from "@/common/api/link/user-role-link";
 import { usePermission } from "@/composables";
 import { elFormProps, useFormColumns } from "./link-user-form-columns";
@@ -46,7 +46,7 @@ const dialogFormProps: DialogFormProps = {
       roleId: requestParam.roleId,
       appId: props.appId,
     }),
-  editApi: form => editUserRoleLinkInfo({ ...form, id: form.linkId }),
+  editApi: form => editUserRoleLink({ ...form, id: form.linkId }),
   editFilterKeys: ["userId", "appId", "userIds"],
   removeApi: form => removeUsersFromRole([form.linkId]),
   removeBatchApi: removeUsersFromRole,

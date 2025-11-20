@@ -2,7 +2,7 @@ import type { FormRules } from "element-plus";
 import type { DialogFormColumn } from "@teek/components";
 import type { UserGroup } from "@/common/api/system/user/user-group";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, dayjs } from "element-plus";
-import { listWithDisabledByGroupId } from "@/common/api/link/user-group-user-link";
+import { listWithSelectedByGroupId } from "@/common/api/link/user-group-user-link";
 import { useDictStore } from "@/pinia";
 
 const rules = reactive<FormRules>({
@@ -31,7 +31,7 @@ export const useFormColumns = (requestParams: { userGroupId: string }) => {
       prop: "userIds",
       label: "用户选择",
       el: "user-select",
-      elProps: { requestApi: listWithDisabledByGroupId, requestParams: requestParams, multiple: true },
+      elProps: { requestApi: listWithSelectedByGroupId, requestParams: requestParams, multiple: true },
       destroyIn: ["edit"],
     },
     {

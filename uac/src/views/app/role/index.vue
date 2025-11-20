@@ -30,6 +30,7 @@ const columns: PageColumn<Role.Info>[] = [
   { type: "index", label: "#", width: 80 },
   { prop: "roleCode", label: "角色编码", search: { el: "el-input" } },
   { prop: "roleName", label: "角色名称", search: { el: "el-input" } },
+  { prop: "ownerId", label: "负责人" },
   {
     prop: "status",
     label: "状态",
@@ -105,7 +106,6 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       :request-api="listPage"
       :columns
       :init-request-params="initRequestParams"
-      :search-props="{ searchCols: { xs: 1, sm: 1, md: 3, lg: 3, xl: 3 } }"
       :dialog-form-props
       :export-file
       :disabled-tool-button="!hasAuth('system:role:export') ? ['export'] : []"

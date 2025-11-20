@@ -1,49 +1,62 @@
 <script setup lang="tsx">
-import type { DialogFormColumn, DialogFormProps, ElFormProps, PageColumn, ProPageInstance } from "@teek/components";
-import type { User } from "@/common/api/system/user/user";
-import { dayjs, ElSwitch } from "element-plus";
-import { ProPage, useNamespace } from "teek";
-import {
-  listUserLinkByGroupId,
-  listWithSelectedByGroupId,
-  addUsersToGroup,
-  editUserGroupUserLink,
-  removeUserFromUserGroup,
-} from "@/common/api/link/user-group-user-link";
+import type { DialogFormProps, ProPageInstance, PageColumn, DialogFormColumn, ElFormProps } from "teek";
+import type { UserGroup } from "@/common/api/system/user/user-group";
+import { dayjs, ElMessageBox, ElSwitch } from "element-plus";
+import { ProPage, downloadByData, useNamespace } from "teek";
 import { useChange, usePermission } from "@/composables";
 import { useDictStore } from "@/pinia";
+import { exportExcel } from "@/common/api/system/user/user-group";
+import {
+  addUserGroupsToUser,
+  editUserGroupUserLink,
+  listUserGroupByUserId,
+  listWithSelectedByUserId,
+  removeUserFromUserGroup,
+} from "@/common/api/link/user-group-user-link";
 
-const ns = useNamespace("user-group-user-link");
+const props = defineProps<{ userId?: string }>();
 
-const props = defineProps<{ userGroupId?: string }>();
-
-const initRequestParams = reactive({ userGroupId: props.userGroupId });
+const ns = useNamespace("user-userGroup");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
-// 监听 userGroupId，变化后修改关联的表格查询默认值
+const initRequestParams = reactive({ userId: props.userId || "" });
+
 watchEffect(() => {
-  if (props.userGroupId) initRequestParams.userGroupId = props.userGroupId;
+  if (props.userId) initRequestParams.userId = props.userId;
 });
 
-const { statusChange } = useChange<User.Info>(
-  "username",
-  "用户",
+const { statusChange } = useChange<UserGroup.Info>(
+  "groupName",
+  "用户组",
   (row, status) => editUserGroupUserLink({ id: row.linkId, status }),
   () => proPageInstance.value?.search()
 );
 
-const columns: PageColumn<User.Info>[] = [
-  { type: "selection", fixed: "left", width: 60 },
-  { type: "index", label: "#", width: 60 },
-  { prop: "username", label: "用户名称", search: { el: "el-input" } },
-  { prop: "nickname", label: "用户昵称", search: { el: "el-input" } },
+// 表格列配置项
+const columns: PageColumn<UserGroup.Info>[] = [
+  { type: "selection", fixed: "left", width: 10 },
+  { prop: "groupName", label: "用户组名", minWidth: 120, search: { el: "el-input" } },
+  { prop: "groupId", label: "用户组编码", minWidth: 120, search: { el: "el-input" } },
+  {
+    prop: "groupType",
+    label: "用户组类型",
+    width: 100,
+    search: { el: "el-select" },
+    optionField: { value: "dictValue", label: "dictLabel" },
+    options: () => useDictStore().getDictData("sys_group_type"),
+  },
   { prop: "validFrom", label: "生效时间", minWidth: 120 },
   { prop: "expireOn", label: "过期时间", minWidth: 120 },
   {
+    prop: "ownerId",
+    label: "负责人",
+    minWidth: 160,
+    formatValue: (_, { row }) => `${row.ownerName} ${row.ownerId}`,
+  },
+  {
     prop: "status",
-    width: 160,
-    label: "是否有效",
+    label: "状态",
     optionField: { value: "dictValue", label: "dictLabel" },
     options: () => useDictStore().getDictData("sys_normal_status"),
     search: { el: "el-select" },
@@ -65,8 +78,7 @@ const columns: PageColumn<User.Info>[] = [
       );
     },
   },
-  { prop: "createTime", width: 160, label: "注册时间" },
-  { prop: "operation", label: "操作", width: 220, fixed: "right" },
+  { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
 const elFormProps: ElFormProps = {
@@ -74,7 +86,7 @@ const elFormProps: ElFormProps = {
   rules: {
     validFrom: [{ required: true, message: "请选择生效时间", trigger: "blur" }],
     expireOnNum: [{ required: true, message: "请选择期限", trigger: "blur" }],
-    userIds: [{ required: true, message: "请选择用户", trigger: "blur" }],
+    userGroupIds: [{ required: true, message: "请选择用户组", trigger: "blur" }],
   },
 };
 
@@ -109,13 +121,12 @@ const formColumns: DialogFormColumn[] = [
     hidden: model => model.expireOnNum !== -1,
   },
   {
-    prop: "userIds",
-    label: "用户",
+    prop: "userGroupIds",
+    label: "用户组",
     el: "el-transfer",
-    options: () =>
-      initRequestParams.userGroupId ? listWithSelectedByGroupId({ userGroupId: initRequestParams.userGroupId }) : [],
+    options: () => (initRequestParams.userId ? listWithSelectedByUserId({ userId: initRequestParams.userId }) : []),
     elProps: {
-      props: { key: "userId", label: "nickname" },
+      props: { key: "groupId", label: "groupName" },
       filterable: true,
       titles: ["Source", "Target"],
     },
@@ -129,7 +140,7 @@ const { hasAuth } = usePermission();
 const dialogFormProps: DialogFormProps = {
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
-    width: "50%",
+    width: "45%",
     height: (_, status) => (status === "add" ? 470 : 170),
     top: "5vh",
     closeOnClickModal: false,
@@ -145,10 +156,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addUsersToGroup({
-      ...model,
-      userGroupId: initRequestParams.userGroupId,
-    });
+    return addUserGroupsToUser({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {
@@ -164,13 +172,22 @@ const dialogFormProps: DialogFormProps = {
     if (limit % 1 !== 0) model.expireOnNum = -1;
     else model.expireOnNum = limit;
   },
-  editFilterKeys: ["userIds"],
+  editFilterKeys: ["userGroupIds"],
+  disableAdd: !hasAuth("system:userGroup:add"),
+  disableEdit: !hasAuth("system:userGroup:edit"),
+  disableRemove: !hasAuth("system:userGroup:remove"),
+  disableRemoveBatch: !hasAuth("system:userGroup:remove"),
   removeApi: removeUserFromUserGroup,
   removeBatchApi: removeUserFromUserGroup,
-  disableAdd: !hasAuth("system:userGroup:linkUser"),
-  disableEdit: !hasAuth("system:userGroup:linkUser"),
-  disableRemove: !hasAuth("system:userGroup:linkUser"),
-  disableRemoveBatch: !hasAuth("system:userGroup:linkUser"),
+  apiFilterKeys: ["user", "createTime"],
+};
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `userGroup_${new Date().getTime()}.xlsx`);
+    });
+  });
 };
 </script>
 
@@ -178,24 +195,14 @@ const dialogFormProps: DialogFormProps = {
   <div :class="ns.b()">
     <ProPage
       ref="proPageInstance"
-      :request-api="listUserLinkByGroupId"
+      :request-api="listUserGroupByUserId"
       :init-request-params
       :request-immediate="false"
       :columns
       :dialog-form-props
       row-key="linkId"
-      :card="false"
+      :export-file
+      :disabled-tool-button="!hasAuth('system:userGroup:export') ? ['export'] : []"
     ></ProPage>
   </div>
 </template>
-
-<style lang="scss" scoped>
-@use "@teek/styles/mixins/bem" as *;
-@use "@teek/styles/mixins/namespace" as *;
-
-@include b(user-group-user-link) {
-  :deep(.#{$el-namespace}-transfer) {
-    --el-transfer-panel-width: 300px;
-  }
-}
-</style>

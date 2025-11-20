@@ -15,14 +15,14 @@ import { addUserGroupsToUser } from "@/common/api/link/user-group-user-link";
 import { getAppTreeList } from "@/common/api/application/app";
 import {
   listUserGroupByUserId,
-  listWithDisabledByUserId as listUserGroupWithDisabledByUserId,
+  listWithSelectedByUserId as listUserGroupWithDisabledByUserId,
   removeUserFromUserGroup,
   editUserGroupUserLink,
 } from "@/common/api/link/user-group-user-link";
 import {
-  editUserRoleLinkInfo,
+  editUserRoleLink,
   listRoleLinkByUserId,
-  listWithDisabledByUserId as listRoleWithDisabledByUserId,
+  listWithSelectedByUserId as listRoleWithDisabledByUserId,
   removeUsersFromRole,
 } from "@/common/api/link/user-role-link";
 import { Description, ListCard } from "@/components";
@@ -121,7 +121,7 @@ const roleConfirm = async (form: any, status: "add" | "edit", callback: () => vo
       }
     });
   } else {
-    editUserRoleLinkInfo(form).then((res: any) => {
+    editUserRoleLink(form).then((res: any) => {
       if (res.status === "success") {
         message.success("修改成功");
         // 刷新外面的用户组列表
@@ -134,12 +134,12 @@ const roleConfirm = async (form: any, status: "add" | "edit", callback: () => vo
 };
 
 // 编辑用户组的回调
-const userGroupEdit = (item: UserGroup.LinkUserInfo) => {
+const userGroupEdit = (item: UserGroup.LinkInfo) => {
   userGroupDialogFormInstance.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
 };
 
 // 删除用户组的回调
-const userGroupDelete = (item: UserGroup.LinkUserInfo) => {
+const userGroupDelete = (item: UserGroup.LinkInfo) => {
   removeUserFromUserGroup([item.linkId + ""]).then((res: any) => {
     if (res.status === "success") {
       message.success("删除成功");

@@ -1,7 +1,7 @@
 import type { Role } from "@/common/api/system/role";
 import type { DialogFormColumn } from "@teek/components";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, type FormRules, dayjs } from "element-plus";
-import { listWithDisabledByRoleId } from "@/common/api/link/user-role-link";
+import { listWithSelectedByRoleId } from "@/common/api/link/user-role-link";
 import { useDictStore } from "@/pinia";
 
 const rules = reactive<FormRules>({
@@ -30,7 +30,7 @@ export const useFormColumns = (requestParams: { roleId: string }) => {
       prop: "userIds",
       label: "用户选择",
       el: "user-select",
-      elProps: { requestApi: listWithDisabledByRoleId, requestParams: requestParams, multiple: true },
+      elProps: { requestApi: listWithSelectedByRoleId, requestParams: requestParams, multiple: true },
       destroyIn: ["edit"],
     },
     {
