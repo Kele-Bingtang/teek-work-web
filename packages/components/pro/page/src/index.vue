@@ -20,8 +20,8 @@ import { Delete, Edit, Search, Plus } from "@element-plus/icons-vue";
 import { isEmpty, isFunction, isBoolean } from "@teek/utils";
 import { useOptions, optionsMapKey } from "@teek/components/pro/use-options";
 import { ProSearch } from "@teek/components/pro/search";
-import { ProTable, defaultTooltipProps, lastProp } from "@teek/components/pro/table";
-import { filterEmpty, flatColumnsFn, setProp } from "@teek/components/pro/helper";
+import { ProTable, defaultTooltipProps } from "@teek/components/pro/table";
+import { filterEmpty, flatColumnsFn, setProp, lastProp } from "@teek/components/pro/helper";
 import { useNamespace } from "@teek/composables";
 import DialogForm from "./dialog-form.vue";
 

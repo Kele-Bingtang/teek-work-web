@@ -34,11 +34,12 @@ export const useRouteFn = () => {
    */
   const initDynamicRoutes = async (roles?: string[], api?: BackendApi) => {
     let routeList = getDynamicRoutesFromStorage();
+    const routeAccessMode = import.meta.env.VITE_ROUTE_ACCESS_MODE;
 
-    if (!routeList) {
-      const isFrontendMode = import.meta.env.VITE_ROUTE_ACCESS_MODE === "frontend";
-      const isBackendMode = import.meta.env.VITE_ROUTE_ACCESS_MODE === "backend";
-      const isMixedMode = import.meta.env.VITE_ROUTE_ACCESS_MODE === "mixed";
+    if (!routeList.length) {
+      const isFrontendMode = !routeAccessMode || routeAccessMode === "frontend";
+      const isBackendMode = routeAccessMode === "backend";
+      const isMixedMode = routeAccessMode === "mixed";
 
       // 前端控制模式
       if (isFrontendMode) routeList = authRoutes;
@@ -48,7 +49,7 @@ export const useRouteFn = () => {
       else if (isMixedMode) routeList = [...authRoutes, ...(await getDynamicRoutesFromBackend())];
     }
 
-    if (routeList?.length) {
+    if (routeList.length) {
       // 缓存路由
       if (cacheDynamicRoutes) cacheOperator.setDynamicRoutes(routeList);
       // 加载路由
@@ -69,7 +70,8 @@ export const useRouteFn = () => {
    * 从浏览器 storage 缓存获取动态路由
    */
   const getDynamicRoutesFromStorage = () => {
-    if (cacheDynamicRoutes) return cacheOperator.getDynamicRoutes();
+    if (cacheDynamicRoutes) return cacheOperator.getDynamicRoutes() || [];
+    return [];
   };
 
   /**

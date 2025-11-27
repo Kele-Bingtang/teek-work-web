@@ -1,7 +1,7 @@
 <script setup lang="tsx" name="UserGroupLinkRole">
-import type { DialogFormProps, PageColumn } from "teek";
+import type { DialogFormProps, ProTableInstance, PageColumn } from "teek";
 import type { Role } from "@/common/api/system/role";
-import { ProPage } from "teek";
+import { ProTable } from "teek";
 import { elFormProps, useFormColumns } from "./link-role-form-columns";
 import {
   listRoleLinkByGroupId,
@@ -11,15 +11,18 @@ import {
 import { usePermission } from "@/composables";
 
 export interface LinkRoleProps {
+  appId: string;
   userGroupId: string;
 }
 
 const props = defineProps<LinkRoleProps>();
 
-const initRequestParams = reactive({ userGroupId: props.userGroupId });
+const requestParam = reactive({ userGroupId: props.userGroupId });
 
 // 监听 userGroupId，变化后修改关联的表格查询默认值
-watchEffect(() => (initRequestParams.userGroupId = props.userGroupId));
+watchEffect(() => (requestParam.userGroupId = props.userGroupId));
+
+const proTableRef = shallowRef<ProTableInstance>();
 
 // 表格列配置项
 const columns: PageColumn<Role.LinkInfo>[] = [
@@ -34,19 +37,18 @@ const { hasAuth } = usePermission();
 
 // 新增、编辑弹框配置项
 const dialogFormProps: DialogFormProps = {
-  dialog: {
-    title: (_, status) => (status === "add" ? "新增" : "编辑"),
-    width: "45%",
-    height: 520,
-    top: "5vh",
-    closeOnClickModal: false,
-  },
   form: {
     elFormProps,
-    columns: useFormColumns(initRequestParams).columns,
+    columns: useFormColumns(requestParam).columns,
   },
-  id: ["id", "linkId"],
-  addApi: form => addRolesToUserGroup({ ...form, ...initRequestParams }),
+  id: ["linkId"],
+  addApi: form =>
+    addRolesToUserGroup({
+      ...form,
+      roleIds: form.roleIds,
+      userGroupId: requestParam.userGroupId,
+      appId: props.appId,
+    }),
   addFilterKeys: ["role"],
   removeApi: form => removeUserGroupFromRole([form.linkId]),
   removeBatchApi: removeUserGroupFromRole,
@@ -54,14 +56,22 @@ const dialogFormProps: DialogFormProps = {
   disableEdit: !hasAuth("system:userGroup:linkRole"),
   disableRemove: !hasAuth("system:userGroup:linkRole"),
   disableRemoveBatch: !hasAuth("system:userGroup:linkRole"),
+  dialog: {
+    title: (_, status) => (status === "add" ? "新增" : "编辑"),
+    width: "45%",
+    height: 520,
+    top: "5vh",
+    closeOnClickModal: false,
+  },
 };
 </script>
 
 <template>
   <div class="link-role-container">
-    <ProPage
+    <ProTable
+      ref="proTableRef"
       :request-api="listRoleLinkByGroupId"
-      :init-request-params="initRequestParams"
+      :init-request-params="requestParam"
       :columns
       :search-cols="{ xs: 1, sm: 1, md: 3, lg: 3, xl: 3 }"
       :dialog-form-props
@@ -69,7 +79,7 @@ const dialogFormProps: DialogFormProps = {
       height="100%"
       :init-show-search="false"
       :disabled-tool-button="!hasAuth('system:userGroup:linkRole') ? ['export'] : []"
-    ></ProPage>
+    ></ProTable>
   </div>
 </template>
 

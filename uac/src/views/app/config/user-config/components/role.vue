@@ -6,7 +6,6 @@ import { ProPage, downloadByData, useNamespace } from "teek";
 import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
 import { exportExcel } from "@/common/api/system/role";
-import { listMenuIdsByRoleId } from "@/common/api/link/role-menu-link";
 import {
   listWithSelectedByUserId,
   listRoleLinkByUserId,

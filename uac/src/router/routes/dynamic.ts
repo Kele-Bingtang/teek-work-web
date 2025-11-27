@@ -297,6 +297,24 @@ export const dynamicRoutes: RouterConfigRaw[] = [
           app: true,
         },
       },
+      {
+        path: "dept-config/:appId",
+        name: "DeptConfig",
+        component: "/app/config/dept-config/index",
+        meta: {
+          title: "部门配置",
+          app: true,
+        },
+      },
+      {
+        path: "post-config/:appId",
+        name: "PostConfig",
+        component: "/app/config/post-config/index",
+        meta: {
+          title: "岗位配置",
+          app: true,
+        },
+      },
     ],
   },
 ];
