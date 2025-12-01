@@ -1,12 +1,14 @@
 package top.teek.uac.system.model.po;
 
-import top.teek.mp.base.BaseDO;
-import top.teek.uac.system.model.vo.UserGroupRoleLinkVO;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import top.teek.mp.base.BaseDO;
+import top.teek.uac.system.model.vo.UserGroupRoleLinkVO;
+
+import java.time.LocalDate;
 
 /**
  * @author Teeker
@@ -28,6 +30,16 @@ public class UserGroupRoleLink extends BaseDO {
      * 角色 ID
      */
     private String roleId;
+
+    /**
+     * 生效时间
+     */
+    private LocalDate validFrom;
+
+    /**
+     * 失效时间
+     */
+    private LocalDate expireOn;
 
     /**
      * 租户编号

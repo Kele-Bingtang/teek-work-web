@@ -10,7 +10,7 @@ import top.teek.uac.system.model.dto.link.UserLinkUserGroupsDTO;
 import top.teek.uac.system.model.po.UserGroupUserLink;
 import top.teek.uac.system.model.vo.link.UserBindSelectVO;
 import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkUserVO;
+import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
 import top.teek.uac.system.model.vo.link.UserLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -67,7 +67,7 @@ public interface UserGroupUserLinkService extends IService<UserGroupUserLink> {
      * @param userId 用户 ID
      * @return 用户组列表
      */
-    List<UserGroupLinkUserVO> listUserGroupByUserId(String userId, SysUserGroupDTO sysUserGroupDTO);
+    List<UserGroupLinkVO> listUserGroupByUserId(String userId, SysUserGroupDTO sysUserGroupDTO);
 
     /**
      * 查询用户组下的用户列表

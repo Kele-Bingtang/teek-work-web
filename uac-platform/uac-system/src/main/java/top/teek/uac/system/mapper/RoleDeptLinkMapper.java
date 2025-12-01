@@ -1,9 +1,16 @@
 package top.teek.uac.system.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
 import top.teek.uac.system.model.po.RoleDeptLink;
 import top.teek.uac.system.model.po.SysDept;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
+import top.teek.uac.system.model.po.UserGroupUserLink;
+import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
+import top.teek.uac.system.model.vo.link.RoleLinkVO;
 
 import java.util.List;
 
@@ -15,6 +22,10 @@ import java.util.List;
 public interface RoleDeptLinkMapper extends BaseMapper<RoleDeptLink> {
 
     List<SysDept> listDeptListByRoleId(@Param("roleId") String roleId, @Param("appId") String appId);
+
+    List<RoleBindSelectVO> listWithSelectedByDeptId(String deptId);
+
+    IPage<RoleLinkVO> listRoleLinkByDeptId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupUserLink> queryWrapper);
 }
 
 

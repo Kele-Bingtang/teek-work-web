@@ -10,7 +10,7 @@ import java.time.LocalDate;
  * @note 用户组被关联数据，如被用户关联、被角色关联
  */
 @Data
-public class UserGroupLinkUserVO {
+public class UserGroupLinkVO {
     /**
      * 用户组 ID
      */

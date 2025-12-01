@@ -93,6 +93,14 @@ public class UserRoleLinkController {
         return HttpResult.ok(result);
     }
 
+    @PutMapping("/editUserRoleLink")
+    @Operation(summary = "用户关联角色信息修改", description = "修改用户组和角色关联信息")
+    @OperateLog(title = "用户角色关联管理", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAuthority('system:role:edit')")
+    public Response<Boolean> editUserRoleLink(@Validated(RestGroup.EditGroup.class) @RequestBody UserRoleLinkDTO userRoleLinkDTO) {
+        return HttpResult.ok(userRoleLinkService.updateOne(userRoleLinkDTO));
+    }
+
     @DeleteMapping("/removeUsersFromRole/{ids}")
     @Operation(summary = "移出角色", description = "将用户移出角色")
     @OperateLog(title = "用户组角色关联管理", businessType = BusinessType.DELETE)
@@ -100,13 +108,5 @@ public class UserRoleLinkController {
     public Response<Boolean> removeUserFromRole(@PathVariable Long[] ids) {
         boolean result = userRoleLinkService.removeUserFromRole(List.of(ids));
         return HttpResult.ok(result);
-    }
-
-    @PutMapping("/editUserRoleLink")
-    @Operation(summary = "用户关联角色信息修改", description = "修改用户组和角色关联信息")
-    @OperateLog(title = "用户角色关联管理", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAuthority('system:role:edit')")
-    public Response<Boolean> editUserRoleLink(@Validated(RestGroup.EditGroup.class) @RequestBody UserRoleLinkDTO userRoleLinkDTO) {
-        return HttpResult.ok(userRoleLinkService.updateOne(userRoleLinkDTO));
     }
 }

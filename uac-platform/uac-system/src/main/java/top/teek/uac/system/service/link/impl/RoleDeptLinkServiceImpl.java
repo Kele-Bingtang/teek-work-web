@@ -3,22 +3,34 @@ package top.teek.uac.system.service.link.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
-import top.teek.core.constants.ColumnConstant;
-import top.teek.uac.system.mapper.RoleDeptLinkMapper;
-import top.teek.uac.system.model.dto.link.RoleLinkDeptsDTO;
-import top.teek.uac.system.model.po.RoleDeptLink;
-import top.teek.uac.system.model.po.SysDept;
-import top.teek.uac.system.service.link.RoleDeptLinkService;
-import top.teek.utils.ListUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
+import top.teek.core.constants.ColumnConstant;
+import top.teek.mp.base.PageQuery;
+import top.teek.mp.base.TablePage;
+import top.teek.uac.system.mapper.RoleDeptLinkMapper;
+import top.teek.uac.system.model.dto.RoleDeptLinkDTO;
+import top.teek.uac.system.model.dto.link.RoleLinkDeptsDTO;
+import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
+import top.teek.uac.system.model.po.RoleDeptLink;
+import top.teek.uac.system.model.po.SysDept;
+import top.teek.uac.system.model.po.UserGroupUserLink;
+import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
+import top.teek.uac.system.model.vo.link.RoleLinkVO;
+import top.teek.uac.system.service.link.RoleDeptLinkService;
+import top.teek.utils.ListUtil;
+import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
 import top.teek.utils.TreeBuildUtil;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Teeker
@@ -49,8 +61,26 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     }
 
     @Override
+    public TablePage<RoleLinkVO> listRoleLinkByDeptId(String deptId, String appId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
+        QueryWrapper<UserGroupUserLink> queryWrapper = Wrappers.query();
+        queryWrapper.eq("tsr.is_deleted", 0)
+                .eq("trdl.dept_id", deptId)
+                .like(StringUtil.hasText(roleLinkInfoDTO.getRoleCode()), "tsr.role_code", roleLinkInfoDTO.getRoleCode())
+                .like(StringUtil.hasText(roleLinkInfoDTO.getRoleName()), "tsr.role_name", roleLinkInfoDTO.getRoleName());
+
+        IPage<RoleLinkVO> deptLinkRoleVOIPage = baseMapper.listRoleLinkByDeptId(pageQuery.buildPage(), queryWrapper);
+
+        return TablePage.build(deptLinkRoleVOIPage);
+    }
+
+    @Override
+    public List<RoleBindSelectVO> listWithSelectedByDeptId(String deptId) {
+        return baseMapper.listWithSelectedByDeptId(deptId);
+    }
+
+    @Override
     public Boolean addDeptsToRole(RoleLinkDeptsDTO roleLinkDeptsDTO, boolean removeLink) {
-        
+
         if (removeLink) {
             // 删除角色与部门关联
             baseMapper.delete(Wrappers.<RoleDeptLink>lambdaQuery()
@@ -85,6 +115,25 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
                     tree.putExtra("class", treeNode.isSelected() ? "selected" : "");
                 }
         );
+    }
+
+    @Override
+    public Boolean updateOne(RoleDeptLinkDTO roleDeptLinkDTO) {
+        RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDTO, RoleDeptLink.class);
+        if (Objects.isNull(roleDeptLink.getValidFrom())) {
+            // 默认为当前时间
+            roleDeptLink.setValidFrom(LocalDate.now());
+        }
+        if (Objects.isNull(roleDeptLink.getExpireOn())) {
+            // 默认为 3 年
+            roleDeptLink.setExpireOn(LocalDate.now().plusYears(3));
+        }
+        return baseMapper.updateById(roleDeptLink) > 0;
+    }
+
+    @Override
+    public boolean removeDeptFromRole(List<Long> ids) {
+        return baseMapper.deleteByIds(ids) > 0;
     }
 }
 

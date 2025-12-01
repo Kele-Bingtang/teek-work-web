@@ -19,7 +19,7 @@ import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.UserLinkUserGroupsDTO;
 import top.teek.uac.system.model.vo.link.UserBindSelectVO;
 import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkUserVO;
+import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
 import top.teek.uac.system.model.vo.link.UserLinkVO;
 import top.teek.uac.system.service.link.UserGroupUserLinkService;
 
@@ -48,8 +48,8 @@ public class UserGroupUserLinkController {
     @GetMapping("/listUserGroupByUserId/{userId}")
     @Operation(summary = "用户组列表查询", description = "查询某个用户所在的用户组列表")
     @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<List<UserGroupLinkUserVO>> listUserGroupByUserId(@PathVariable String userId, SysUserGroupDTO sysUserGroupDTO) {
-        List<UserGroupLinkUserVO> tablePage = userGroupUserLinkService.listUserGroupByUserId(userId, sysUserGroupDTO);
+    public Response<List<UserGroupLinkVO>> listUserGroupByUserId(@PathVariable String userId, SysUserGroupDTO sysUserGroupDTO) {
+        List<UserGroupLinkVO> tablePage = userGroupUserLinkService.listUserGroupByUserId(userId, sysUserGroupDTO);
         return HttpResult.ok(tablePage);
     }
 
@@ -93,6 +93,14 @@ public class UserGroupUserLinkController {
         return HttpResult.ok(result);
     }
 
+    @PutMapping("/editUserGroupUserLink")
+    @Operation(summary = "用户关联用户信息修改", description = "修改用户组和用户䣌关联信息")
+    @OperateLog(title = "用户用户组关联管理", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAuthority('system:userGroup:edit')")
+    public Response<Boolean> editUserGroupUserLink(@Validated(RestGroup.EditGroup.class) @RequestBody UserGroupUserLinkDTO userGroupUserLinkDTO) {
+        return HttpResult.ok(userGroupUserLinkService.updateOne(userGroupUserLinkDTO));
+    }
+
     @DeleteMapping("/removeUserFromUserGroup/{ids}")
     @Operation(summary = "移出用户组", description = "将用户移出项目组")
     @OperateLog(title = "用户用户组关联管理", businessType = BusinessType.DELETE)
@@ -101,12 +109,5 @@ public class UserGroupUserLinkController {
         boolean result = userGroupUserLinkService.removeUserFromUserGroup(List.of(ids));
         return HttpResult.ok(result);
     }
-
-    @PutMapping("/editUserGroupUserLink")
-    @Operation(summary = "用户关联用户信息修改", description = "修改用户组和用户䣌关联信息")
-    @OperateLog(title = "用户用户组关联管理", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAuthority('system:userGroup:edit')")
-    public Response<Boolean> editUserGroupUserLink(@Validated(RestGroup.EditGroup.class) @RequestBody UserGroupUserLinkDTO userGroupUserLinkDTO) {
-        return HttpResult.ok(userGroupUserLinkService.updateOne(userGroupUserLinkDTO));
-    }
+    
 }

@@ -3,6 +3,7 @@ package top.teek.uac.system.service.link.impl;
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.system.mapper.UserGroupRoleLinkMapper;
+import top.teek.uac.system.model.dto.UserGroupRoleLinkDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUserGroupsDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkInfoDTO;
@@ -13,8 +14,9 @@ import top.teek.uac.system.service.link.UserGroupRoleLinkService;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
 import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkUserVO;
+import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
 import top.teek.utils.ListUtil;
+import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -23,7 +25,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Teeker
@@ -94,13 +98,13 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
     }
 
     @Override
-    public TablePage<UserGroupLinkUserVO> listUserGroupByRoleId(String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery) {
+    public TablePage<UserGroupLinkVO> listUserGroupByRoleId(String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery) {
         QueryWrapper<UserGroupUserLink> queryWrapper = Wrappers.query();
         queryWrapper.eq("tsug.is_deleted", 0)
                 .eq("tugrl.role_id", roleId)
                 .like(StringUtil.hasText(userGroupLinkInfoDTO.getUserGroupName()), "tsug.group_name", userGroupLinkInfoDTO.getUserGroupName())
                 .like(StringUtil.hasText(userGroupLinkInfoDTO.getOwner()), "concat(tsug.owner_id, ',', tsug.owner_name)", userGroupLinkInfoDTO.getOwner());
-        IPage<UserGroupLinkUserVO> userGroupLinkUserVOIPage = baseMapper.listUserGroupByRoleId(pageQuery.buildPage(), queryWrapper);
+        IPage<UserGroupLinkVO> userGroupLinkUserVOIPage = baseMapper.listUserGroupByRoleId(pageQuery.buildPage(), queryWrapper);
 
         return TablePage.build(userGroupLinkUserVOIPage);
     }
@@ -115,6 +119,19 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
         return baseMapper.listWithSelectedByRoleId(roleId);
     }
 
+    @Override
+    public Boolean updateOne(UserGroupRoleLinkDTO userGroupRoleLinkDTO) {
+        UserGroupRoleLink userGroupRoleLink = MapstructUtil.convert(userGroupRoleLinkDTO, UserGroupRoleLink.class);
+        if (Objects.isNull(userGroupRoleLink.getValidFrom())) {
+            // 默认为当前时间
+            userGroupRoleLink.setValidFrom(LocalDate.now());
+        }
+        if (Objects.isNull(userGroupRoleLink.getExpireOn())) {
+            // 默认为 3 年
+            userGroupRoleLink.setExpireOn(LocalDate.now().plusYears(3));
+        }
+        return baseMapper.updateById(userGroupRoleLink) > 0;
+    }
 }
 
 

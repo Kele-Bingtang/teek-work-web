@@ -35,4 +35,18 @@
             ) trdl on tsd.dept_id = trdl.dept_id
         where tsd.is_deleted = 0;
     </select>
+    
+    <select id="listWithSelectedByDeptId" resultType="top.teek.uac.system.model.vo.link.RoleBindSelectVO">
+        select tsr.role_id, tsr.role_code, tsr.role_name, case when trdl.dept_id is not null then 1 else 0 end as disabled
+        from t_sys_role tsr
+        left join t_role_dept_link trdl on tsr.role_id = trdl.role_id and trdl.is_deleted = 0 and tsr.app_id = trdl.app_id and trdl.dept_id = #{deptId}
+        where tsr.is_deleted = 0
+    </select>
+    
+    <select id="listRoleLinkByDeptId" resultType="top.teek.uac.system.model.vo.link.RoleLinkVO">
+        select tsr.role_id, tsr.role_code, tsr.role_name, tsr.owner_id, trdl.id as link_id, trdl.valid_from, trdl.expire_on, trdl.status, trdl.app_id
+        from t_sys_role tsr
+        join t_role_dept_link trdl on tsr.role_id = trdl.role_id and trdl.is_deleted = 0 and tsr.app_id = trdl.app_id
+        ${ew.getCustomSqlSegment}
+    </select>
 </mapper>

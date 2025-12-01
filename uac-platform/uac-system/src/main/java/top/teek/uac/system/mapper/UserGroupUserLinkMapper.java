@@ -4,7 +4,7 @@ import top.teek.uac.system.model.po.SysUserGroup;
 import top.teek.uac.system.model.po.UserGroupUserLink;
 import top.teek.uac.system.model.vo.link.UserBindSelectVO;
 import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkUserVO;
+import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
 import top.teek.uac.system.model.vo.link.UserLinkVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public interface UserGroupUserLinkMapper extends BaseMapper<UserGroupUserLink> {
 
-    List<UserGroupLinkUserVO> listUserGroupByUserId(@Param(Constants.WRAPPER) Wrapper<SysUserGroup> queryWrapper);
+    List<UserGroupLinkVO> listUserGroupByUserId(@Param(Constants.WRAPPER) Wrapper<SysUserGroup> queryWrapper);
 
     IPage<UserLinkVO> listUserLinkByGroupId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupUserLink> queryWrapper);
 

@@ -20,7 +20,7 @@ import top.teek.uac.system.model.po.SysUserGroup;
 import top.teek.uac.system.model.po.UserGroupUserLink;
 import top.teek.uac.system.model.vo.link.UserBindSelectVO;
 import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkUserVO;
+import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
 import top.teek.uac.system.model.vo.link.UserLinkVO;
 import top.teek.uac.system.service.link.UserGroupUserLinkService;
 import top.teek.utils.ListUtil;
@@ -89,7 +89,7 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
     }
 
     @Override
-    public List<UserGroupLinkUserVO> listUserGroupByUserId(String userId, SysUserGroupDTO sysUserGroupDTO) {
+    public List<UserGroupLinkVO> listUserGroupByUserId(String userId, SysUserGroupDTO sysUserGroupDTO) {
         QueryWrapper<SysUserGroup> wrapper = Wrappers.query();
         wrapper.eq("tugul.is_deleted", ColumnConstant.NON_DELETED)
                 .eq("tugul.user_id", userId)

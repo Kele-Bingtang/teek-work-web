@@ -1,10 +1,13 @@
 package top.teek.uac.system.model.dto;
 
+import jakarta.validation.constraints.NotNull;
 import top.teek.core.validate.RestGroup;
 import top.teek.uac.system.model.po.RoleDeptLink;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+
+import java.time.LocalDate;
 
 /**
  * @author Teeker
@@ -23,6 +26,17 @@ public class RoleDeptLinkDTO {
     @NotBlank(message = "部门 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String deptId;
 
+    @NotNull(message = "生效时间不能为空", groups = {RestGroup.AddGroup.class})
+    private LocalDate validFrom;
+
+    @NotNull(message = "过期时间不能为空", groups = {RestGroup.AddGroup.class})
+    private LocalDate expireOn;
+
     @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class})
     private String appId;
+
+    /**
+     * 状态 1 正常 0 异常
+     */
+    private Integer status;
 }

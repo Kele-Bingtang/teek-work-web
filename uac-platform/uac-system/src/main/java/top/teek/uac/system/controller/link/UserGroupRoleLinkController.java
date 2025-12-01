@@ -12,6 +12,7 @@ import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
+import top.teek.uac.system.model.dto.UserGroupRoleLinkDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUserGroupsDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkInfoDTO;
@@ -19,7 +20,7 @@ import top.teek.uac.system.model.dto.link.UserGroupLinkRolesDTO;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
 import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkUserVO;
+import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
 import top.teek.uac.system.service.link.UserGroupRoleLinkService;
 
 import java.util.List;
@@ -39,8 +40,8 @@ public class UserGroupRoleLinkController {
     @GetMapping("/listUserGroupByRoleId/{roleId}")
     @Operation(summary = "用户组列表查询", description = "查询某个角色绑定的用户组列表")
     @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<TablePage<UserGroupLinkUserVO>> listUserGroupByRoleId(@PathVariable String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<UserGroupLinkUserVO> tablePage = userGroupRoleLinkService.listUserGroupByRoleId(roleId, userGroupLinkInfoDTO, pageQuery);
+    public Response<TablePage<UserGroupLinkVO>> listUserGroupByRoleId(@PathVariable String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery) {
+        TablePage<UserGroupLinkVO> tablePage = userGroupRoleLinkService.listUserGroupByRoleId(roleId, userGroupLinkInfoDTO, pageQuery);
         return HttpResult.ok(tablePage);
     }
 
@@ -90,6 +91,14 @@ public class UserGroupRoleLinkController {
         }
         boolean result = userGroupRoleLinkService.addUserGroupsToRole(roleLinkUserGroupsDTO);
         return HttpResult.ok(result);
+    }
+
+    @PutMapping("/editUserGroupRoleLink")
+    @Operation(summary = "用户组关联角色信息修改", description = "修改用户组和角色䣌关联信息")
+    @OperateLog(title = "用户组角色关联管理", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAuthority('system:role:linkUserGroup')")
+    public Response<Boolean> editUserGroupRoleLink(@Validated(RestGroup.EditGroup.class) @RequestBody UserGroupRoleLinkDTO userGroupRoleLinkDTO) {
+        return HttpResult.ok(userGroupRoleLinkService.updateOne(userGroupRoleLinkDTO));
     }
 
     @DeleteMapping("/removeUserGroupFromRole/{ids}")

@@ -2,6 +2,7 @@ package top.teek.uac.system.service.link;
 
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
+import top.teek.uac.system.model.dto.UserGroupRoleLinkDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUserGroupsDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkInfoDTO;
@@ -10,7 +11,7 @@ import top.teek.uac.system.model.po.UserGroupRoleLink;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
 import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkUserVO;
+import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
     /**
      * 将用户组移出角色
      *
-     * @param ids 用户组 id 集合
+     * @param ids 用户组个角色关联 id 集合
      * @return 是否成功
      */
     boolean removeUserGroupFromRole(List<Long> ids);
@@ -73,7 +74,7 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
      * @param roleId 角色 ID
      * @return 用户组列表
      */
-    TablePage<UserGroupLinkUserVO> listUserGroupByRoleId(String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery);
+    TablePage<UserGroupLinkVO> listUserGroupByRoleId(String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery);
 
     /**
      * 查询角色列表（已选的被禁用）
@@ -91,4 +92,11 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
      */
     List<UserGroupBindSelectVO> listWithSelectedByRoleId(String roleId);
 
+    /**
+     * 修改用户组和角色的关联信息
+     *
+     * @param userGroupRoleLinkDTO 用户组和角色信息
+     * @return 是否修改成功
+     */
+    Boolean updateOne(UserGroupRoleLinkDTO userGroupRoleLinkDTO);
 }
