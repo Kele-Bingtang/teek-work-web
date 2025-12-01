@@ -53,6 +53,13 @@ export const addUserGroupsToRole = (data: Role.LinkUserGroups) => {
 };
 
 /**
+ * 修改用户组和用户的关联信息
+ */
+export const editUserGroupRoleLink = (data: RequiredKeyPartialOther<Role.LinkInfo, "id">) => {
+  return http.put<httpNs.Response<boolean>>(`${baseUri}/editUserGroupRoleLink`, data);
+};
+
+/**
  * 将用户组移出角色
  */
 export const removeUserGroupFromRole = (ids: string[]) => {

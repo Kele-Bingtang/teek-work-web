@@ -102,7 +102,6 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 <template>
   <div :class="ns.b()">
     <ProPage
-      ref="proTableRef"
       :request-api="listPage"
       :columns
       :init-request-params="initRequestParams"

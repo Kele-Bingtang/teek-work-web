@@ -2,7 +2,7 @@
 import type { DialogFormProps, ProPageInstance, PageColumn, DialogFormColumn, ElFormProps } from "teek";
 import type { UserGroup } from "@/common/api/system/user/user-group";
 import { dayjs, ElMessageBox, ElSwitch } from "element-plus";
-import { ProPage, downloadByData, useNamespace } from "teek";
+import { ProPage, downloadByData } from "teek";
 import { useChange, usePermission } from "@/composables";
 import { useDictStore } from "@/pinia";
 import { exportExcel } from "@/common/api/system/user/user-group";
@@ -15,8 +15,6 @@ import {
 } from "@/common/api/link/user-group-user-link";
 
 const props = defineProps<{ userId?: string }>();
-
-const ns = useNamespace("user-userGroup");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
@@ -145,10 +143,7 @@ const dialogFormProps: DialogFormProps = {
     top: "5vh",
     closeOnClickModal: false,
   },
-  form: {
-    elFormProps,
-    columns: formColumns,
-  },
+  form: { elFormProps, columns: formColumns },
   id: ["id", "linkId"],
   addApi: model => {
     if (model.expireOnNum !== -1) {
@@ -166,20 +161,20 @@ const dialogFormProps: DialogFormProps = {
 
     return editUserGroupUserLink({ ...model, id: model.linkId });
   },
+  removeApi: removeUserFromUserGroup,
+  removeBatchApi: removeUserFromUserGroup,
+  editFilterKeys: ["userGroupIds"],
+  apiFilterKeys: ["user", "createTime"],
   clickEdit: model => {
     // 根据 expireOn 计算 expireOnNum，如果计算不是整数，则走 custom
     const limit = dayjs(model.expireOn).diff(dayjs(model.validFrom), "month");
     if (limit % 1 !== 0) model.expireOnNum = -1;
     else model.expireOnNum = limit;
   },
-  editFilterKeys: ["userGroupIds"],
   disableAdd: !hasAuth("system:userGroup:add"),
   disableEdit: !hasAuth("system:userGroup:edit"),
   disableRemove: !hasAuth("system:userGroup:remove"),
   disableRemoveBatch: !hasAuth("system:userGroup:remove"),
-  removeApi: removeUserFromUserGroup,
-  removeBatchApi: removeUserFromUserGroup,
-  apiFilterKeys: ["user", "createTime"],
 };
 
 const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
@@ -192,17 +187,15 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 </script>
 
 <template>
-  <div :class="ns.b()">
-    <ProPage
-      ref="proPageInstance"
-      :request-api="listUserGroupByUserId"
-      :init-request-params
-      :request-immediate="false"
-      :columns
-      :dialog-form-props
-      row-key="linkId"
-      :export-file
-      :disabled-tool-button="!hasAuth('system:userGroup:export') ? ['export'] : []"
-    ></ProPage>
-  </div>
+  <ProPage
+    ref="proPageInstance"
+    :request-api="listUserGroupByUserId"
+    :init-request-params
+    :request-immediate="false"
+    :columns
+    :dialog-form-props
+    row-key="linkId"
+    :export-file
+    :disabled-tool-button="!hasAuth('system:userGroup:export') ? ['export'] : []"
+  ></ProPage>
 </template>

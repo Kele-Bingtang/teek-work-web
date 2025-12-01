@@ -2,7 +2,7 @@
 import type { DialogFormProps, ProPageInstance, PageColumn, DialogFormColumn, ElFormProps } from "teek";
 import type { Role } from "@/common/api/system/role";
 import { dayjs, ElMessageBox, ElSwitch } from "element-plus";
-import { ProPage, downloadByData, useNamespace } from "teek";
+import { ProPage, downloadByData } from "teek";
 import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
 import { exportExcel } from "@/common/api/system/role";
@@ -15,8 +15,6 @@ import {
 } from "@/common/api/link/user-role-link";
 
 const props = defineProps<{ userId?: string }>();
-
-const ns = useNamespace("role");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 const route = useRoute();
@@ -43,6 +41,8 @@ const columns: PageColumn<Role.Info>[] = [
   { prop: "roleCode", label: "角色编码", search: { el: "el-input" } },
   { prop: "roleName", label: "角色名称", search: { el: "el-input" } },
   { prop: "ownerId", label: "负责人" },
+  { prop: "validFrom", label: "生效时间", minWidth: 120 },
+  { prop: "expireOn", label: "过期时间", minWidth: 120 },
   {
     prop: "status",
     label: "状态",
@@ -133,10 +133,7 @@ const dialogFormProps: DialogFormProps = {
     top: "5vh",
     closeOnClickModal: false,
   },
-  form: {
-    elFormProps,
-    columns: formColumns,
-  },
+  form: { elFormProps, columns: formColumns },
   id: ["id", "linkId"],
   addApi: model => {
     if (model.expireOnNum !== -1) {
@@ -154,14 +151,14 @@ const dialogFormProps: DialogFormProps = {
 
     return editUserRoleLink({ ...model, id: model.linkId });
   },
+  removeApi: removeUsersFromRole,
+  removeBatchApi: removeUsersFromRole,
   clickEdit: model => {
     // 根据 expireOn 计算 expireOnNum，如果计算不是整数，则走 custom
     const limit = dayjs(model.expireOn).diff(dayjs(model.validFrom), "month");
     if (limit % 1 !== 0) model.expireOnNum = -1;
     else model.expireOnNum = limit;
   },
-  removeApi: removeUsersFromRole,
-  removeBatchApi: removeUsersFromRole,
   disableAdd: !hasAuth("system:role:add"),
   disableEdit: !hasAuth("system:role:edit"),
   disableRemove: !hasAuth("system:role:remove"),
@@ -178,16 +175,13 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 </script>
 
 <template>
-  <div :class="ns.b()">
-    <ProPage
-      ref="proTableRef"
-      :request-api="listRoleLinkByUserId"
-      :columns
-      :init-request-params="initRequestParams"
-      :dialog-form-props
-      row-key="linkId"
-      :export-file
-      :disabled-tool-button="!hasAuth('system:role:export') ? ['export'] : []"
-    ></ProPage>
-  </div>
+  <ProPage
+    :request-api="listRoleLinkByUserId"
+    :columns
+    :init-request-params="initRequestParams"
+    :dialog-form-props
+    row-key="linkId"
+    :export-file
+    :disabled-tool-button="!hasAuth('system:role:export') ? ['export'] : []"
+  ></ProPage>
 </template>

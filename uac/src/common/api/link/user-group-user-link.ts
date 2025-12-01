@@ -8,14 +8,20 @@ const baseUri = "/system/userGroupUserLink";
  * 通过用户组 ID 查询用户列表
  */
 export const listUserLinkByGroupId = (params: { userGroupId: string }) => {
-  return http.get<httpNs.Page<User.LinkInfo[]>>(`${baseUri}/listUserLinkByGroupId/${params.userGroupId}`, params);
+  return http.get<httpNs.Page<User.LinkInfo[]>>(`${baseUri}/listUserLinkByGroupId/${params.userGroupId}`, {
+    ...params,
+    userGroupId: undefined,
+  });
 };
 
 /**
  * 查询某个用户所在的用户组列表
  */
 export const listUserGroupByUserId = (params: { userId: string }) => {
-  return http.get<httpNs.Response<UserGroup.LinkInfo[]>>(`${baseUri}/listUserGroupByUserId/${params.userId}`, params);
+  return http.get<httpNs.Response<UserGroup.LinkInfo[]>>(`${baseUri}/listUserGroupByUserId/${params.userId}`, {
+    ...params,
+    userId: undefined,
+  });
 };
 
 /**
@@ -47,6 +53,13 @@ export const addUsersToGroup = (data: UserGroup.LinkInfo) => {
 };
 
 /**
+ * 修改用户组和用户的关联信息
+ */
+export const editUserGroupUserLink = (data: RequiredKeyPartialOther<UserGroup.LinkInfo, "id">) => {
+  return http.put<httpNs.Response<boolean>>(`${baseUri}/editUserGroupUserLink`, data);
+};
+
+/**
  * 将用户移出项目组
  */
 export const removeUserFromUserGroup = (
@@ -59,11 +72,4 @@ export const removeUserFromUserGroup = (
 
   // 单行删除
   return http.delete<httpNs.Response<boolean>>(`${baseUri}/removeUserFromUserGroup/${data.linkId}`);
-};
-
-/**
- * 修改用户组和用户的关联信息
- */
-export const editUserGroupUserLink = (data: RequiredKeyPartialOther<UserGroup.LinkInfo, "id">) => {
-  return http.put<httpNs.Response<boolean>>(`${baseUri}/editUserGroupUserLink`, data);
 };

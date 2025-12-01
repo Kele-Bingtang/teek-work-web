@@ -17,13 +17,16 @@ const ns = useNamespace("user-group-user-link");
 
 const props = defineProps<{ userGroupId?: string }>();
 
-const initRequestParams = reactive({ userGroupId: props.userGroupId });
+const initRequestParams = reactive({ userGroupId: "" });
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 
 // 监听 userGroupId，变化后修改关联的表格查询默认值
 watchEffect(() => {
-  if (props.userGroupId) initRequestParams.userGroupId = props.userGroupId;
+  // 该组件作为 ProTabs 的 el 且 lazy 为 true 时，需要添加 nextTick 来延迟触发赋值，达到自动请求效果
+  nextTick(() => {
+    if (props.userGroupId) initRequestParams.userGroupId = props.userGroupId;
+  });
 });
 
 const { statusChange } = useChange<User.Info>(
@@ -134,10 +137,7 @@ const dialogFormProps: DialogFormProps = {
     top: "5vh",
     closeOnClickModal: false,
   },
-  form: {
-    elFormProps,
-    columns: formColumns,
-  },
+  form: { elFormProps, columns: formColumns },
   id: ["id", "linkId"],
   addApi: model => {
     if (model.expireOnNum !== -1) {
@@ -145,10 +145,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addUsersToGroup({
-      ...model,
-      userGroupId: initRequestParams.userGroupId,
-    });
+    return addUsersToGroup({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {

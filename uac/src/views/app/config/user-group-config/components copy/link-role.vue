@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="UserGroupLinkRole">
-import type { DialogFormProps, ProTableInstance, PageColumn } from "teek";
+import type { DialogFormProps, PageColumn } from "teek";
 import type { Role } from "@/common/api/system/role";
 import { ProTable } from "teek";
 import { elFormProps, useFormColumns } from "./link-role-form-columns";
@@ -21,8 +21,6 @@ const requestParam = reactive({ userGroupId: props.userGroupId });
 
 // 监听 userGroupId，变化后修改关联的表格查询默认值
 watchEffect(() => (requestParam.userGroupId = props.userGroupId));
-
-const proTableRef = shallowRef<ProTableInstance>();
 
 // 表格列配置项
 const columns: PageColumn<Role.LinkInfo>[] = [
@@ -69,7 +67,6 @@ const dialogFormProps: DialogFormProps = {
 <template>
   <div class="link-role-container">
     <ProTable
-      ref="proTableRef"
       :request-api="listRoleLinkByGroupId"
       :init-request-params="requestParam"
       :columns

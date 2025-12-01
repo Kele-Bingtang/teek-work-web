@@ -6,43 +6,27 @@ import { listDeptListByRoleId, listDeptIdsByRoleId, addDeptsToRole } from "@/com
 import { ProForm, Tree, useDialog } from "teek";
 
 export interface LinkDeptProps {
-  roleId?: string;
+  appId: string;
+  roleId: string;
 }
 
-const props = withDefaults(defineProps<LinkDeptProps>(), {
-  roleId: "",
-});
-const route = useRoute();
+const props = defineProps<LinkDeptProps>();
 
 const data = ref<Dept.TreeList[]>([]);
 const form = ref<{ selectedDeptIds: string[] }>({ selectedDeptIds: [] });
 const selectedDeptIds = ref<string[]>([]);
 
-const initRequestParams = reactive({
-  appId: route.params.appId as string,
-});
-
-const columns: FormColumn[] = [
-  {
-    prop: "selectedDeptIds",
-    label: "",
-    options: () => listDeptTreeList(),
-    el: "tree",
-    elProps: { nodeKey: "value", search: true, checkbox: true },
-  },
-];
-
-const initTreeData = async () => {
+const initTreeData = async (appId = props.appId, roleId = props.roleId) => {
   const [treeData, deptIds] = await Promise.all([
-    listDeptListByRoleId(initRequestParams.appId, props.roleId),
-    listDeptIdsByRoleId(initRequestParams.appId, props.roleId),
+    listDeptListByRoleId(appId, roleId),
+    listDeptIdsByRoleId(props.appId, props.roleId),
   ]);
   data.value = treeData.data || [];
   form.value.selectedDeptIds = deptIds.data;
   selectedDeptIds.value = deptIds.data;
 };
 
-watch(() => props.roleId, initTreeData, { immediate: true });
+watchEffect(() => initTreeData(props.appId, props.roleId));
 
 const { open } = useDialog();
 
@@ -54,7 +38,7 @@ const handleEdit = () => {
     onCancel: handleCancel,
     onConfirm: handleConfirm,
     render: () => {
-      return <ProForm v-model={form.value} columns={columns} showFooter={false} style="padding: 10px" />;
+      return <ProForm v-model={form.value} elFormProps={{ labelWidth: 80 }} columns={columns} />;
     },
   });
 };
@@ -66,18 +50,28 @@ const handleCancel = () => {
 const handleConfirm = async () => {
   await addDeptsToRole({
     roleId: props.roleId,
-    appId: initRequestParams.appId,
+    appId: props.appId,
     selectedDeptIds: form.value.selectedDeptIds,
   });
-  initTreeData();
+  initTreeData(props.appId, props.roleId);
 };
+
+const columns: FormColumn[] = [
+  {
+    prop: "selectedDeptIds",
+    label: "",
+    el: "el-tree",
+    options: () => listDeptTreeList(),
+    elProps: { nodeKey: "value", search: true, checkbox: true },
+  },
+];
 </script>
 
 <template>
   <div style="display: flex; align-items: center; margin-bottom: 10px">
     <el-button v-auth="['system:role:linkDept']" type="primary" @click="handleEdit">编辑</el-button>
     <el-button @click="initTreeData()">刷新</el-button>
-    <el-alert title="绿色代表已授权部门，黑色代表未授权部门" :closable="false" style="margin: 0 10px" />
+    <el-alert title="蓝色代表已关联的部门，黑色代表未关联的部门" :closable="false" style="margin: 0 10px" />
   </div>
   <Tree :data="data" node-key="value" checkbox search :select="false">
     <template #default="{ data }">
@@ -88,6 +82,6 @@ const handleConfirm = async () => {
 
 <style lang="scss" scoped>
 .selected {
-  color: var(--el-color-success);
+  color: var(--el-color-primary);
 }
 </style>

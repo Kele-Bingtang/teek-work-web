@@ -1,16 +1,14 @@
 <script setup lang="tsx" name="UserLink">
-import type { UserGroup } from "@/common/api/system/user/user-group";
-import type { DescriptionColumn, TabColumn } from "teek";
 import type { TreeKey } from "element-plus";
+import type { DescriptionColumn, TabColumn } from "teek";
+import type { UserGroup } from "@/common/api/system/user/user-group";
 import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
 import { list } from "@/common/api/system/user/user-group";
 import { useDictStore } from "@/pinia";
 import LinkUser from "@/views/system/user-group/user/components/link-user.vue";
-import LinkRole from "./components/link-role.vue";
+import LinkRole from "./components/role.vue";
 
-const ns = useNamespace("user-link");
-
-const userGroupInfo = ref<UserGroup.Info>();
+const ns = useNamespace("user-group-link");
 
 const descriptionData = reactive({
   title: "",
@@ -42,8 +40,6 @@ const tabColumns: TabColumn[] = [
 
 // 点击用户列表的回调
 const handleTreeChange = (_: string | TreeKey[], data: UserGroup.Info) => {
-  console.log(data);
-  userGroupInfo.value = data;
   descriptionData.title = data.groupName;
   descriptionData.data = data;
   descriptionData.columns = [
@@ -91,7 +87,7 @@ const handleTreeChange = (_: string | TreeKey[], data: UserGroup.Info) => {
 @use "@teek/styles/mixins/bem" as *;
 @use "@teek/styles/mixins/namespace" as *;
 
-@include b(user-link) {
+@include b(user-group-link) {
   display: flex;
   width: 100%;
   height: 100%;

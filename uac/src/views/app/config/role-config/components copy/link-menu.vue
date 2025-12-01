@@ -6,44 +6,28 @@ import { listMenuTreeSelectByApp } from "@/common/api/system/menu";
 import { listMenuListByRoleId, listMenuIdsByRoleId, addMenusToRole } from "@/common/api/link/role-menu-link";
 
 export interface LinkMenuProps {
-  roleId?: string;
+  appId: string;
+  id: number;
+  roleId: string;
 }
 
-const props = withDefaults(defineProps<LinkMenuProps>(), {
-  roleId: "",
-});
-const route = useRoute();
+const props = defineProps<LinkMenuProps>();
 
 const data = ref<Menu.TreeList[]>([]);
 const form = ref<{ selectedMenuIds: string[] }>({ selectedMenuIds: [] });
 const selectedMenuIds = ref<string[]>([]);
 
-const initRequestParams = reactive({
-  appId: route.params.appId as string,
-});
-
-const columns: FormColumn[] = [
-  {
-    prop: "selectedMenuIds",
-    label: "",
-    options: () => listMenuTreeSelectByApp({ appId: initRequestParams.appId }),
-    el: "tree",
-    elProps: { nodeKey: "value", search: true, checkbox: true },
-  },
-];
-
-const initTreeData = async () => {
+const initTreeData = async (appId = props.appId, roleId = props.roleId) => {
   const [treeData, menuIds] = await Promise.all([
-    listMenuListByRoleId(initRequestParams.appId, props.roleId),
-    listMenuIdsByRoleId(initRequestParams.appId, props.roleId),
+    listMenuListByRoleId(appId, roleId),
+    listMenuIdsByRoleId(props.appId, props.roleId),
   ]);
-
   data.value = treeData.data || [];
   form.value.selectedMenuIds = menuIds.data;
   selectedMenuIds.value = menuIds.data;
 };
 
-watch(() => props.roleId, initTreeData, { immediate: true });
+watchEffect(() => initTreeData(props.appId, props.roleId));
 
 const { open } = useDialog();
 
@@ -55,7 +39,7 @@ const handleEdit = () => {
     onCancel: handleCancel,
     onConfirm: handleConfirm,
     render: () => {
-      return <ProForm v-model={form.value} columns={columns} showFooter={false} style="padding: 10px" />;
+      return <ProForm v-model={form.value} elFormProps={{ labelWidth: 80 }} columns={columns} />;
     },
   });
 };
@@ -67,18 +51,28 @@ const handleCancel = () => {
 const handleConfirm = async () => {
   await addMenusToRole({
     roleId: props.roleId,
-    appId: initRequestParams.appId,
+    appId: props.appId,
     selectedMenuIds: form.value.selectedMenuIds,
   });
   initTreeData();
 };
+
+const columns: FormColumn[] = [
+  {
+    prop: "selectedMenuIds",
+    label: "",
+    el: "el-tree",
+    options: () => listMenuTreeSelectByApp({ appId: props.appId }),
+    elProps: { nodeKey: "value", search: true, checkbox: true },
+  },
+];
 </script>
 
 <template>
   <div style="display: flex; align-items: center; margin-bottom: 10px">
     <el-button v-auth="['system:role:linkMenu']" type="primary" @click="handleEdit">编辑</el-button>
     <el-button @click="initTreeData()">刷新</el-button>
-    <el-alert title="绿色代表已授权菜单，黑色代表未授权菜单" :closable="false" style="margin: 0 10px" />
+    <el-alert title="蓝色代表已关联的菜单，黑色代表未关联的菜单" :closable="false" style="margin: 0 10px" />
   </div>
   <Tree :data="data" node-key="value" checkbox search :select="false">
     <template #default="{ data }">
@@ -89,6 +83,6 @@ const handleConfirm = async () => {
 
 <style lang="scss" scoped>
 .selected {
-  color: var(--el-color-success);
+  color: var(--el-color-primary);
 }
 </style>

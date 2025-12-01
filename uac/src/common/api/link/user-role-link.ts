@@ -10,7 +10,7 @@ const baseUri = "/system/userRoleLink";
 export const listRoleLinkByUserId = (params: { appId: string; userId: string }) => {
   return http.get<httpNs.Response<Role.LinkInfo[]>>(
     `${baseUri}/listRoleLinkByUserId/${params.appId}/${params.userId}`,
-    params
+    { ...params, appId: undefined, userId: undefined }
   );
 };
 
@@ -18,7 +18,10 @@ export const listRoleLinkByUserId = (params: { appId: string; userId: string }) 
  * 通过角色 ID 查询用户列表
  */
 export const listUserLinkByRoleId = (params: { roleId: string }) => {
-  return http.get<httpNs.Response<User.LinkInfo[]>>(`${baseUri}/listUserLinkByRoleId/${params.roleId}`, params);
+  return http.get<httpNs.Response<User.LinkInfo[]>>(`${baseUri}/listUserLinkByRoleId/${params.roleId}`, {
+    ...params,
+    roleId: undefined,
+  });
 };
 
 /**
