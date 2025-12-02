@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.teek.uac.system.mapper.SysResourceMapper">
+
+    <resultMap id="BaseResultMap" type="top.teek.uac.system.model.po.SysResource">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="resourceId" column="resource_id" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="VARCHAR"/>
+            <result property="resourceCode" column="resource_code" jdbcType="VARCHAR"/>
+            <result property="resourceName" column="resource_name" jdbcType="VARCHAR"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+            <result property="icon" column="icon" jdbcType="VARCHAR"/>
+            <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+            <result property="permission" column="permission" jdbcType="INTEGER"/>
+            <result property="resourceType" column="resource_type" jdbcType="INTEGER"/>
+            <result property="component" column="component" jdbcType="VARCHAR"/>
+            <result property="meta" column="meta" jdbcType="VARCHAR" javaType="top.teek.uac.system.model.vo.router.Meta" typeHandler="top.teek.uac.system.config.MetaTypeHandler"/>
+            <result property="intro" column="intro" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateById" column="update_by_id" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,resource_id,parent_id,
+        resource_code,resource_name,path,
+        param,icon,order_num,permission,resource_type
+        component,visible,is_cache,
+        is_frame,meta,intro,
+        create_by,create_by_id,create_time,
+        update_by,update_by_id,update_time,
+        status,is_deleted,app_id
+    </sql>
+    
+    <select id="listResourceListByUserId" resultMap="BaseResultMap">
+        SELECT DISTINCT tsr.*
+        FROM t_sys_resource tsr
+        JOIN t_role_resource_link trrl ON tsr.resource_id = trrl.resource_id AND trrl.is_deleted = 0 AND trrl.status = 1
+        JOIN (
+            -- 查询用户和角色关联的角色 ID
+            SELECT trul.role_id FROM t_role_user_link trul
+            JOIN t_sys_role tsr ON trul.role_id = tsr.role_id AND tsr.is_deleted = 0 AND tsr.status = 1
+            WHERE trul.is_deleted = 0 AND trul.status = 1 AND trul.user_id = #{userId}
+            UNION
+            -- 查询用户所在用户组关联角色的角色 ID
+            SELECT trugl.role_id FROM t_role_user_group_link trugl
+            JOIN t_user_group_user_link tugul ON trugl.user_group_id = tugul.user_group_id AND trugl.is_deleted = 0 AND trugl.status = 1 AND tugul.is_deleted = 0 AND tugul.status = 1
+            JOIN t_sys_role tsr ON trugl.role_id = tsr.role_id AND tsr.is_deleted = 0 AND tsr.status = 1
+            JOIN t_sys_user_group tsug ON tugul.user_group_id = tsug.group_id AND tsug.is_deleted = 0 AND tsug.status = 1
+            WHERE tugul.user_id = #{userId}
+            UNION
+            -- 查询用户所在部门关联角色的角色 ID
+            SELECT trdl.role_id FROM t_role_dept_link trdl
+            JOIN t_sys_role tsr ON trdl.role_id = tsr.role_id AND trdl.is_deleted = 0 AND trdl.status = 1 AND tsr.is_deleted = 0 AND tsr.status = 1
+            WHERE EXISTS (SELECT 1 FROM t_sys_user tsu WHERE trdl.dept_id = tsu.dept_id AND tsu.is_deleted = 0 AND tsu.status = 1
+            AND tsu.user_id = #{userId})
+        ) AS all_roles ON trrl.role_id = all_roles.role_id
+        WHERE tsr.is_deleted = 0 AND tsr.status = 1
+        <if test="onlyGetResource">
+            AND tsr.resource_type IN ('M', 'C')
+        </if>
+        AND tsr.app_id = #{appId};
+    </select>
+    
+</mapper>

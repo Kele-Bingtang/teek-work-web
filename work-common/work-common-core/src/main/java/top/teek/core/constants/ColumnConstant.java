@@ -15,17 +15,17 @@ public interface ColumnConstant {
     Integer DELETED = 1;
     String PARENT_ID = "0";
     /**
-     * 菜单类型（目录）
+     * 资源类型（目录）
      */
-    String MENU_TYPE_DIR = "M";
+    String RESOURCE_TYPE_DIR = "M";
 
     /**
-     * 菜单类型（菜单）
+     * 资源类型（资源）
      */
-    String MENU_TYPE_MENU = "C";
+    String RESOURCE_TYPE_MENU = "C";
 
     /**
-     * 菜单类型（按钮）
+     * 资源类型（按钮）
      */
-    String MENU_TYPE_BUTTON = "F";
+    String RESOURCE_TYPE_BUTTON = "F";
 }

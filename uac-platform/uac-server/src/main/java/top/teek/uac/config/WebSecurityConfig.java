@@ -82,15 +82,15 @@ public class WebSecurityConfig {
     //         boolean isMatch = false;
     //         // 获取当前请求的 URL 地址
     //         String requestURI = requestContext.getRequest().getRequestURI();
-    //         List<SysMenu> sysMenuList = sysMenuService.list();
+    //         List<SysResource> sysResourceList = sysResourceService.list();
     //
-    //         for (SysMenu sysMenu : sysMenuList) {
-    //             if (sysMenu.getInterfaceUrl().equals(requestURI)) {
+    //         for (SysResource sysResource : sysResourceList) {
+    //             if (sysResource.getInterfaceUrl().equals(requestURI)) {
     //                 isMatch = true;
     //                 // 获取当前登录用户的权限
     //                 Collection<? extends GrantedAuthority> authorities = authentication.get().getAuthorities();
     //                 for (GrantedAuthority authority : authorities) {
-    //                     if (authority.getAuthority().equals(sysMenu.getPermission())) {
+    //                     if (authority.getAuthority().equals(sysResource.getPermission())) {
     //                         // 说明当前登录用户具备当前请求所需要的权限
     //                         return new AuthorizationDecision(true);
     //                     }

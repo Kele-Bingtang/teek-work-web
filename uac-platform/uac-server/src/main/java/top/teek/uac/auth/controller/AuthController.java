@@ -131,7 +131,7 @@ public class AuthController {
 
         userInfoVo.setUser(loginUser)
                 .setRoleCodes(loginUser.getRoleCodes())
-                .setPermissions(loginUser.getMenuPermission());
+                .setPermissions(loginUser.getResourcePermission());
         return HttpResult.ok(userInfoVo);
     }
 }

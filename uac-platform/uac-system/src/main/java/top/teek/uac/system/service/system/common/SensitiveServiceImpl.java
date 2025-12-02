@@ -21,13 +21,13 @@ public class SensitiveServiceImpl implements SensitiveService {
         }
 
         if (StringUtil.hasText(roleCode, perms)) {
-            // 判断是否存在角色码或者菜单权限
-            if (UacHelper.hasRole(roleCode) && UacHelper.hasMenuPermission(perms)) {
+            // 判断是否存在角色码或者资源权限
+            if (UacHelper.hasRole(roleCode) && UacHelper.hasResourcePermission(perms)) {
                 return false;
             }
         } else if (UacHelper.hasRole(roleCode)) {
             return true;
-        } else if (UacHelper.hasMenuPermission(perms)) {
+        } else if (UacHelper.hasResourcePermission(perms)) {
             return true;
         }
 

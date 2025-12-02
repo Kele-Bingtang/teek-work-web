@@ -42,12 +42,12 @@ public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, Use
     public boolean addPostsToUser(UserLinkPostDTO userLinkPostDTO) {
         List<String> postIds = userLinkPostDTO.getPostIds();
 
-        List<UserPostLink> userRoleLinkList = ListUtil.newArrayList(postIds, postId ->
+        List<UserPostLink> userPostLinkList = ListUtil.newArrayList(postIds, postId ->
                         new UserPostLink().setPostId(postId)
                                 .setUserId(userLinkPostDTO.getUserId())
                 , UserPostLink.class);
 
-        return Db.saveBatch(userRoleLinkList);
+        return Db.saveBatch(userPostLinkList);
     }
 
 }

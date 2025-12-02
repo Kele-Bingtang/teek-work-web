@@ -6,13 +6,13 @@ import top.teek.mp.base.TablePage;
 import top.teek.uac.core.constant.TenantConstant;
 import top.teek.uac.system.mapper.SysRoleMapper;
 import top.teek.uac.system.model.dto.SysRoleDTO;
-import top.teek.uac.system.model.dto.link.RoleLinkMenuDTO;
+import top.teek.uac.system.model.dto.link.RoleLinkResourceDTO;
 import top.teek.uac.system.model.po.*;
 import top.teek.uac.system.model.vo.SysRoleVO;
 import top.teek.uac.system.service.link.RoleDeptLinkService;
-import top.teek.uac.system.service.link.RoleMenuLinkService;
-import top.teek.uac.system.service.link.UserGroupRoleLinkService;
-import top.teek.uac.system.service.link.UserRoleLinkService;
+import top.teek.uac.system.service.link.RoleResourceLinkService;
+import top.teek.uac.system.service.link.RoleUserGroupLinkService;
+import top.teek.uac.system.service.link.RoleUserLinkService;
 import top.teek.uac.system.service.system.SysRoleService;
 import top.teek.utils.ListUtil;
 import top.teek.utils.MapstructUtil;
@@ -40,10 +40,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {
 
-    private final RoleMenuLinkService roleMenuLinkService;
+    private final RoleResourceLinkService roleResourceLinkService;
     private final RoleDeptLinkService roleDeptLinkService;
-    private final UserRoleLinkService userRoleLinkService;
-    private final UserGroupRoleLinkService userGroupRoleLinkService;
+    private final RoleUserLinkService roleUserLinkService;
+    private final RoleUserGroupLinkService roleUserGroupLinkService;
 
     @Override
     public List<SysRoleVO> listAll(SysRoleDTO sysRoleDTO) {
@@ -91,12 +91,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         checkRoleAllowed(sysRoleDTO);
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
         int result = baseMapper.insert(sysRole);
-        if (ListUtil.isNotEmpty(sysRoleDTO.getSelectedMenuIds())) {
-            RoleLinkMenuDTO roleLinkMenuDTO = new RoleLinkMenuDTO()
+        if (ListUtil.isNotEmpty(sysRoleDTO.getResourceIds())) {
+            RoleLinkResourceDTO roleLinkResourceDTO = new RoleLinkResourceDTO()
                     .setRoleId(sysRole.getRoleId())
                     .setAppId(sysRoleDTO.getAppId())
-                    .setSelectedMenuIds(sysRoleDTO.getSelectedMenuIds());
-            return roleMenuLinkService.addMenusToRole(roleLinkMenuDTO, false);
+                    .setResourceIds(sysRoleDTO.getResourceIds());
+            return roleResourceLinkService.addResourceListToRole(roleLinkResourceDTO, false);
         }
         return result > 0;
     }
@@ -107,12 +107,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         checkRoleAllowed(sysRoleDTO);
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
         int result = baseMapper.updateById(sysRole);
-        if (ListUtil.isNotEmpty(sysRoleDTO.getSelectedMenuIds())) {
-            RoleLinkMenuDTO roleLinkMenuDTO = new RoleLinkMenuDTO()
+        if (ListUtil.isNotEmpty(sysRoleDTO.getResourceIds())) {
+            RoleLinkResourceDTO roleLinkResourceDTO = new RoleLinkResourceDTO()
                     .setRoleId(sysRole.getRoleId())
                     .setAppId(sysRoleDTO.getAppId())
-                    .setSelectedMenuIds(sysRoleDTO.getSelectedMenuIds());
-            return roleMenuLinkService.addMenusToRole(roleLinkMenuDTO, true);
+                    .setResourceIds(sysRoleDTO.getResourceIds());
+            return roleResourceLinkService.addResourceListToRole(roleLinkResourceDTO, true);
         }
         return result > 0;
     }
@@ -127,14 +127,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             checkRoleAllowed(sysRoleDTO);
         });
 
-        // 删除角色与菜单关联
-        roleMenuLinkService.remove(Wrappers.<RoleMenuLink>lambdaQuery().in(RoleMenuLink::getRoleId, roleIds));
+        // 删除角色与资源关联
+        roleResourceLinkService.remove(Wrappers.<RoleResourceLink>lambdaQuery().in(RoleResourceLink::getRoleId, roleIds));
         // 删除角色与部门关联
         roleDeptLinkService.remove(Wrappers.<RoleDeptLink>lambdaQuery().in(RoleDeptLink::getRoleId, roleIds));
         // 删除角色与用户绑定
-        userRoleLinkService.remove(Wrappers.<UserRoleLink>lambdaQuery().in(UserRoleLink::getRoleId, roleIds));
+        roleUserLinkService.remove(Wrappers.<RoleUserLink>lambdaQuery().in(RoleUserLink::getRoleId, roleIds));
         // 删除角色与用户组绑定
-        userGroupRoleLinkService.remove(Wrappers.<UserGroupRoleLink>lambdaQuery().in(UserGroupRoleLink::getRoleId, roleIds));
+        roleUserGroupLinkService.remove(Wrappers.<RoleUserGroupLink>lambdaQuery().in(RoleUserGroupLink::getRoleId, roleIds));
         return baseMapper.deleteByIds(ids) > 0;
     }
 

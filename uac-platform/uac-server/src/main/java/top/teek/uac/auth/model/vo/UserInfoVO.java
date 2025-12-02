@@ -19,7 +19,7 @@ public class UserInfoVO {
      */
     private LoginUser user;
     /**
-     * 菜单权限
+     * 资源权限
      */
     private Set<String> permissions;
 

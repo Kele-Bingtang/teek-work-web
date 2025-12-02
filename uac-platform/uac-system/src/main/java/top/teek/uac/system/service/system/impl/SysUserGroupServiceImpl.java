@@ -6,11 +6,11 @@ import top.teek.uac.system.mapper.SysUserGroupMapper;
 import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.po.SysUserGroup;
 import top.teek.uac.system.model.po.UserGroupUserLink;
-import top.teek.uac.system.model.po.UserGroupRoleLink;
+import top.teek.uac.system.model.po.RoleUserGroupLink;
 import top.teek.uac.system.model.vo.SysUserGroupVO;
 import top.teek.uac.system.model.vo.extra.UserGroupTreeVO;
 import top.teek.uac.system.service.link.UserGroupUserLinkService;
-import top.teek.uac.system.service.link.UserGroupRoleLinkService;
+import top.teek.uac.system.service.link.RoleUserGroupLinkService;
 import top.teek.uac.system.service.system.SysUserGroupService;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
@@ -35,7 +35,7 @@ import java.util.Objects;
 public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, SysUserGroup> implements SysUserGroupService {
 
     private final UserGroupUserLinkService userGroupUserLinkService;
-    private final UserGroupRoleLinkService userGroupRoleLinkService;
+    private final RoleUserGroupLinkService roleUserGroupLinkService;
 
     @Override
     public List<SysUserGroupVO> listAll(SysUserGroupDTO sysUserGroupDTO) {
@@ -96,7 +96,7 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
         // 删除用户组与用户绑定
         userGroupUserLinkService.remove(Wrappers.<UserGroupUserLink>lambdaQuery().in(UserGroupUserLink::getUserGroupId, userGroupIds));
         // 删除用户组与角色绑定
-        userGroupRoleLinkService.remove(Wrappers.<UserGroupRoleLink>lambdaQuery().in(UserGroupRoleLink::getUserGroupId, userGroupIds));
+        roleUserGroupLinkService.remove(Wrappers.<RoleUserGroupLink>lambdaQuery().in(RoleUserGroupLink::getUserGroupId, userGroupIds));
         return baseMapper.deleteByIds(ids) > 0;
     }
 

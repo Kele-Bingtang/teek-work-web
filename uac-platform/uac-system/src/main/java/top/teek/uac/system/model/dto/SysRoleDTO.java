@@ -71,8 +71,8 @@ public class SysRoleDTO {
     private Integer status;
 
     /**
-     * 绑定的菜单 ID
+     * 绑定的资源 ID
      */
-    private List<String> selectedMenuIds;
+    private List<String> resourceIds;
 
 }

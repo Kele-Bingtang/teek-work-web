@@ -21,11 +21,16 @@ import java.util.List;
  */
 public interface RoleDeptLinkMapper extends BaseMapper<RoleDeptLink> {
 
-    List<SysDept> listDeptListByRoleId(@Param("roleId") String roleId, @Param("appId") String appId);
-
-    List<RoleBindSelectVO> listWithSelectedByDeptId(String deptId);
+    // ------- 部门关联角色相关 API（以部门为主）-------
 
     IPage<RoleLinkVO> listRoleLinkByDeptId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupUserLink> queryWrapper);
+    
+    List<RoleBindSelectVO> listWithSelectedByDeptId(String deptId);
+
+    // ------- 角色关联部门相关 API（以角色为主） -------
+    
+    List<SysDept> listDeptListByRoleId(@Param("roleId") String roleId, @Param("appId") String appId);
+
 }
 
 

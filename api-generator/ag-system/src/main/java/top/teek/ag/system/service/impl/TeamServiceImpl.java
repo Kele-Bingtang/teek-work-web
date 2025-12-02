@@ -42,7 +42,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
         String userId = AgHelper.getUserId();
         List<TeamRouteVO> teamRouteVOList = baseMapper.listMyAllTeam(userId);
 
-        // 构建一级菜单
+        // 构建一级资源
         RouterVO oneRouterVO = new RouterVO()
                 .setPath("/team")
                 .setName("Team")
@@ -53,7 +53,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
                         .setRank(2)
                 );
 
-        // 构建二级菜单
+        // 构建二级资源
         List<RouterVO> routerVOList = new ArrayList<>();
 
         teamRouteVOList.forEach(item -> {

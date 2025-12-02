@@ -93,9 +93,9 @@ public class SecurityUser extends User {
     private Set<String> roleCodes;
 
     /**
-     * 菜单权限
+     * 资源权限
      */
-    private Set<String> menuPermission;
+    private Set<String> resourcePermission;
 
     public SecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);

@@ -22,7 +22,7 @@ public class Meta {
     private String title;
 
     /**
-     * 菜单图标，该页面在左侧菜单、面包屑显示的图标
+     * 资源图标，该页面在左侧资源、面包屑显示的图标
      */
     private String icon;
 
@@ -47,12 +47,12 @@ public class Meta {
     private Boolean hideInBread;
 
     /**
-     * 是否不添加到菜单，如果为 true，则该路由不会显示在左侧菜单，默认为 false
+     * 是否不添加到资源，如果为 true，则该路由不会显示在左侧资源，默认为 false
      */
     private Boolean hideInMenu;
 
     /**
-     * 是否总是渲染为菜单，如果为 false 且某一级路由下只有一个二级路由，则左侧菜单直接显示该二级路由，如果为 true，则总会让一级菜单作为下拉菜单，默认为 false，仅限父级路由使用
+     * 是否总是渲染为资源，如果为 false 且某一级路由下只有一个二级路由，则左侧资源直接显示该二级路由，如果为 true，则总会让一级资源作为下拉资源，默认为 false，仅限父级路由使用
      */
     private Boolean alwaysShowRoot;
 
@@ -72,7 +72,7 @@ public class Meta {
     private Boolean isFull;
 
     /**
-     * Restful 路由搭配使用，当前路由为详情页时，需要高亮的菜单
+     * Restful 路由搭配使用，当前路由为详情页时，需要高亮的资源
      */
     private String activeMenu;
 
@@ -82,7 +82,7 @@ public class Meta {
     private String beforeCloseName;
 
     /**
-     * 路由在左侧菜单的排序，rank 值越高越靠后
+     * 路由在左侧资源的排序，rank 值越高越靠后
      */
     private Integer rank;
 
@@ -127,7 +127,7 @@ public class Meta {
     private Boolean useI18n;
 
     /**
-     * 菜单的文字超出后，是否使用 el-toolTip 提示，仅针二级路由及以上生效
+     * 资源的文字超出后，是否使用 el-toolTip 提示，仅针二级路由及以上生效
      */
     private Boolean useTooltip;
 

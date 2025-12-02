@@ -36,18 +36,18 @@
         -- 查询用户和角色关联的角色信息
         SELECT tsr.*
         FROM t_sys_role tsr
-                 JOIN t_user_role_link turl
-                      ON turl.role_id = tsr.role_id AND turl.is_deleted = 0 AND turl.status = 1 AND
-                         turl.user_id = #{userId}
+                 JOIN t_role_user_link trul
+                      ON trul.role_id = tsr.role_id AND trul.is_deleted = 0 AND trul.status = 1 AND
+                         trul.user_id = #{userId}
         WHERE tsr.is_deleted = 0
           AND tsr.status = 1
         UNION
         -- 查询用户所在用户组关联角色的角色信息
         SELECT tsr.*
         FROM t_sys_role tsr
-                 JOIN t_user_group_role_link tugrl ON tugrl.role_id = tsr.role_id
+                 JOIN t_role_user_group_link trugl ON trugl.role_id = tsr.role_id
                  JOIN t_user_group_user_link tugul
-                      ON tugrl.user_group_id = tugul.user_group_id AND tugrl.is_deleted = 0 AND tugrl.status = 1 AND
+                      ON trugl.user_group_id = tugul.user_group_id AND trugl.is_deleted = 0 AND trugl.status = 1 AND
                          tugul.is_deleted = 0 AND tugul.status = 1
                  JOIN t_sys_user_group tsug
                       ON tugul.user_group_id = tsug.group_id AND tsug.is_deleted = 0 AND tsug.status = 1

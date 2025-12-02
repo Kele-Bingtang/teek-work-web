@@ -40,12 +40,12 @@ public class UacHelper extends LoginHelper {
         return userInfo.getRoleCodes();
     }
 
-    public static Set<String> getMenuPermission() {
+    public static Set<String> getResourcePermission() {
         LoginUser userInfo = getLoginUser();
         if (Objects.isNull(userInfo)) {
             return null;
         }
-        return userInfo.getMenuPermission();
+        return userInfo.getResourcePermission();
     }
     
     /**
@@ -94,10 +94,10 @@ public class UacHelper extends LoginHelper {
         return roleCodes.contains(roleCode);
     }
 
-    public static boolean hasMenuPermission(String menuPermission) {
-        Set<String> permission = getMenuPermission();
+    public static boolean hasResourcePermission(String resourcePermission) {
+        Set<String> permission = getResourcePermission();
         if (Objects.isNull(permission)) return false;
 
-        return permission.contains(menuPermission);
+        return permission.contains(resourcePermission);
     }
 }

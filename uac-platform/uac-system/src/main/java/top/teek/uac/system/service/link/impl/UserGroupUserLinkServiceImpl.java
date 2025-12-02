@@ -13,9 +13,9 @@ import top.teek.mp.base.TablePage;
 import top.teek.uac.system.mapper.UserGroupUserLinkMapper;
 import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.dto.UserGroupUserLinkDTO;
-import top.teek.uac.system.model.dto.link.UserGroupLinkUsersDTO;
+import top.teek.uac.system.model.dto.link.UserGroupLinkUserListDTO;
 import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
-import top.teek.uac.system.model.dto.link.UserLinkUserGroupsDTO;
+import top.teek.uac.system.model.dto.link.UserLinkUserGroupListDTO;
 import top.teek.uac.system.model.po.SysUserGroup;
 import top.teek.uac.system.model.po.UserGroupUserLink;
 import top.teek.uac.system.model.vo.link.UserBindSelectVO;
@@ -40,53 +40,47 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkMapper, UserGroupUserLink> implements UserGroupUserLinkService {
 
+    // ------- 用户组关联用户相关 API（以用户组为主）-------
+
     @Override
-    public boolean checkUserExistUserGroups(UserLinkUserGroupsDTO userLinkUserGroupsDTO) {
-        return baseMapper.exists(Wrappers.<UserGroupUserLink>lambdaQuery()
-                .eq(UserGroupUserLink::getUserId, userLinkUserGroupsDTO.getUserId())
-                .in(UserGroupUserLink::getUserGroupId, userLinkUserGroupsDTO.getUserGroupIds()));
+    public TablePage<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
+        QueryWrapper<UserGroupUserLink> queryWrapper = Wrappers.query();
+        queryWrapper.eq("tsu.is_deleted", 0)
+                .eq("tugul.user_group_id", userGroupId)
+                .like(StringUtil.hasText(userLinkInfoDTO.getUsername()), "tsu.username", userLinkInfoDTO.getUsername())
+                .like(StringUtil.hasText(userLinkInfoDTO.getNickname()), "tsu.nickname", userLinkInfoDTO.getNickname());
+        IPage<UserLinkVO> userLinkVOIPage = baseMapper.listUserLinkByGroupId(pageQuery.buildPage(), queryWrapper);
+
+        return TablePage.build(userLinkVOIPage);
     }
 
     @Override
-    public boolean checkUsersExistUserGroup(UserGroupLinkUsersDTO userGroupLinkUsersDTO) {
-        return baseMapper.exists(Wrappers.<UserGroupUserLink>lambdaQuery()
-                .in(UserGroupUserLink::getUserId, userGroupLinkUsersDTO.getUserIds())
-                .eq(UserGroupUserLink::getUserGroupId, userGroupLinkUsersDTO.getUserGroupId())
-        );
+    public List<UserBindSelectVO> listWithSelectedByGroupId(String userGroupId) {
+        return baseMapper.listWithSelectedByGroupId(userGroupId);
     }
 
     @Override
-    public boolean addUserGroupsToUser(UserLinkUserGroupsDTO userLinkUserGroupsDTO) {
-        List<String> userGroupIds = userLinkUserGroupsDTO.getUserGroupIds();
+    public boolean addUserGroupListToUser(UserLinkUserGroupListDTO userLinkUserGroupListDTO) {
+        List<String> userGroupIds = userLinkUserGroupListDTO.getUserGroupIds();
 
         List<UserGroupUserLink> userGroupUserLinkList = ListUtil.newArrayList(userGroupIds, userGroupId ->
                         new UserGroupUserLink().setUserGroupId(userGroupId)
-                                .setUserId(userLinkUserGroupsDTO.getUserId())
-                                .setValidFrom(userLinkUserGroupsDTO.getValidFrom())
-                                .setExpireOn(userLinkUserGroupsDTO.getExpireOn())
+                                .setUserId(userLinkUserGroupListDTO.getUserId())
+                                .setValidFrom(userLinkUserGroupListDTO.getValidFrom())
+                                .setExpireOn(userLinkUserGroupListDTO.getExpireOn())
                 , UserGroupUserLink.class);
 
         return Db.saveBatch(userGroupUserLinkList);
     }
 
     @Override
-    public boolean addUsersToUserGroup(UserGroupLinkUsersDTO userGroupLinkUsersDTO) {
-        List<String> userIds = userGroupLinkUsersDTO.getUserIds();
-
-        List<UserGroupUserLink> userGroupUserLinkList = ListUtil.newArrayList(userIds, userId ->
-                        new UserGroupUserLink().setUserId(userId)
-                                .setUserGroupId(userGroupLinkUsersDTO.getUserGroupId())
-                                .setValidFrom(userGroupLinkUsersDTO.getValidFrom())
-                                .setExpireOn(userGroupLinkUsersDTO.getExpireOn())
-                , UserGroupUserLink.class);
-
-        return Db.saveBatch(userGroupUserLinkList);
+    public boolean checkUserGroupListExistUser(UserLinkUserGroupListDTO userLinkUserGroupListDTO) {
+        return baseMapper.exists(Wrappers.<UserGroupUserLink>lambdaQuery()
+                .eq(UserGroupUserLink::getUserId, userLinkUserGroupListDTO.getUserId())
+                .in(UserGroupUserLink::getUserGroupId, userLinkUserGroupListDTO.getUserGroupIds()));
     }
 
-    @Override
-    public boolean removeUserFromUserGroup(List<Long> ids) {
-        return baseMapper.deleteByIds(ids) > 0;
-    }
+    // ------- 用户关联用户组相关 API（以用户为主）-------
 
     @Override
     public List<UserGroupLinkVO> listUserGroupByUserId(String userId, SysUserGroupDTO sysUserGroupDTO) {
@@ -104,30 +98,37 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
     }
 
     @Override
-    public TablePage<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
-        QueryWrapper<UserGroupUserLink> queryWrapper = Wrappers.query();
-        queryWrapper.eq("tsu.is_deleted", 0)
-                .eq("tugul.user_group_id", userGroupId)
-                .like(StringUtil.hasText(userLinkInfoDTO.getUsername()), "tsu.username", userLinkInfoDTO.getUsername())
-                .like(StringUtil.hasText(userLinkInfoDTO.getNickname()), "tsu.nickname", userLinkInfoDTO.getNickname());
-        IPage<UserLinkVO> userLinkVOIPage = baseMapper.listUserLinkByGroupId(pageQuery.buildPage(), queryWrapper);
-
-        return TablePage.build(userLinkVOIPage);
-    }
-
-    @Override
     public List<UserGroupBindSelectVO> listWithSelectedByUserId(String userId) {
         return baseMapper.selectWithSelectedByUserId(userId);
     }
 
+
     @Override
-    public List<UserBindSelectVO> listWithSelectedByGroupId(String userGroupId) {
-        return baseMapper.listWithSelectedByGroupId(userGroupId);
+    public boolean addUserListToGroup(UserGroupLinkUserListDTO userGroupLinkUserListDTO) {
+        List<String> userIds = userGroupLinkUserListDTO.getUserIds();
+
+        List<UserGroupUserLink> userGroupUserLinkList = ListUtil.newArrayList(userIds, userId ->
+                        new UserGroupUserLink().setUserId(userId)
+                                .setUserGroupId(userGroupLinkUserListDTO.getUserGroupId())
+                                .setValidFrom(userGroupLinkUserListDTO.getValidFrom())
+                                .setExpireOn(userGroupLinkUserListDTO.getExpireOn())
+                , UserGroupUserLink.class);
+
+        return Db.saveBatch(userGroupUserLinkList);
     }
 
+    @Override
+    public boolean checkUserListExistUserGroup(UserGroupLinkUserListDTO userGroupLinkUserListDTO) {
+        return baseMapper.exists(Wrappers.<UserGroupUserLink>lambdaQuery()
+                .in(UserGroupUserLink::getUserId, userGroupLinkUserListDTO.getUserIds())
+                .eq(UserGroupUserLink::getUserGroupId, userGroupLinkUserListDTO.getUserGroupId())
+        );
+    }
+
+    // ------- 公共 API -------
 
     @Override
-    public boolean updateOne(UserGroupUserLinkDTO userGroupUserLinkDTO) {
+    public boolean editUserGroupUserLink(UserGroupUserLinkDTO userGroupUserLinkDTO) {
         UserGroupUserLink userGroupUserLink = MapstructUtil.convert(userGroupUserLinkDTO, UserGroupUserLink.class);
         if (Objects.isNull(userGroupUserLink.getValidFrom())) {
             // 默认为当前时间
@@ -139,6 +140,12 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
         }
         return baseMapper.updateById(userGroupUserLink) > 0;
     }
+
+    @Override
+    public boolean removeUserGroupUserLink(List<Long> ids) {
+        return baseMapper.deleteByIds(ids) > 0;
+    }
+   
 }
 
 

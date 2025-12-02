@@ -121,7 +121,7 @@ public class LoginUser {
     private Set<String> roleCodes;
 
     /**
-     * 菜单权限
+     * 资源权限
      */
-    private Set<String> menuPermission;
+    private Set<String> resourcePermission;
 }

@@ -14,7 +14,8 @@ import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.system.mapper.RoleDeptLinkMapper;
 import top.teek.uac.system.model.dto.RoleDeptLinkDTO;
-import top.teek.uac.system.model.dto.link.RoleLinkDeptsDTO;
+import top.teek.uac.system.model.dto.link.DeptLinkRoleListDTO;
+import top.teek.uac.system.model.dto.link.RoleLinkDeptListDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
 import top.teek.uac.system.model.po.RoleDeptLink;
 import top.teek.uac.system.model.po.SysDept;
@@ -40,25 +41,7 @@ import java.util.Objects;
 @Service
 public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, RoleDeptLink> implements RoleDeptLinkService {
 
-    @Override
-    public List<Tree<String>> listDeptListByRoleId(String roleId, String appId) {
-        List<SysDept> sysDeptList = baseMapper.listDeptListByRoleId(roleId, appId);
-        return buildDeptTree(sysDeptList);
-    }
-
-    @Override
-    public List<String> listDeptIdsByRoleId(String roleId, String appId) {
-        List<RoleDeptLink> roleDeptLinkList = baseMapper.selectList(Wrappers.<RoleDeptLink>lambdaQuery()
-                .eq(RoleDeptLink::getRoleId, roleId)
-                .eq(StringUtil.hasText(appId), RoleDeptLink::getAppId, appId)
-        );
-
-        if (ListUtil.isNotEmpty(roleDeptLinkList)) {
-            return roleDeptLinkList.stream().map(RoleDeptLink::getDeptId).toList();
-        }
-
-        return List.of();
-    }
+    // ------- 部门关联角色相关 API（以部门为主）-------
 
     @Override
     public TablePage<RoleLinkVO> listRoleLinkByDeptId(String deptId, String appId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
@@ -79,22 +62,32 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     }
 
     @Override
-    public Boolean addDeptsToRole(RoleLinkDeptsDTO roleLinkDeptsDTO, boolean removeLink) {
+    public Boolean addRoleListToDept(DeptLinkRoleListDTO deptLinkRoleListDTO) {
+        List<String> roleIds = deptLinkRoleListDTO.getRoleIds();
 
-        if (removeLink) {
-            // 删除角色与部门关联
-            baseMapper.delete(Wrappers.<RoleDeptLink>lambdaQuery()
-                    .eq(RoleDeptLink::getRoleId, roleLinkDeptsDTO.getRoleId()));
-        }
-        List<String> selectedDeptIds = roleLinkDeptsDTO.getSelectedDeptIds();
-
-        List<RoleDeptLink> roleDeptLinkList = ListUtil.newArrayList(selectedDeptIds, deptId ->
-                        new RoleDeptLink().setDeptId(deptId)
-                                .setRoleId(roleLinkDeptsDTO.getRoleId())
-                                .setAppId(roleLinkDeptsDTO.getAppId())
+        List<RoleDeptLink> roleDeptLinkList = ListUtil.newArrayList(roleIds, roleId ->
+                        new RoleDeptLink().setRoleId(roleId)
+                                .setDeptId(deptLinkRoleListDTO.getDeptId())
+                                .setAppId(deptLinkRoleListDTO.getAppId())
                 , RoleDeptLink.class);
 
         return Db.saveBatch(roleDeptLinkList);
+    }
+
+    @Override
+    public boolean checkRoleListExistDept(DeptLinkRoleListDTO deptLinkRoleListDTO) {
+        return baseMapper.exists(Wrappers.<RoleDeptLink>lambdaQuery()
+                .in(RoleDeptLink::getRoleId, deptLinkRoleListDTO.getRoleIds())
+                .eq(RoleDeptLink::getDeptId, deptLinkRoleListDTO.getDeptId())
+                .eq(StringUtil.hasText(deptLinkRoleListDTO.getAppId()), RoleDeptLink::getAppId, deptLinkRoleListDTO.getAppId()));
+    }
+
+    // ------- 角色关联部门相关 API（以角色为主） -------
+
+    @Override
+    public List<Tree<String>> listDeptListByRoleId(String roleId, String appId) {
+        List<SysDept> sysDeptList = baseMapper.listDeptListByRoleId(roleId, appId);
+        return buildDeptTree(sysDeptList);
     }
 
     /**
@@ -118,7 +111,42 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     }
 
     @Override
-    public Boolean updateOne(RoleDeptLinkDTO roleDeptLinkDTO) {
+    public List<String> listDeptIdsByRoleId(String roleId, String appId) {
+        List<RoleDeptLink> roleDeptLinkList = baseMapper.selectList(Wrappers.<RoleDeptLink>lambdaQuery()
+                .eq(RoleDeptLink::getRoleId, roleId)
+                .eq(StringUtil.hasText(appId), RoleDeptLink::getAppId, appId)
+        );
+
+        if (ListUtil.isNotEmpty(roleDeptLinkList)) {
+            return roleDeptLinkList.stream().map(RoleDeptLink::getDeptId).toList();
+        }
+
+        return List.of();
+    }
+
+
+    @Override
+    public Boolean addDeptListToRole(RoleLinkDeptListDTO roleLinkDeptListDTO, boolean removeLink) {
+        if (removeLink) {
+            // 删除角色与部门关联
+            baseMapper.delete(Wrappers.<RoleDeptLink>lambdaQuery()
+                    .eq(RoleDeptLink::getRoleId, roleLinkDeptListDTO.getRoleId()));
+        }
+        List<String> deptIds = roleLinkDeptListDTO.getDeptIds();
+
+        List<RoleDeptLink> roleDeptLinkList = ListUtil.newArrayList(deptIds, deptId ->
+                        new RoleDeptLink().setDeptId(deptId)
+                                .setRoleId(roleLinkDeptListDTO.getRoleId())
+                                .setAppId(roleLinkDeptListDTO.getAppId())
+                , RoleDeptLink.class);
+
+        return Db.saveBatch(roleDeptLinkList);
+    }
+
+    // ------- 公共 API -------
+
+    @Override
+    public Boolean editRoleDeptLink(RoleDeptLinkDTO roleDeptLinkDTO) {
         RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDTO, RoleDeptLink.class);
         if (Objects.isNull(roleDeptLink.getValidFrom())) {
             // 默认为当前时间
@@ -132,7 +160,7 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     }
 
     @Override
-    public boolean removeDeptFromRole(List<Long> ids) {
+    public boolean removeRoleDeptLink(List<Long> ids) {
         return baseMapper.deleteByIds(ids) > 0;
     }
 }

@@ -13,8 +13,8 @@ import top.teek.uac.system.model.dto.SysTenantDTO;
 import top.teek.uac.system.model.po.*;
 import top.teek.uac.system.model.vo.SysTenantVO;
 import top.teek.uac.system.service.link.RoleDeptLinkService;
-import top.teek.uac.system.service.link.RoleMenuLinkService;
-import top.teek.uac.system.service.link.UserRoleLinkService;
+import top.teek.uac.system.service.link.RoleResourceLinkService;
+import top.teek.uac.system.service.link.RoleUserLinkService;
 import top.teek.uac.system.service.system.*;
 import top.teek.utils.ListUtil;
 import top.teek.utils.MapstructUtil;
@@ -50,10 +50,10 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     private final SysUserService sysUserService;
     private final SysRoleService sysRoleService;
     private final SysDeptService sysDeptService;
-    private final SysMenuService sysMenuService;
-    private final RoleMenuLinkService roleMenuLinkService;
+    private final SysResourceService sysResourceService;
+    private final RoleResourceLinkService roleResourceLinkService;
     private final RoleDeptLinkService roleDeptLinkService;
-    private final UserRoleLinkService userRoleLinkService;
+    private final RoleUserLinkService roleUserLinkService;
     private final SysAppService sysAppService;
     private final SysDictTypeService sysDictTypeService;
     private final SysDictDataService sysDictDataService;
@@ -124,14 +124,14 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         // 创建角色
         String roleId = createRole(tenantId, appId);
 
-        // 创建菜单和角色菜单关联，取默认租户的菜单
-        createMenuAndRoleMenuLink(tenantId, appId, roleId);
+        // 创建资源和角色资源关联，取默认租户的资源
+        createResourceAndRoleResourceLink(tenantId, appId, roleId);
 
         // 创建部门: 企业名称是部门名称，创建角色和部门关联
         SysDept sysDept = createDeptAndRoleDeptLink(tenantId, appId, sysTenantDTO.getTenantName(), roleId);
 
         // 创建系统用户，创建用户角色关联
-        SysUser sysUser = createUserAndUserRoleLink(sysTenantDTO, tenantId, appId, sysDept.getDeptId(), roleId);
+        SysUser sysUser = createUserAndRoleUserLink(sysTenantDTO, tenantId, appId, sysDept.getDeptId(), roleId);
 
         // 新增系统用户后，默认当前用户为部门的负责人
         SysDept dept = new SysDept();
@@ -186,7 +186,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     /**
-     * 创建角色，创建角色菜单，取默认租户的菜单
+     * 创建角色，创建角色资源，取默认租户的资源
      *
      * @param tenantId 租户ID
      * @return 角色 ID
@@ -207,39 +207,39 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     /**
-     * 创建菜单和角色菜单关联，取默认租户的菜单
+     * 创建资源和角色资源关联，取默认租户的资源
      *
      * @param tenantId 租户 ID
      * @param appId    应用 ID
      * @param roleId   角色 ID
      */
-    private void createMenuAndRoleMenuLink(String tenantId, String appId, String roleId) {
-        List<SysMenu> sysMenuList = sysMenuService.list(Wrappers.<SysMenu>lambdaQuery()
-                .eq(SysMenu::getAppId, TenantConstant.DEFAULT_UAC_APP_ID)
-                .eq(SysMenu::getTenantId, TenantConstant.DEFAULT_TENANT_ID)
+    private void createResourceAndRoleResourceLink(String tenantId, String appId, String roleId) {
+        List<SysResource> sysResourceList = sysResourceService.list(Wrappers.<SysResource>lambdaQuery()
+                .eq(SysResource::getAppId, TenantConstant.DEFAULT_UAC_APP_ID)
+                .eq(SysResource::getTenantId, TenantConstant.DEFAULT_TENANT_ID)
         );
 
-        List<SysMenu> menuList = ListUtil.newArrayList(sysMenuList, sysMenu -> {
-                    sysMenu.setId(null);
-                    sysMenu.setCreateTime(null);
-                    sysMenu.setUpdateTime(null);
-                    sysMenu.setTenantId(tenantId);
-                    sysMenu.setAppId(appId);
-                    return sysMenu;
+        List<SysResource> resourceList = ListUtil.newArrayList(sysResourceList, sysResource -> {
+                    sysResource.setId(null);
+                    sysResource.setCreateTime(null);
+                    sysResource.setUpdateTime(null);
+                    sysResource.setTenantId(tenantId);
+                    sysResource.setAppId(appId);
+                    return sysResource;
                 }
         );
 
-        Db.saveBatch(menuList);
+        Db.saveBatch(resourceList);
 
-        // 创建角色菜单，取默认租户的菜单
-        List<String> menuIds = roleMenuLinkService.listMenuIdsByRoleId(TenantConstant.DEFAULT_ROLE_ID, TenantConstant.DEFAULT_UAC_APP_ID, TenantConstant.DEFAULT_TENANT_ID);
+        // 创建角色资源，取默认租户的资源
+        List<String> resourceIds = roleResourceLinkService.listResourceIdsByRoleId(TenantConstant.DEFAULT_ROLE_ID, TenantConstant.DEFAULT_UAC_APP_ID, TenantConstant.DEFAULT_TENANT_ID);
 
-        List<RoleMenuLink> userGroupLinkList = ListUtil.newArrayList(menuIds, menuId ->
-                        new RoleMenuLink().setMenuId(menuId)
+        List<RoleResourceLink> userGroupLinkList = ListUtil.newArrayList(resourceIds, resourceId ->
+                        new RoleResourceLink().setResourceId(resourceId)
                                 .setRoleId(roleId)
                                 .setTenantId(tenantId)
                                 .setAppId(appId)
-                , RoleMenuLink.class);
+                , RoleResourceLink.class);
 
         Db.saveBatch(userGroupLinkList);
     }
@@ -282,7 +282,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * @param roleId       角色 ID
      * @return 创建的用户信息
      */
-    private SysUser createUserAndUserRoleLink(SysTenantDTO sysTenantDTO, String tenantId, String appId, String deptId, String roleId) {
+    private SysUser createUserAndRoleUserLink(SysTenantDTO sysTenantDTO, String tenantId, String appId, String deptId, String roleId) {
         SysUser sysUser = new SysUser()
                 .setUserId(TenantConstant.DEFAULT_USER_ID)
                 .setUsername(sysTenantDTO.getUsername())
@@ -294,14 +294,14 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         sysUserService.save(sysUser);
 
         // 用户和角色关联
-        UserRoleLink userRoleLink = new UserRoleLink()
+        RoleUserLink roleUserLink = new RoleUserLink()
                 .setUserId(sysUser.getUserId())
                 .setRoleId(roleId)
                 .setValidFrom(LocalDate.now())
                 .setExpireOn(LocalDate.now().plusYears(99))
                 .setAppId(appId)
                 .setTenantId(tenantId);
-        userRoleLinkService.save(userRoleLink);
+        roleUserLinkService.save(roleUserLink);
 
         return sysUser;
     }

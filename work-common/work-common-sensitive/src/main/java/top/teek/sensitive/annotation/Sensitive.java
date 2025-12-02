@@ -32,7 +32,7 @@ public @interface Sensitive {
     String roleCode() default "";
 
     /**
-     * UAC 菜单权限码
+     * UAC 资源权限码
      */
     String perms() default "";
 

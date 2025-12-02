@@ -14,7 +14,8 @@ import top.teek.mp.base.TablePage;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.RoleDeptLinkDTO;
-import top.teek.uac.system.model.dto.link.RoleLinkDeptsDTO;
+import top.teek.uac.system.model.dto.link.DeptLinkRoleListDTO;
+import top.teek.uac.system.model.dto.link.RoleLinkDeptListDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
@@ -33,22 +34,8 @@ import java.util.List;
 public class RoleDeptLinkController {
 
     private final RoleDeptLinkService roleDeptLinkService;
-
-    @GetMapping("/listDeptListByRoleId/{appId}/{roleId}")
-    @Operation(summary = "部门列表查询", description = "通过角色 ID 查询部门列表（树形结构）")
-    @PreAuthorize("hasAuthority('system:dept:query')")
-    public Response<List<Tree<String>>> listDeptListByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<Tree<String>> sysMenuVOList = roleDeptLinkService.listDeptListByRoleId(roleId, appId);
-        return HttpResult.ok(sysMenuVOList);
-    }
-
-    @GetMapping("/listDeptIdsByRoleId/{appId}/{roleId}")
-    @Operation(summary = "部门 ID 列表查询", description = "通过角色 ID 查询部门 ID 列表")
-    @PreAuthorize("hasAuthority('system:dept:query')")
-    public Response<List<String>> listDeptIdsByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<String> deptIds = roleDeptLinkService.listDeptIdsByRoleId(roleId, appId);
-        return HttpResult.ok(deptIds);
-    }
+    
+    // ------- 部门关联角色相关 API（以部门为主）-------
 
     @GetMapping("/listRoleLinkByDeptId/{appId}/{deptId}")
     @Operation(summary = "角色列表查询", description = "通过部门 ID 查询角色列表")
@@ -66,28 +53,60 @@ public class RoleDeptLinkController {
         return HttpResult.ok(roleBindSelectVOList);
     }
 
-    @PostMapping("/addDeptsToRole")
+    @PostMapping("/addRoleListToDept")
+    @Operation(summary = "添加角色到部门", description = "添加角色到部门")
+    @OperateLog(title = "部门角色关联管理", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAuthority('system:role:add')")
+    public Response<Boolean> addRoleListToDept(@RequestBody DeptLinkRoleListDTO deptLinkRoleListDTO) {
+        if (roleDeptLinkService.checkRoleListExistDept(deptLinkRoleListDTO)) {
+            return HttpResult.failMessage("添加角色到部门失败，角色已存在于部门中");
+        }
+        
+        return HttpResult.ok(roleDeptLinkService.addRoleListToDept(deptLinkRoleListDTO));
+    }
+
+    // ------- 角色关联部门相关 API（以角色为主） -------
+
+    @GetMapping("/listDeptListByRoleId/{appId}/{roleId}")
+    @Operation(summary = "部门列表查询", description = "通过角色 ID 查询部门列表（树形结构）")
+    @PreAuthorize("hasAuthority('system:dept:query')")
+    public Response<List<Tree<String>>> listDeptListByRoleId(@PathVariable String appId, @PathVariable String roleId) {
+        List<Tree<String>> roleDeptLinkList = roleDeptLinkService.listDeptListByRoleId(roleId, appId);
+        return HttpResult.ok(roleDeptLinkList);
+    }
+
+    @GetMapping("/listDeptIdsByRoleId/{appId}/{roleId}")
+    @Operation(summary = "部门 ID 列表查询", description = "通过角色 ID 查询部门 ID 列表")
+    @PreAuthorize("hasAuthority('system:dept:query')")
+    public Response<List<String>> listDeptIdsByRoleId(@PathVariable String appId, @PathVariable String roleId) {
+        List<String> deptIds = roleDeptLinkService.listDeptIdsByRoleId(roleId, appId);
+        return HttpResult.ok(deptIds);
+    }
+    
+    @PostMapping("/addDeptListToRole")
     @Operation(summary = "添加部门到角色", description = "添加部门到角色")
     @OperateLog(title = "部门角色关联管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:role:add')")
-    public Response<Boolean> addDeptsToRole(@RequestBody RoleLinkDeptsDTO roleLinkDeptsDTO) {
-        return HttpResult.ok(roleDeptLinkService.addDeptsToRole(roleLinkDeptsDTO, true));
+    public Response<Boolean> addDeptListToRole(@RequestBody RoleLinkDeptListDTO roleLinkDeptListDTO) {
+        return HttpResult.ok(roleDeptLinkService.addDeptListToRole(roleLinkDeptListDTO, true));
     }
+    
+    // ------- 公共 API -------
 
     @PutMapping("/editRoleDeptLink")
-    @Operation(summary = "部门关联角色信息修改", description = "修改部门和角色关联信息")
-    @OperateLog(title = "部门角色关联管理", businessType = BusinessType.UPDATE)
+    @Operation(summary = "角色部门关联信息修改", description = "修改角色部门关联信息")
+    @OperateLog(title = "角色部门关联管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:role:linkDept')")
     public Response<Boolean> editRoleDeptLink(@Validated(RestGroup.EditGroup.class) @RequestBody RoleDeptLinkDTO roleDeptLinkDTO) {
-        return HttpResult.ok(roleDeptLinkService.updateOne(roleDeptLinkDTO));
+        return HttpResult.ok(roleDeptLinkService.editRoleDeptLink(roleDeptLinkDTO));
     }
 
-    @DeleteMapping("/removeDeptFromRole/{ids}")
-    @Operation(summary = "移出角色", description = "将部门移出角色")
-    @OperateLog(title = "部门角色关联管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/removeRoleDeptLink/{ids}")
+    @Operation(summary = "角色部门解除关联关系", description = "解除角色部门关联关系")
+    @OperateLog(title = "角色部门关联管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:role:remove')")
-    public Response<Boolean> removeDeptFromRole(@PathVariable Long[] ids) {
-        boolean result = roleDeptLinkService.removeDeptFromRole(List.of(ids));
+    public Response<Boolean> removeRoleDeptLink(@PathVariable Long[] ids) {
+        boolean result = roleDeptLinkService.removeRoleDeptLink(List.of(ids));
         return HttpResult.ok(result);
     }
 }

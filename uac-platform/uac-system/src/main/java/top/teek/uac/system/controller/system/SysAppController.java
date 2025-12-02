@@ -38,7 +38,7 @@ public class SysAppController {
     private final SysAppService sysAppService;
     private final SysClientService sysClientService;
     private final SysRoleService sysRoleService;
-    private final SysMenuService sysMenuService;
+    private final SysResourceService sysResourceService;
     private final SysDictTypeService sysDictTypeService;
 
     @GetMapping("/getOne/{appId}")
@@ -120,8 +120,8 @@ public class SysAppController {
             return HttpResult.failMessage("存在角色绑定，不允许删除");
         }
 
-        if (sysMenuService.checkAppExitMenu(appIds)) {
-            return HttpResult.failMessage("存在菜单绑定，不允许删除");
+        if (sysResourceService.checkAppExitResource(appIds)) {
+            return HttpResult.failMessage("存在资源绑定，不允许删除");
         }
 
         if (sysDictTypeService.checkAppExitDictType(appIds)) {

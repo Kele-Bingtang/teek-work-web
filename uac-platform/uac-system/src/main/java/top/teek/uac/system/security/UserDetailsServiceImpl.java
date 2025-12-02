@@ -7,8 +7,8 @@ import top.teek.uac.core.constant.TenantConstant;
 import top.teek.uac.core.exception.AuthException;
 import top.teek.uac.core.helper.UacHelper;
 import top.teek.uac.system.model.po.SysUser;
-import top.teek.uac.system.model.vo.SysMenuVO;
-import top.teek.uac.system.service.system.SysMenuService;
+import top.teek.uac.system.model.vo.SysResourceVO;
+import top.teek.uac.system.service.system.SysResourceService;
 import top.teek.uac.system.service.system.SysRoleService;
 import top.teek.uac.system.service.system.SysUserService;
 import top.teek.utils.StringUtil;
@@ -37,7 +37,7 @@ import java.util.Set;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final SysUserService sysUserService;
-    private final SysMenuService sysMenuService;
+    private final SysResourceService sysResourceService;
     private final SysRoleService sysRoleService;
 
     @Override
@@ -58,12 +58,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new AuthException("用户已被停用");
         }
 
-        // 查询用户的菜单权限
-        List<SysMenuVO> sysMenuVOList = sysMenuService.listMenuListByUserId(TenantConstant.DEFAULT_UAC_APP_ID, user.getUserId());
+        // 查询用户的资源权限
+        List<SysResourceVO> sysResourceVOList = sysResourceService.listResourceListByUserId(TenantConstant.DEFAULT_UAC_APP_ID, user.getUserId());
 
-        List<String> menuPerms = sysMenuVOList.stream().map(SysMenuVO::getPermission).filter(Objects::nonNull).toList();
+        List<String> resourcePerms = sysResourceVOList.stream().map(SysResourceVO::getPermission).filter(Objects::nonNull).toList();
 
-        List<SimpleGrantedAuthority> authorities = menuPerms.stream()
+        List<SimpleGrantedAuthority> authorities = resourcePerms.stream()
                 .map(SimpleGrantedAuthority::new)
                 .distinct()
                 .toList();
@@ -84,11 +84,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         securityUser.setLoginIp(user.getLoginIp());
 
         securityUser.setRoleCodes(getRoleCodes(user.getUserId()));
-        securityUser.setMenuPermission(getMenuPermission(user.getUserId(), menuPerms));
+        securityUser.setResourcePermission(getResourcePermission(user.getUserId(), resourcePerms));
 
         return securityUser;
 
-        // 用户权限列表，根据用户拥有的权限标识与如 @PreAuthorize("hasAuthority('sys:menu:view')") 标注的接口对比，决定是否可以调用接口
+        // 用户权限列表，根据用户拥有的权限标识与如 @PreAuthorize("hasAuthority('sys:resource:view')") 标注的接口对比，决定是否可以调用接口
         // List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         // grantedAuthorities.add(new SimpleGrantedAuthority("Kele-Bingtang"));
         // return new User(user.getUsername(), user.getPassword(), grantedAuthorities);
@@ -104,9 +104,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return roleCode;
     }
 
-    private Set<String> getMenuPermission(String userId, List<String> menuPermissions) {
+    private Set<String> getResourcePermission(String userId, List<String> resourcePermissions) {
         Set<String> permsSet = new HashSet<>();
-        for (String perm : menuPermissions) {
+        for (String perm : resourcePermissions) {
             if (StringUtil.hasText(perm)) {
                 permsSet.addAll(List.of(perm.trim().split(",")));
             }

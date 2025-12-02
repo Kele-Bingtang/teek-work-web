@@ -25,15 +25,12 @@
         update_by,update_by_id,update_time,
         status,is_deleted,app_id
     </sql>
-    
-    <select id="listDeptListByRoleId" resultType="top.teek.uac.system.model.po.SysDept">
-        select
-            tsd.*, case when trdl.dept_id is null then 0 else 1 end as selected
-        from
-            t_sys_dept tsd left join (
-                select * from t_role_dept_link where is_deleted = 0 and role_id = #{roleId} and app_id = #{appId}
-            ) trdl on tsd.dept_id = trdl.dept_id
-        where tsd.is_deleted = 0;
+
+    <select id="listRoleLinkByDeptId" resultType="top.teek.uac.system.model.vo.link.RoleLinkVO">
+        select tsr.role_id, tsr.role_code, tsr.role_name, tsr.owner_id, trdl.id as link_id, trdl.valid_from, trdl.expire_on, trdl.status, trdl.app_id
+        from t_sys_role tsr
+        join t_role_dept_link trdl on tsr.role_id = trdl.role_id and trdl.is_deleted = 0 and tsr.app_id = trdl.app_id
+        ${ew.getCustomSqlSegment}
     </select>
     
     <select id="listWithSelectedByDeptId" resultType="top.teek.uac.system.model.vo.link.RoleBindSelectVO">
@@ -43,10 +40,12 @@
         where tsr.is_deleted = 0
     </select>
     
-    <select id="listRoleLinkByDeptId" resultType="top.teek.uac.system.model.vo.link.RoleLinkVO">
-        select tsr.role_id, tsr.role_code, tsr.role_name, tsr.owner_id, trdl.id as link_id, trdl.valid_from, trdl.expire_on, trdl.status, trdl.app_id
-        from t_sys_role tsr
-        join t_role_dept_link trdl on tsr.role_id = trdl.role_id and trdl.is_deleted = 0 and tsr.app_id = trdl.app_id
-        ${ew.getCustomSqlSegment}
+    <select id="listDeptListByRoleId" resultType="top.teek.uac.system.model.po.SysDept">
+        select tsd.*, case when trdl.dept_id is null then 0 else 1 end as selected
+        from t_sys_dept tsd left join (
+            select * from t_role_dept_link where is_deleted = 0 and role_id = #{roleId} and app_id = #{appId}
+        ) trdl on tsd.dept_id = trdl.dept_id
+        where tsd.is_deleted = 0;
     </select>
+    
 </mapper>

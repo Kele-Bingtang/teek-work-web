@@ -22,14 +22,17 @@ import java.util.List;
  */
 public interface UserGroupUserLinkMapper extends BaseMapper<UserGroupUserLink> {
 
-    List<UserGroupLinkVO> listUserGroupByUserId(@Param(Constants.WRAPPER) Wrapper<SysUserGroup> queryWrapper);
+    // ------- 用户组关联用户相关 API（以用户组为主）-------
 
     IPage<UserLinkVO> listUserLinkByGroupId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupUserLink> queryWrapper);
 
-    List<UserGroupBindSelectVO> selectWithSelectedByUserId(@Param("userId") String userId);
-
     List<UserBindSelectVO> listWithSelectedByGroupId(@Param("userGroupId") String userGroupId);
 
+    // ------- 用户关联用户组相关 API（以用户为主）-------
+
+    List<UserGroupLinkVO> listUserGroupByUserId(@Param(Constants.WRAPPER) Wrapper<SysUserGroup> queryWrapper);
+
+    List<UserGroupBindSelectVO> selectWithSelectedByUserId(@Param("userId") String userId);
 }
 
 

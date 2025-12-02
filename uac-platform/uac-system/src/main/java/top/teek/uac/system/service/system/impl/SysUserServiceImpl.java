@@ -13,9 +13,9 @@ import top.teek.uac.system.model.dto.SysUserDTO;
 import top.teek.uac.system.model.dto.link.UserLinkPostDTO;
 import top.teek.uac.system.model.po.*;
 import top.teek.uac.system.model.vo.SysUserVO;
+import top.teek.uac.system.service.link.RoleUserLinkService;
 import top.teek.uac.system.service.link.UserGroupUserLinkService;
 import top.teek.uac.system.service.link.UserPostLinkService;
-import top.teek.uac.system.service.link.UserRoleLinkService;
 import top.teek.uac.system.service.system.SysDeptService;
 import top.teek.uac.system.service.system.SysUserService;
 import top.teek.utils.MapstructUtil;
@@ -54,7 +54,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private String password;
 
     private final SysDeptService sysDeptService;
-    private final UserRoleLinkService userRoleLinkService;
+    private final RoleUserLinkService roleUserLinkService;
     private final UserPostLinkService userPostLinkService;
     private final UserGroupUserLinkService userGroupUserLinkService;
 
@@ -218,7 +218,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 校验删除的是否为超级管理员用户
         userIds.forEach(this::checkUserAllowed);
         // 删除用户与角色关联
-        userRoleLinkService.remove(Wrappers.<UserRoleLink>lambdaQuery().in(UserRoleLink::getUserId, userIds));
+        roleUserLinkService.remove(Wrappers.<RoleUserLink>lambdaQuery().in(RoleUserLink::getUserId, userIds));
         // 删除用户与岗位表
         userPostLinkService.remove(Wrappers.<UserPostLink>lambdaQuery().in(UserPostLink::getUserId, userIds));
         // 删除用户与用户组表
