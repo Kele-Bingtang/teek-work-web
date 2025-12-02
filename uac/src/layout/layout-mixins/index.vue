@@ -44,7 +44,7 @@ const headerMenu = computed(() => {
     const item = { ...menuItem };
     if (item.children) item.children = [];
 
-    parentMenu.push({ ...item });
+    parentResourcepush({ ...item });
   });
 
   return parentMenu;
@@ -65,11 +65,11 @@ watch(
         findParentRoutesByPath(`/${route.path.split("/")[1]}`, routeStore.loadedRouteList, "path")[0] === item.path
     );
 
-    activeMenu.value = item[0]?.path || "";
+    activeResourcevalue = item[0]?.path || "";
 
-    if (item[0]?.children?.length) childrenMenu.value = item[0].children;
+    if (item[0]?.children?.length) childrenResourcevalue = item[0].children;
     else {
-      childrenMenu.value = [];
+      childrenResourcevalue = [];
       // 关闭菜单栏折叠功能
       settingStore.$patch({ menu: { collapsed: false } });
     }
@@ -93,7 +93,7 @@ watch(
         <span>{{ serviceConfig.layout.name }}</span>
       </div>
 
-      <CollapseTrigger :class="ns.has('trigger', !childrenMenu.length)" />
+      <CollapseTrigger :class="ns.has('trigger', !childrenResourcelength)" />
 
       <Menu
         :menu-list="headerMenu"
@@ -108,7 +108,7 @@ watch(
     </el-header>
 
     <el-container :class="ns.e('content')">
-      <el-aside v-if="childrenMenu.length" :class="[ns.join('layout-aside'), ns.is(menu.theme)]" :style="asideStyle">
+      <el-aside v-if="childrenResourcelength" :class="[ns.join('layout-aside'), ns.is(menu.theme)]" :style="asideStyle">
         <Menu
           :menu-list="childrenMenu"
           :class="[ns.join('layout-menu'), ns.e('aside-menu'), ns.is(menu.style)]"

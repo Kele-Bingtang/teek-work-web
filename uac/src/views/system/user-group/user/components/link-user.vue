@@ -6,9 +6,9 @@ import { ProPage, useNamespace } from "teek";
 import {
   listUserLinkByGroupId,
   listWithSelectedByGroupId,
-  addUsersToGroup,
+  addUserListToGroup,
   editUserGroupUserLink,
-  removeUserFromUserGroup,
+  removeUserGroupUserLink,
 } from "@/common/api/link/user-group-user-link";
 import { useChange, usePermission } from "@/composables";
 import { useDictStore } from "@/pinia";
@@ -145,7 +145,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addUsersToGroup({ ...model, ...initRequestParams });
+    return addUserListToGroup({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {
@@ -162,8 +162,8 @@ const dialogFormProps: DialogFormProps = {
     else model.expireOnNum = limit;
   },
   editFilterKeys: ["userIds"],
-  removeApi: removeUserFromUserGroup,
-  removeBatchApi: removeUserFromUserGroup,
+  removeApi: removeUserGroupUserLink,
+  removeBatchApi: removeUserGroupUserLink,
   disableAdd: !hasAuth("system:userGroup:linkUser"),
   disableEdit: !hasAuth("system:userGroup:linkUser"),
   disableRemove: !hasAuth("system:userGroup:linkUser"),

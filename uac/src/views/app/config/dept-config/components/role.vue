@@ -8,10 +8,10 @@ import { useChange, usePermission } from "@/composables";
 import { exportExcel } from "@/common/api/system/role";
 import {
   listRoleLinkByDeptId,
-  addDeptsToRole,
+  addDeptListToRole,
   listWithSelectedByDeptId,
   editRoleDeptLink,
-  removeDeptFromRole,
+  removeDeptRoleLink,
 } from "@/common/api/link/role-dept-link";
 
 const props = defineProps<{ deptId?: string }>();
@@ -141,7 +141,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addDeptsToRole({ ...model, ...initRequestParams });
+    return addDeptListToRole({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {
@@ -151,8 +151,8 @@ const dialogFormProps: DialogFormProps = {
 
     return editRoleDeptLink({ ...model, id: model.linkId });
   },
-  removeApi: removeDeptFromRole,
-  removeBatchApi: removeDeptFromRole,
+  removeApi: removeDeptRoleLink,
+  removeBatchApi: removeDeptRoleLink,
   clickEdit: model => {
     // 根据 expireOn 计算 expireOnNum，如果计算不是整数，则走 custom
     const limit = dayjs(model.expireOn).diff(dayjs(model.validFrom), "month");

@@ -6,11 +6,11 @@ import { downloadByData, ProPage } from "teek";
 import { exportExcel } from "@/common/api/system/role";
 import {
   listRoleLinkByGroupId,
-  removeUserGroupFromRole,
-  addRolesToUserGroup,
+  removeRoleUserGroupLink,
+  addRoleListToUserGroup,
   listWithSelectedByGroupId,
-  editUserGroupRoleLink,
-} from "@/common/api/link/user-group-role-link";
+  editRoleUserGroupLink,
+} from "@/common/api/link/role-user-group-link";
 import { useChange, usePermission } from "@/composables";
 import { useDictStore } from "@/pinia";
 
@@ -36,7 +36,7 @@ watchEffect(() => {
 const { statusChange } = useChange(
   "roleName",
   "角色",
-  (row, status) => editUserGroupRoleLink({ id: row.linkId, status }),
+  (row, status) => editRoleUserGroupLink({ id: row.linkId, status }),
   () => proPageInstance.value?.search()
 );
 
@@ -146,7 +146,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addRolesToUserGroup({ ...model, ...initRequestParams });
+    return addRoleListToUserGroup({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {
@@ -154,10 +154,10 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return editUserGroupRoleLink({ ...model, id: model.linkId });
+    return editRoleUserGroupLink({ ...model, id: model.linkId });
   },
-  removeApi: removeUserGroupFromRole,
-  removeBatchApi: removeUserGroupFromRole,
+  removeApi: removeRoleUserGroupLink,
+  removeBatchApi: removeRoleUserGroupLink,
   clickEdit: model => {
     // 根据 expireOn 计算 expireOnNum，如果计算不是整数，则走 custom
     const limit = dayjs(model.expireOn).diff(dayjs(model.validFrom), "month");

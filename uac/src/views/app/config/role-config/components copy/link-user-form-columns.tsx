@@ -1,7 +1,7 @@
 import type { Role } from "@/common/api/system/role";
 import type { DialogFormColumn } from "@teek/components";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, type FormRules, dayjs } from "element-plus";
-import { listWithSelectedByRoleId } from "@/common/api/link/user-role-link";
+import { listWithSelectedByRoleId } from "@/common/api/link/role-user-link";
 import { useDictStore } from "@/pinia";
 
 const rules = reactive<FormRules>({

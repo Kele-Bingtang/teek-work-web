@@ -4,9 +4,9 @@ import type { UserGroup } from "@/common/api/system/user/user-group";
 import { ProPage } from "teek";
 import {
   listUserGroupByRoleId,
-  addUserGroupsToRole,
-  removeUserGroupFromRole,
-} from "@/common/api/link/user-group-role-link";
+  addUserGroupListToRole,
+  removeRoleUserGroupLink,
+} from "@/common/api/link/role-user-group-link";
 import { usePermission } from "@/composables";
 import { elFormProps, useFormColumns } from "./link-user-group-form-columns";
 
@@ -54,14 +54,14 @@ const dialogFormProps: DialogFormProps = {
   },
   id: ["linkId"],
   addApi: form =>
-    addUserGroupsToRole({
+    addUserGroupListToRole({
       ...form,
       userGroupIds: form.userGroupIds,
       roleId: requestParam.roleId,
       appId: props.appId,
     }),
-  removeApi: form => removeUserGroupFromRole([form.linkId]),
-  removeBatchApi: removeUserGroupFromRole,
+  removeApi: form => removeRoleUserGroupLink([form.linkId]),
+  removeBatchApi: removeRoleUserGroupLink,
   disableAdd: !hasAuth("system:role:linkUserGroup"),
   disableEdit: !hasAuth("system:role:linkUserGroup"),
   disableRemove: !hasAuth("system:role:linkUserGroup"),

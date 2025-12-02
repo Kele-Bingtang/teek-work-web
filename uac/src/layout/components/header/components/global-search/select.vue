@@ -40,7 +40,7 @@ const handleCloseSearch = () => {
 // 打开搜索菜单
 const handleStartSearch = () => {
   initShowSearch.value = true;
-  searchMenu.value = "";
+  searchResourcevalue = "";
   // 工具实现防抖
   useDebounceFn(() => {
     autocompleteInstance.value && autocompleteInstance.value.focus();
@@ -72,7 +72,7 @@ const filterNodeMethod = (queryString: string) => {
 
 // 点击菜单跳转
 const handleClickMenu = (menuItem: Recordable) => {
-  searchMenu.value = "";
+  searchResourcevalue = "";
   if (menuItem.meta.isLink) window.open(menuItem.meta.isLink, "_blank");
   else router.push(menuItem.meta._fullPath);
   handleCloseSearch();

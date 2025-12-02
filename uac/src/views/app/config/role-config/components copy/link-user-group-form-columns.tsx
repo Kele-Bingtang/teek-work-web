@@ -2,7 +2,7 @@ import type { DialogFormColumn, ElFormProps, TransferTableColumn } from "@teek/c
 import type { FormRules } from "element-plus";
 import { User } from "@element-plus/icons-vue";
 import { TransferSelect } from "teek";
-import { listWithSelectedByRoleId } from "@/common/api/link/user-group-role-link";
+import { listWithSelectedByRoleId } from "@/common/api/link/role-user-group-link";
 
 const rules = reactive<FormRules>({
   groupIds: [{ required: true, message: "请选择用户组", trigger: "blur" }],

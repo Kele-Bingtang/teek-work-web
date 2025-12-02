@@ -29,7 +29,7 @@ const switchTab = () => {};
 
 const handleAppClick = (item: App.Info) => {
   dataStore.setInfo(item);
-  router.push(`/menu-manage/${item.appId}`);
+  router.push(`/resource-manage/${item.appId}`);
 };
 </script>
 

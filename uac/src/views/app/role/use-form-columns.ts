@@ -1,8 +1,8 @@
 import type { FormRules } from "element-plus";
 import type { Role } from "@/common/api/system/role";
 import type { DialogFormColumn } from "@teek/components";
-import { listMenuTreeSelectByApp } from "@/common/api/system/menu";
-import { listMenuIdsByRoleId } from "@/common/api/link/role-menu-link";
+import { listResourceTreeSelectByApp } from "@/common/api/system/resource";
+import { listResourceIdsByRoleId } from "@/common/api/link/role-resource-link";
 import { list } from "@/common/api/system/user/user";
 
 const rules = reactive<FormRules>({
@@ -51,15 +51,15 @@ export const useFormColumns = () => {
       elProps: { type: "textarea", clearable: true, placeholder: "请输入 介绍" },
     },
     {
-      prop: "selectedMenuIds",
-      label: "菜单分配",
+      prop: "selectedResourceIds",
+      label: "资源分配",
       el: "tree",
       defaultValue: async (model: Record<string, any>) => {
         if (!model.appId) return [];
-        const res = await listMenuIdsByRoleId(model.appId, model.roleId);
+        const res = await listResourceIdsByRoleId(model.appId, model.roleId);
         return res.data || [];
       },
-      options: () => (route.params.appId ? listMenuTreeSelectByApp({ appId: route.params.appId as string }) : []),
+      options: () => (route.params.appId ? listResourceTreeSelectByApp({ appId: route.params.appId as string }) : []),
       elProps: { nodeKey: "value", search: true, checkbox: true },
     },
   ];

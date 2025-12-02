@@ -4,8 +4,8 @@ import type { User } from "@/common/api/system/user/user";
 import { ProPage } from "teek";
 import {
   listUserLinkByGroupId,
-  addUsersToGroup,
-  removeUserFromUserGroup,
+  addUserListToGroup,
+  removeUserGroupUserLink,
   editUserGroupUserLink,
 } from "@/common/api/link/user-group-user-link";
 import { usePermission } from "@/composables";
@@ -44,7 +44,7 @@ const dialogFormProps: DialogFormProps = {
   },
   id: ["linkId"],
   addApi: form =>
-    addUsersToGroup({
+    addUserListToGroup({
       ...form,
       userIds: form.userIds,
       userGroupId: requestParam.userGroupId,
@@ -52,8 +52,8 @@ const dialogFormProps: DialogFormProps = {
     }),
   editApi: form => editUserGroupUserLink({ ...form, id: form.linkId }),
   editFilterKeys: ["userId", "appId", "userIds"],
-  removeApi: form => removeUserFromUserGroup([form.linkId]),
-  removeBatchApi: removeUserFromUserGroup,
+  removeApi: form => removeUserGroupUserLink([form.linkId]),
+  removeBatchApi: removeUserGroupUserLink,
   disableAdd: !hasAuth("system:userGroup:linkUser"),
   disableEdit: !hasAuth("system:userGroup:linkUser"),
   disableRemove: !hasAuth("system:userGroup:linkUser"),

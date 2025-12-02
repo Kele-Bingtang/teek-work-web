@@ -1,9 +1,13 @@
-<script setup lang="tsx" name="LinkMenu">
+<script setup lang="tsx">
 import type { FormColumn } from "teek";
-import type { Menu } from "@/common/api/system/menu";
+import type { Resource } from "@/common/api/system/resource";
 import { ProForm, Tree, useDialog } from "teek";
-import { listMenuTreeSelectByApp } from "@/common/api/system/menu";
-import { listMenuListByRoleId, listMenuIdsByRoleId, addMenusToRole } from "@/common/api/link/role-menu-link";
+import { listResourceTreeSelectByApp } from "@/common/api/system/resource";
+import {
+  listResourceListByRoleId,
+  listResourceIdsByRoleId,
+  addResourceToRole,
+} from "@/common/api/link/role-resource-link";
 
 export interface LinkMenuProps {
   appId: string;
@@ -13,18 +17,18 @@ export interface LinkMenuProps {
 
 const props = defineProps<LinkMenuProps>();
 
-const data = ref<Menu.TreeList[]>([]);
-const form = ref<{ selectedMenuIds: string[] }>({ selectedMenuIds: [] });
-const selectedMenuIds = ref<string[]>([]);
+const data = ref<Resource.TreeList[]>([]);
+const form = ref<{ selectedResourceIds: string[] }>({ selectedResourceIds: [] });
+const selectedResourceIds = ref<string[]>([]);
 
 const initTreeData = async (appId = props.appId, roleId = props.roleId) => {
-  const [treeData, menuIds] = await Promise.all([
-    listMenuListByRoleId(appId, roleId),
-    listMenuIdsByRoleId(props.appId, props.roleId),
+  const [treeData, resourceIds] = await Promise.all([
+    listResourceListByRoleId(appId, roleId),
+    listResourceIdsByRoleId(props.appId, props.roleId),
   ]);
   data.value = treeData.data || [];
-  form.value.selectedMenuIds = menuIds.data;
-  selectedMenuIds.value = menuIds.data;
+  form.value.selectedResourceIds = resourceIds.data;
+  selectedResourceIds.value = resourceIds.data;
 };
 
 watchEffect(() => initTreeData(props.appId, props.roleId));
@@ -32,7 +36,7 @@ watchEffect(() => initTreeData(props.appId, props.roleId));
 const { open } = useDialog();
 
 const handleEdit = () => {
-  form.value.selectedMenuIds = selectedMenuIds.value;
+  form.value.selectedResourceIds = selectedResourceIds.value;
   open({
     title: "编辑菜单",
     height: 500,
@@ -45,24 +49,24 @@ const handleEdit = () => {
 };
 
 const handleCancel = () => {
-  form.value = { selectedMenuIds: [] };
+  form.value = { selectedResourceIds: [] };
 };
 
 const handleConfirm = async () => {
-  await addMenusToRole({
+  await addResourceToRole({
     roleId: props.roleId,
     appId: props.appId,
-    selectedMenuIds: form.value.selectedMenuIds,
+    selectedResourceIds: form.value.selectedResourceIds,
   });
   initTreeData();
 };
 
 const columns: FormColumn[] = [
   {
-    prop: "selectedMenuIds",
+    prop: "selectedResourceIds",
     label: "",
     el: "el-tree",
-    options: () => listMenuTreeSelectByApp({ appId: props.appId }),
+    options: () => listResourceTreeSelectByApp({ appId: props.appId }),
     elProps: { nodeKey: "value", search: true, checkbox: true },
   },
 ];
@@ -70,7 +74,7 @@ const columns: FormColumn[] = [
 
 <template>
   <div style="display: flex; align-items: center; margin-bottom: 10px">
-    <el-button v-auth="['system:role:linkMenu']" type="primary" @click="handleEdit">编辑</el-button>
+    <el-button v-auth="['system:role:linkResource']" type="primary" @click="handleEdit">编辑</el-button>
     <el-button @click="initTreeData()">刷新</el-button>
     <el-alert title="蓝色代表已关联的菜单，黑色代表未关联的菜单" :closable="false" style="margin: 0 10px" />
   </div>

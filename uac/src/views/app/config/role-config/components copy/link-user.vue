@@ -2,8 +2,8 @@
 import type { DialogFormProps, PageColumn } from "teek";
 import type { User } from "@/common/api/system/user/user";
 import { ProPage } from "teek";
-import { addUsersToRole, editUserRoleLink, removeUsersFromRole } from "@/common/api/link/user-role-link";
-import { listUserLinkByRoleId } from "@/common/api/link/user-role-link";
+import { addUserListToRole, editRoleUserLink, removeRoleUserLink } from "@/common/api/link/role-user-link";
+import { listUserLinkByRoleId } from "@/common/api/link/role-user-link";
 import { usePermission } from "@/composables";
 import { elFormProps, useFormColumns } from "./link-user-form-columns";
 
@@ -40,16 +40,16 @@ const dialogFormProps: DialogFormProps = {
   },
   id: ["linkId"],
   addApi: form =>
-    addUsersToRole({
+    addUserListToRole({
       ...form,
       userIds: form.userIds,
       roleId: requestParam.roleId,
       appId: props.appId,
     }),
-  editApi: form => editUserRoleLink({ ...form, id: form.linkId }),
+  editApi: form => editRoleUserLink({ ...form, id: form.linkId }),
   editFilterKeys: ["userId", "appId", "userIds"],
-  removeApi: form => removeUsersFromRole([form.linkId]),
-  removeBatchApi: removeUsersFromRole,
+  removeApi: form => removeRoleUserLink([form.linkId]),
+  removeBatchApi: removeRoleUserLink,
   disableAdd: !hasAuth("system:role:linkUser"),
   disableEdit: !hasAuth("system:role:linkUser"),
   disableRemove: !hasAuth("system:role:linkUser"),

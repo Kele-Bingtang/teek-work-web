@@ -5,9 +5,9 @@ import { ProTable } from "teek";
 import { elFormProps, useFormColumns } from "./link-role-form-columns";
 import {
   listRoleLinkByGroupId,
-  removeUserGroupFromRole,
-  addRolesToUserGroup,
-} from "@/common/api/link/user-group-role-link";
+  removeRoleUserGroupLink,
+  addRoleListToUserGroup,
+} from "@/common/api/link/role-user-group-link";
 import { usePermission } from "@/composables";
 
 export interface LinkRoleProps {
@@ -41,15 +41,15 @@ const dialogFormProps: DialogFormProps = {
   },
   id: ["linkId"],
   addApi: form =>
-    addRolesToUserGroup({
+    addRoleListToUserGroup({
       ...form,
       roleIds: form.roleIds,
       userGroupId: requestParam.userGroupId,
       appId: props.appId,
     }),
   addFilterKeys: ["role"],
-  removeApi: form => removeUserGroupFromRole([form.linkId]),
-  removeBatchApi: removeUserGroupFromRole,
+  removeApi: form => removeRoleUserGroupLink([form.linkId]),
+  removeBatchApi: removeRoleUserGroupLink,
   disableAdd: !hasAuth("system:userGroup:linkRole"),
   disableEdit: !hasAuth("system:userGroup:linkRole"),
   disableRemove: !hasAuth("system:userGroup:linkRole"),

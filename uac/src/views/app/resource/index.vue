@@ -1,24 +1,30 @@
-<script setup lang="tsx" name="Menu">
+<script setup lang="tsx">
 import type { DialogFormProps, PageColumn, ProPageInstance } from "teek";
-import type { Menu } from "@/common/api/system/menu";
+import type { Resource } from "@/common/api/system/resource";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import { ProPage, Icon, downloadByData, useNamespace } from "teek";
 import { httpPrefix, httpsPrefix } from "@/common/config";
-import { listMenuTreeTableByApp, addMenu, editMenu, removeMenu, exportExcel } from "@/common/api/system/menu";
+import {
+  listResourceTreeTableByApp,
+  addResource,
+  editResource,
+  removeResource,
+  exportExcel,
+} from "@/common/api/system/resource";
 import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
-import { menuTypeEnum, elFormProps, useFormColumns } from "./use-form-columns";
+import { resourceTypeEnum, elFormProps, useFormColumns } from "./use-form-columns";
 
-const ns = useNamespace("menu");
+const ns = useNamespace("resource");
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 const route = useRoute();
 
 const { statusChange } = useChange(
-  "menuName",
+  "resourceName",
   "资源",
-  (row, status) => editMenu({ id: row.id, menuId: row.menuId, parentId: row.parentId, status }),
+  (row, status) => editResource({ id: row.id, resourceId: row.resourceId, parentId: row.parentId, status }),
   () => proPageInstance.value?.search()
 );
 
@@ -26,8 +32,8 @@ const initRequestParams = reactive({
   appId: route.params.appId as string,
 });
 
-const columns: PageColumn<Menu.Info>[] = [
-  { prop: "menuName", label: "资源名称", align: "left", search: { el: "el-input" } },
+const columns: PageColumn<Resource.Info>[] = [
+  { prop: "resourceName", label: "资源名称", align: "left", search: { el: "el-input" } },
   {
     prop: "icon",
     label: "图标",
@@ -36,7 +42,7 @@ const columns: PageColumn<Menu.Info>[] = [
   },
   { prop: "path", label: "组件路径", width: 200 },
   { prop: "permission", label: "权限标识", width: 180 },
-  { prop: "menuType", label: "类型", width: 80, options: menuTypeEnum, el: "el-tag" },
+  { prop: "resourceType", label: "类型", width: 80, options: resourceTypeEnum, el: "el-tag" },
   {
     prop: "status",
     label: "状态",
@@ -94,12 +100,12 @@ const dialogFormProps: DialogFormProps = {
     columns: useFormColumns(computed(() => initRequestParams.appId)).columns,
     colProps: { span: 12 }, // 一行两个表单
   },
-  id: ["id", "menuId"],
+  id: ["id", "resourceId"],
   addApi: data => {
     const pathPrefix = data.pathPrefix;
     delete data.pathPrefix;
 
-    return addMenu({
+    return addResource({
       ...data,
       path: (pathPrefix || "") + (data.path || ""),
       meta: installMeta(data),
@@ -110,14 +116,14 @@ const dialogFormProps: DialogFormProps = {
     const pathPrefix = data.pathPrefix;
     delete data.pathPrefix;
 
-    return editMenu({
+    return editResource({
       ...data,
       path: (pathPrefix || "") + (data.path || ""),
       meta: installMeta(data),
       appId: initRequestParams.appId,
     });
   },
-  removeApi: removeMenu,
+  removeApi: removeResource,
   clickEdit: model => {
     if ([httpPrefix, httpsPrefix].find(item => model.path?.includes(item))) {
       model.pathPrefix = model.path.split("//")[0] + "//";
@@ -136,15 +142,15 @@ const dialogFormProps: DialogFormProps = {
     }
     model.useMeta = Object.keys(m).length ? 1 : 0;
   },
-  disableAdd: !hasAuth("system:menu:add"),
-  disableEdit: !hasAuth("system:menu:edit"),
-  disableRemove: !hasAuth("system:menu:remove"),
+  disableAdd: !hasAuth("system:resource:add"),
+  disableEdit: !hasAuth("system:resource:edit"),
+  disableRemove: !hasAuth("system:resource:remove"),
 };
 
 const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
   ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
     exportExcel(searchParam).then(res => {
-      downloadByData(res, `menu_${new Date().getTime()}.xlsx`);
+      downloadByData(res, `resource_${new Date().getTime()}.xlsx`);
     });
   });
 };
@@ -154,21 +160,21 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
   <div :class="ns.b()">
     <ProPage
       ref="proPageInstance"
-      :request-api="listMenuTreeTableByApp"
+      :request-api="listResourceTreeTableByApp"
       :columns
       :init-request-params="initRequestParams"
       :dialog-form-props
       :page-scope="false"
       :export-file
-      :disabled-tool-button="!hasAuth('system:menu:export') ? ['export'] : []"
+      :disabled-tool-button="!hasAuth('system:resource:export') ? ['export'] : []"
     >
       <template #operation-after="{ row, dialogFormInstance }">
         <el-button
-          v-auth="['system:menu:add']"
+          v-auth="['system:resource:add']"
           link
           size="small"
           :icon="Plus"
-          @click="dialogFormInstance?.handleAdd({ parentId: row.menuId })"
+          @click="dialogFormInstance?.handleAdd({ parentId: row.resourceId })"
         >
           新增
         </el-button>

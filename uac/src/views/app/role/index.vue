@@ -7,7 +7,7 @@ import { listPage, addRole, editRole, removeRole, removeBatch, exportExcel } fro
 import { useDictStore } from "@/pinia";
 import { useChange, usePermission } from "@/composables";
 import { elFormProps, useFormColumns } from "./use-form-columns";
-import { listMenuIdsByRoleId } from "@/common/api/link/role-menu-link";
+import { listResourceIdsByRoleId } from "@/common/api/link/role-resource-link";
 
 const ns = useNamespace("role");
 
@@ -77,9 +77,9 @@ const dialogFormProps: DialogFormProps = {
   disableRemove: !hasAuth("system:role:remove"),
   disableRemoveBatch: !hasAuth("system:role:remove"),
   clickEdit: async model => {
-    // 编辑时获取该角色绑定的菜单 ID 集合
-    const res = await listMenuIdsByRoleId(model.appId, model.roleId);
-    model.selectedMenuIds = res.data || [];
+    // 编辑时获取该角色绑定的资源 ID 集合
+    const res = await listResourceIdsByRoleId(model.appId, model.roleId);
+    model.selectedResourceIds = res.data || [];
   },
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),

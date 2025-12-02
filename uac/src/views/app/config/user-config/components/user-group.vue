@@ -7,11 +7,11 @@ import { useChange, usePermission } from "@/composables";
 import { useDictStore } from "@/pinia";
 import { exportExcel } from "@/common/api/system/user/user-group";
 import {
-  addUserGroupsToUser,
+  addUserGroupListToUser,
   editUserGroupUserLink,
   listUserGroupByUserId,
   listWithSelectedByUserId,
-  removeUserFromUserGroup,
+  removeUserGroupUserLink,
 } from "@/common/api/link/user-group-user-link";
 
 const props = defineProps<{ userId?: string }>();
@@ -151,7 +151,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addUserGroupsToUser({ ...model, ...initRequestParams });
+    return addUserGroupListToUser({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {
@@ -161,8 +161,8 @@ const dialogFormProps: DialogFormProps = {
 
     return editUserGroupUserLink({ ...model, id: model.linkId });
   },
-  removeApi: removeUserFromUserGroup,
-  removeBatchApi: removeUserFromUserGroup,
+  removeApi: removeUserGroupUserLink,
+  removeBatchApi: removeUserGroupUserLink,
   editFilterKeys: ["userGroupIds"],
   apiFilterKeys: ["user", "createTime"],
   clickEdit: model => {

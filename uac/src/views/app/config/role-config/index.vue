@@ -4,10 +4,10 @@ import type { DescriptionColumn, TabColumn } from "teek";
 import type { Role } from "@/common/api/system/role";
 import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
 import { list } from "@/common/api/system/role";
-import LinkUser from "./components/link-user.vue";
-import LinkUserGroup from "./components/link-user-group.vue";
-import LinkMenu from "./components/link-menu.vue";
-import LinkDept from "./components/link-dept.vue";
+import LinkUser from "./components/user.vue";
+import LinkUserGroup from "./components/user-group.vue";
+import LinkResource from "./components/resource.vue";
+import LinkDept from "./components/dept.vue";
 
 const ns = useNamespace("role-link");
 
@@ -53,8 +53,8 @@ const tabColumns: TabColumn[] = [
   },
   {
     name: "Menu",
-    label: "授权菜单",
-    el: LinkMenu,
+    label: "授权资源",
+    el: LinkResource,
     elProps: computed(() => {
       return {
         roleId: descriptionData.data.roleId,

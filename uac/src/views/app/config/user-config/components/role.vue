@@ -9,10 +9,10 @@ import { exportExcel } from "@/common/api/system/role";
 import {
   listWithSelectedByUserId,
   listRoleLinkByUserId,
-  addRolesToUser,
-  editUserRoleLink,
-  removeUsersFromRole,
-} from "@/common/api/link/user-role-link";
+  addRoleListToUser,
+  editRoleUserLink,
+  removeRoleUserLink,
+} from "@/common/api/link/role-user-link";
 
 const props = defineProps<{ userId?: string }>();
 
@@ -31,7 +31,7 @@ watchEffect(() => {
 const { statusChange } = useChange(
   "roleName",
   "角色",
-  (row, status) => editUserRoleLink({ id: row.linkId, status }),
+  (row, status) => editRoleUserLink({ id: row.linkId, status }),
   () => proPageInstance.value?.search()
 );
 
@@ -141,7 +141,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addRolesToUser({ ...model, ...initRequestParams });
+    return addRoleListToUser({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {
@@ -149,10 +149,10 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return editUserRoleLink({ ...model, id: model.linkId });
+    return editRoleUserLink({ ...model, id: model.linkId });
   },
-  removeApi: removeUsersFromRole,
-  removeBatchApi: removeUsersFromRole,
+  removeApi: removeRoleUserLink,
+  removeBatchApi: removeRoleUserLink,
   clickEdit: model => {
     // 根据 expireOn 计算 expireOnNum，如果计算不是整数，则走 custom
     const limit = dayjs(model.expireOn).diff(dayjs(model.validFrom), "month");

@@ -1,24 +1,23 @@
-<script setup lang="tsx" name="RoleLinkUserGroup">
+<script setup lang="tsx" name="RoleLinkUser">
 import type { DialogFormColumn, DialogFormProps, ElFormProps, PageColumn, ProPageInstance } from "teek";
-import type { UserGroup } from "@/common/api/system/user/user-group";
+import type { User } from "@/common/api/system/user/user";
 import { dayjs, ElSwitch } from "element-plus";
 import { ProPage } from "teek";
 import {
-  listUserGroupByRoleId,
-  addUserGroupsToRole,
-  removeUserGroupFromRole,
+  addUserListToRole,
+  editRoleUserLink,
   listWithSelectedByRoleId,
-  editUserGroupRoleLink,
-} from "@/common/api/link/user-group-role-link";
+  removeRoleUserLink,
+} from "@/common/api/link/role-user-link";
+import { listUserLinkByRoleId } from "@/common/api/link/role-user-link";
 import { useChange, usePermission } from "@/composables";
 import { useDictStore } from "@/pinia";
 
-export interface LinkUserGroupProps {
-  appId: string;
-  roleId: string;
+export interface LinkUserProps {
+  roleId?: string;
 }
 
-const props = defineProps<LinkUserGroupProps>();
+const props = defineProps<LinkUserProps>();
 const route = useRoute();
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
@@ -31,37 +30,24 @@ const initRequestParams = reactive({
 // 监听 roleId，变化后修改关联的表格查询默认值
 watchEffect(() => (initRequestParams.roleId = props.roleId));
 
-const { statusChange } = useChange<UserGroup.Info>(
-  "groupName",
-  "用户组",
-  (row, status) => editUserGroupRoleLink({ id: row.linkId, status }),
+const { statusChange } = useChange<User.Info>(
+  "username",
+  "用户",
+  (row, status) => editRoleUserLink({ id: row.linkId, status }),
   () => proPageInstance.value?.search()
 );
 
-// 表格列配置项
-const columns: PageColumn<UserGroup.Info>[] = [
-  { type: "selection", fixed: "left", width: 10 },
-  { prop: "groupName", label: "用户组名", minWidth: 120, search: { el: "el-input" } },
-  { prop: "groupId", label: "用户组编码", minWidth: 120, search: { el: "el-input" } },
-  {
-    prop: "groupType",
-    label: "用户组类型",
-    width: 100,
-    search: { el: "el-select" },
-    optionField: { value: "dictValue", label: "dictLabel" },
-    options: () => useDictStore().getDictData("sys_group_type"),
-  },
+const columns: PageColumn<User.Info>[] = [
+  { type: "selection", fixed: "left", width: 60 },
+  { type: "index", label: "#", width: 60 },
+  { prop: "username", label: "用户名称", search: { el: "el-input" } },
+  { prop: "nickname", label: "用户昵称", search: { el: "el-input" } },
   { prop: "validFrom", label: "生效时间", minWidth: 120 },
   { prop: "expireOn", label: "过期时间", minWidth: 120 },
   {
-    prop: "ownerId",
-    label: "负责人",
-    minWidth: 160,
-    formatValue: (_, { row }) => `${row.ownerName} ${row.ownerId}`,
-  },
-  {
     prop: "status",
-    label: "状态",
+    width: 160,
+    label: "是否有效",
     optionField: { value: "dictValue", label: "dictLabel" },
     options: () => useDictStore().getDictData("sys_normal_status"),
     search: { el: "el-select" },
@@ -83,7 +69,8 @@ const columns: PageColumn<UserGroup.Info>[] = [
       );
     },
   },
-  { prop: "operation", label: "操作", width: 160, fixed: "right" },
+  { prop: "createTime", width: 160, label: "注册时间" },
+  { prop: "operation", label: "操作", width: 220, fixed: "right" },
 ];
 
 const elFormProps: ElFormProps = {
@@ -158,7 +145,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addUserGroupsToRole({ ...model, ...initRequestParams });
+    return addUserListToRole({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {
@@ -166,31 +153,33 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return editUserGroupRoleLink({ ...model, id: model.linkId });
+    return editRoleUserLink({ ...model, id: model.linkId });
   },
-  removeApi: removeUserGroupFromRole,
-  removeBatchApi: removeUserGroupFromRole,
+  editFilterKeys: ["userId", "userIds"],
+  removeApi: removeRoleUserLink,
+  removeBatchApi: removeRoleUserLink,
   clickEdit: model => {
     // 根据 expireOn 计算 expireOnNum，如果计算不是整数，则走 custom
     const limit = dayjs(model.expireOn).diff(dayjs(model.validFrom), "month");
     if (limit % 1 !== 0) model.expireOnNum = -1;
     else model.expireOnNum = limit;
   },
-  disableAdd: !hasAuth("system:role:linkUserGroup"),
-  disableEdit: !hasAuth("system:role:linkUserGroup"),
-  disableRemove: !hasAuth("system:role:linkUserGroup"),
-  disableRemoveBatch: !hasAuth("system:role:linkUserGroup"),
+  disableAdd: !hasAuth("system:role:linkUser"),
+  disableEdit: !hasAuth("system:role:linkUser"),
+  disableRemove: !hasAuth("system:role:linkUser"),
+  disableRemoveBatch: !hasAuth("system:role:linkUser"),
 };
 </script>
 
 <template>
   <ProPage
     ref="proPageInstance"
-    :request-api="listUserGroupByRoleId"
+    :request-api="listUserLinkByRoleId"
     :init-request-params
     :columns
+    :request-immediate="false"
     :dialog-form-props
     row-key="linkId"
-    :disabled-tool-button="!hasAuth('system:role:linkUserGroup') ? ['export'] : []"
+    :disabled-tool-button="!hasAuth('system:role:linkUser') ? ['export'] : []"
   ></ProPage>
 </template>

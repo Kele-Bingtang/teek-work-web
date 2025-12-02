@@ -1,8 +1,8 @@
-<script setup lang="tsx" name="LinkMenu">
+<script setup lang="tsx">
 import type { FormColumn } from "teek";
 import type { Dept } from "@/common/api/system/dept";
 import { listDeptTreeList } from "@/common/api/system/dept";
-import { listDeptListByRoleId, listDeptIdsByRoleId, addDeptsToRole } from "@/common/api/link/role-dept-link";
+import { listDeptListByRoleId, listDeptIdsByRoleId, addDeptListToRole } from "@/common/api/link/role-dept-link";
 import { ProForm, Tree, useDialog } from "teek";
 
 export interface LinkDeptProps {
@@ -48,7 +48,7 @@ const handleCancel = () => {
 };
 
 const handleConfirm = async () => {
-  await addDeptsToRole({
+  await addDeptListToRole({
     roleId: props.roleId,
     appId: props.appId,
     selectedDeptIds: form.value.selectedDeptIds,

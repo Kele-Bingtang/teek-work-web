@@ -235,9 +235,9 @@ export const dynamicRoutes: RouterConfigRaw[] = [
   },
 
   {
-    path: "/menu-manage/:appId",
-    name: "MenuManage",
-    component: "/app/menu/index",
+    path: "/resource-manage/:appId",
+    name: "ResourceManage",
+    component: "/app/resource/index",
     meta: {
       title: "资源管理",
       app: true,
