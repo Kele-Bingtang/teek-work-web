@@ -60,12 +60,6 @@ public class SysRoleVO implements Serializable {
     private Integer status;
 
     /**
-     * 显示顺序
-     */
-    @ExcelProperty("角色顺序")
-    private Integer orderNum;
-
-    /**
      * 角色介绍
      */
     @ExcelProperty("角色介绍")

@@ -67,7 +67,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
                 .eq(StringUtil.hasText(sysRoleDTO.getRoleCode()), SysRole::getRoleCode, sysRoleDTO.getRoleCode())
                 .eq(StringUtil.hasText(sysRoleDTO.getAppId()), SysRole::getAppId, sysRoleDTO.getAppId())
                 .eq(Objects.nonNull(sysRoleDTO.getStatus()), SysRole::getStatus, sysRoleDTO.getStatus())
-                .orderByAsc(SysRole::getOrderNum);
+                .orderByDesc(SysRole::getCreateTime);
 
     }
 

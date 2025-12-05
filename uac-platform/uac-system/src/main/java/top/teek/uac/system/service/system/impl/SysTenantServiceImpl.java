@@ -199,7 +199,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         sysRole.setRoleId(TenantConstant.DEFAULT_ROLE_ID);
         sysRole.setRoleCode(TenantConstant.TENANT_ADMIN_ROLE_KEY);
         sysRole.setRoleName(TenantConstant.TENANT_ADMIN_ROLE_NAME);
-        sysRole.setOrderNum(1);
         sysRole.setStatus(ColumnConstant.STATUS_NORMAL);
         sysRoleService.save(sysRole);
 

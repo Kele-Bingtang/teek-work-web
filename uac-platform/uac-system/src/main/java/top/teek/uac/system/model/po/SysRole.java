@@ -55,11 +55,6 @@ public class SysRole extends BaseDO {
     private String intro;
 
     /**
-     * 显示顺序
-     */
-    private Integer orderNum;
-
-    /**
      * 租户编号
      */
     private String tenantId;

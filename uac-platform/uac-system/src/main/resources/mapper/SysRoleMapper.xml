@@ -10,7 +10,6 @@
             <result property="roleCode" column="role_code" jdbcType="VARCHAR"/>
             <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
             <result property="intro" column="intro" jdbcType="VARCHAR"/>
-            <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -25,7 +24,7 @@
 
     <sql id="Base_Column_List">
         id,role_id,role_code,
-        role_name,intro,order_num,
+        role_name,intro,
         create_by,create_by_id,create_time,
         update_by,update_by_id,update_time,
         status,is_deleted,tenant_id,

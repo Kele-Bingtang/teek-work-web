@@ -54,12 +54,6 @@ public class SysRoleDTO {
     private String intro;
 
     /**
-     * 显示顺序
-     */
-    @NotNull(message = "显示顺序不能为空", groups = {RestGroup.AddGroup.class})
-    private Integer orderNum;
-
-    /**
      * 应用 ID
      */
     @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
