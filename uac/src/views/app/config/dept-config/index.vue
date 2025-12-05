@@ -4,7 +4,14 @@ import type { DescriptionColumn, TabColumn } from "teek";
 import type { Dept } from "@/common/api/system/dept";
 import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
 import { list } from "@/common/api/system/dept";
-import LinkRole from "./components/role.vue";
+import {
+  listWithSelectedByDeptId,
+  listRoleLinkByDeptId,
+  addDeptListToRole,
+  editRoleDeptLink,
+  removeDeptRoleLink,
+} from "@/common/api/link/role-dept-link";
+import Role from "../common/role.vue";
 
 const ns = useNamespace("user-group-link");
 
@@ -18,10 +25,17 @@ const tabColumns: TabColumn[] = [
   {
     prop: "Role",
     label: "已有角色",
-    el: LinkRole,
+    el: Role,
     elProps: computed(() => {
       return {
-        deptId: descriptionData.data.deptId,
+        id: descriptionData.data.deptId,
+        requestImmediate: false,
+        listWithSelectedApi: listWithSelectedByDeptId,
+        listApi: listRoleLinkByDeptId,
+        addApi: addDeptListToRole,
+        editApi: editRoleDeptLink,
+        removeApi: removeDeptRoleLink,
+        removeBatchApi: removeDeptRoleLink,
       };
     }),
   },

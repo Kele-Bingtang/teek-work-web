@@ -6,8 +6,15 @@ import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
 import { list } from "@/common/api/system/user/user";
 import { useDictStore } from "@/pinia";
 import { captureText } from "@/common/utils";
+import {
+  listWithSelectedByUserId,
+  listRoleLinkByUserId,
+  addRoleListToUser,
+  editRoleUserLink,
+  removeRoleUserLink,
+} from "@/common/api/link/role-user-link";
 import UserGroup from "./components/user-group.vue";
-import Role from "./components/role.vue";
+import Role from "../common/role.vue";
 
 const ns = useNamespace("user-link");
 
@@ -49,7 +56,13 @@ const tabColumns: TabColumn[] = [
     lazy: true,
     el: Role,
     elProps: computed(() => ({
-      userId: descriptionData.data.userId,
+      id: descriptionData.data.userId,
+      listWithSelectedApi: listWithSelectedByUserId,
+      listApi: listRoleLinkByUserId,
+      addApi: addRoleListToUser,
+      editApi: editRoleUserLink,
+      removeApi: removeRoleUserLink,
+      removeBatchApi: removeRoleUserLink,
     })),
   },
 ];

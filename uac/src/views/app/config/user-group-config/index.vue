@@ -5,8 +5,15 @@ import type { UserGroup } from "@/common/api/system/user/user-group";
 import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
 import { list } from "@/common/api/system/user/user-group";
 import { useDictStore } from "@/pinia";
-import LinkUser from "@/views/system/user-group/user/components/link-user.vue";
-import LinkRole from "./components/role.vue";
+import {
+  listWithSelectedByGroupId,
+  listRoleLinkByGroupId,
+  addRoleListToUserGroup,
+  editRoleUserGroupLink,
+  removeRoleUserGroupLink,
+} from "@/common/api/link/role-user-group-link";
+import User from "@/views/system/user-group/user/components/link-user.vue";
+import Role from "../common/role.vue";
 
 const ns = useNamespace("user-group-link");
 
@@ -20,17 +27,24 @@ const tabColumns: TabColumn[] = [
   {
     prop: "Role",
     label: "已有角色",
-    el: LinkRole,
+    el: Role,
     elProps: computed(() => {
       return {
-        userGroupId: descriptionData.data.groupId,
+        id: descriptionData.data.groupId,
+        requestImmediate: false,
+        listWithSelectedApi: listWithSelectedByGroupId,
+        listApi: listRoleLinkByGroupId,
+        addApi: addRoleListToUserGroup,
+        editApi: editRoleUserGroupLink,
+        removeApi: removeRoleUserGroupLink,
+        removeBatchApi: removeRoleUserGroupLink,
       };
     }),
   },
   {
     prop: "User",
     label: "已有用户",
-    el: LinkUser,
+    el: User,
     elProps: computed(() => ({
       userGroupId: descriptionData.data.groupId,
     })),

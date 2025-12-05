@@ -38,7 +38,19 @@
  * @param meta.query ==> 查询参数，Teek 不做任何处理，自行取出处理
  */
 
-import { Compass, Connection, View, Coin, User, Refrigerator, Mouse, Crop, MessageBox } from "@element-plus/icons-vue";
+import {
+  Compass,
+  Connection,
+  View,
+  Coin,
+  User,
+  Refrigerator,
+  Mouse,
+  Crop,
+  MessageBox,
+  Box,
+  Tickets,
+} from "@element-plus/icons-vue";
 import { HOME_URL, HOME_NAME } from "@/common/config";
 
 /**
@@ -240,6 +252,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     component: "/app/resource/index",
     meta: {
       title: "资源管理",
+      icon: Box,
       app: true,
     },
   },
@@ -249,6 +262,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     component: "/app/role/index",
     meta: {
       title: "角色管理",
+      icon: User,
       app: true,
     },
   },
@@ -258,6 +272,7 @@ export const dynamicRoutes: RouterConfigRaw[] = [
     component: "/app/dict/index",
     meta: {
       title: "字典管理",
+      icon: Tickets,
       app: true,
     },
   },

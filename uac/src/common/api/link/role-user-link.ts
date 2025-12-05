@@ -9,19 +9,20 @@ const baseUri = "/system/roleUserLink";
 /**
  * 查询某个用户所在的角色列表
  */
-export const listRoleLinkByUserId = (params: { appId: string; userId: string }) => {
-  return http.get<httpNs.Response<Role.LinkInfo[]>>(
-    `${baseUri}/listRoleLinkByUserId/${params.appId}/${params.userId}`,
-    { ...params, appId: undefined, userId: undefined }
-  );
+export const listRoleLinkByUserId = (params: Partial<Role.LinkInfo>) => {
+  return http.get<httpNs.Response<Role.LinkInfo[]>>(`${baseUri}/listRoleLinkByUserId/${params.appId}/${params.id}`, {
+    ...params,
+    appId: undefined,
+    id: undefined,
+  });
 };
 
 /**
  * 查询所有角色列表，如果角色绑定了用户，则 disabled 属性为 true
  */
-export const listWithSelectedByUserId = (params: { appId: string; userId: string }) => {
+export const listWithSelectedByUserId = (params: { appId: string; id: string }) => {
   return http.get<httpNs.Response<Role.BindSelect[]>>(
-    `${baseUri}/listWithSelectedByUserId/${params.appId}/${params.userId}`
+    `${baseUri}/listWithSelectedByUserId/${params.appId}/${params.id}`
   );
 };
 

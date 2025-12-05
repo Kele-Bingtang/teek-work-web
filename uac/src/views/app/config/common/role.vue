@@ -1,42 +1,40 @@
-<script setup lang="tsx" name="UserGroupLinkRole">
-import type { DialogFormColumn, DialogFormProps, ElFormProps, PageColumn, ProPageInstance } from "teek";
+<script setup lang="tsx">
+import type { DialogFormProps, ProPageInstance, PageColumn, DialogFormColumn, ElFormProps } from "teek";
 import type { Role } from "@/common/api/system/role";
 import { dayjs, ElMessageBox, ElSwitch } from "element-plus";
-import { downloadByData, ProPage } from "teek";
-import { exportExcel } from "@/common/api/system/role";
-import {
-  listRoleLinkByGroupId,
-  removeRoleUserGroupLink,
-  addRoleListToUserGroup,
-  listWithSelectedByGroupId,
-  editRoleUserGroupLink,
-} from "@/common/api/link/role-user-group-link";
-import { useChange, usePermission } from "@/composables";
+import { ProPage, downloadByData } from "teek";
 import { useDictStore } from "@/pinia";
+import { useChange, usePermission } from "@/composables";
+import { exportExcel } from "@/common/api/system/role";
 
-export interface LinkRoleProps {
-  userGroupId?: string;
+interface RoleLink {
+  id?: string;
+  listWithSelectedApi: (data: Recordable) => Promise<httpNs.Response<Recordable[]>>;
+  listApi?: (data: Recordable) => Promise<httpNs.Response<Recordable[]>>;
+  addApi: (data: Recordable) => Promise<httpNs.Response<boolean>>;
+  editApi: (data: Recordable) => Promise<httpNs.Response<boolean>>;
+  removeApi: (data: Recordable) => Promise<httpNs.Response<boolean>>;
+  removeBatchApi: (data: Recordable) => Promise<httpNs.Response<boolean>>;
 }
 
-const props = defineProps<LinkRoleProps>();
-const route = useRoute();
+const props = defineProps<RoleLink>();
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
+const route = useRoute();
 
 const initRequestParams = reactive({
   appId: route.params.appId as string,
-  userGroupId: props.userGroupId || "",
+  id: "",
 });
 
-// 监听 userGroupId，变化后修改关联的表格查询默认值
 watchEffect(() => {
-  if (props.userGroupId) initRequestParams.userGroupId = props.userGroupId;
+  if (props.id) initRequestParams.id = props.id;
 });
 
 const { statusChange } = useChange(
   "roleName",
   "角色",
-  (row, status) => editRoleUserGroupLink({ id: row.linkId, status }),
+  (row, status) => props.editApi({ id: row.linkId, status }),
   () => proPageInstance.value?.search()
 );
 
@@ -118,7 +116,7 @@ const formColumns: DialogFormColumn[] = [
     prop: "roleIds",
     label: "角色",
     el: "el-transfer",
-    options: () => (initRequestParams.userGroupId ? listWithSelectedByGroupId(initRequestParams) : []),
+    options: () => (initRequestParams.id ? props.listWithSelectedApi(initRequestParams) : []),
     elProps: {
       props: { key: "roleId", label: "roleName" },
       filterable: true,
@@ -146,7 +144,7 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return addRoleListToUserGroup({ ...model, ...initRequestParams });
+    return props.addApi({ ...model, ...initRequestParams });
   },
   editApi: model => {
     if (model.expireOnNum !== -1) {
@@ -154,10 +152,10 @@ const dialogFormProps: DialogFormProps = {
       delete model.expireOnNum;
     }
 
-    return editRoleUserGroupLink({ ...model, id: model.linkId });
+    return props.editApi({ ...model, id: model.linkId });
   },
-  removeApi: removeRoleUserGroupLink,
-  removeBatchApi: removeRoleUserGroupLink,
+  removeApi: props.removeApi,
+  removeBatchApi: props.removeBatchApi,
   clickEdit: model => {
     // 根据 expireOn 计算 expireOnNum，如果计算不是整数，则走 custom
     const limit = dayjs(model.expireOn).diff(dayjs(model.validFrom), "month");
@@ -181,13 +179,13 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 
 <template>
   <ProPage
-    :request-api="listRoleLinkByGroupId"
-    :init-request-params="initRequestParams"
-    :request-immediate="false"
+    :request-api="listApi"
     :columns
+    :init-request-params="initRequestParams"
     :dialog-form-props
     row-key="linkId"
     :export-file
-    :disabled-tool-button="!hasAuth('system:userGroup:linkRole') ? ['export'] : []"
+    :disabled-tool-button="!hasAuth('system:role:export') ? ['export'] : []"
+    v-bind="$attrs"
   ></ProPage>
 </template>

@@ -55,7 +55,6 @@ const columns: PageColumn<Role.Info>[] = [
       );
     },
   },
-  { prop: "orderNum", label: "显示顺序" },
   { prop: "createTime", label: "创建时间" },
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FilterEmits, TreeFilterProps } from "./types";
-import { ref, watch, onBeforeMount, useTemplateRef, nextTick } from "vue";
+import { ref, watch, onBeforeMount, useTemplateRef, nextTick, unref } from "vue";
 import { ElInput, ElScrollbar, ElTree } from "element-plus";
 import { More } from "@element-plus/icons-vue";
 import { useNamespace } from "@teek/composables";
@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<TreeFilterProps>(), {
   data: () => [],
   requestApi: undefined,
   defaultRequestParams: () => ({}),
+  requestParams: () => ({}),
   requestImmediate: true,
   transformData: undefined,
   title: "",
@@ -68,12 +69,12 @@ const setSelected = () => {
  * 初始化树形数据
  */
 const initTreeData = async () => {
-  const { data, requestApi, requestImmediate, transformData, id, label, showTotal, defaultFirst } = props;
+  const { data, requestApi, transformData, id, label, showTotal, defaultFirst } = props;
 
   // 有数据就直接赋值，没有数据就执行请求函数
   if (data.length) treeData.value = treeAllData.value = data;
-  else if (requestImmediate && requestApi) {
-    const result = await requestApi(props.defaultRequestParams);
+  else if (requestApi) {
+    const result = await requestApi({ ...unref(props.defaultRequestParams), ...unref(props.requestParams) });
     // 兼容常用数据格式
     let data = result?.data || result?.list || result?.data?.list || result;
     data = transformData?.(data, result) || data;
@@ -91,9 +92,12 @@ const initTreeData = async () => {
   }
 };
 
+// requestParams 改变时，需要重新请求
+watch(() => props.requestParams, initTreeData, { deep: true });
+
 onBeforeMount(async () => {
   setSelected();
-  initTreeData();
+  if (props.requestImmediate) initTreeData();
 });
 
 const filterText = ref("");

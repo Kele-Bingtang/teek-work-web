@@ -9,10 +9,10 @@ const baseUri = "/system/roleUserGroupLink";
 /**
  * 通过用户组 ID 查询角色列表
  */
-export const listRoleLinkByGroupId = (params: { userGroupId: string }) => {
-  return http.get<httpNs.Response<Role.LinkInfo[]>>(`${baseUri}/listRoleLinkByGroupId/${params.userGroupId}`, {
+export const listRoleLinkByGroupId = (params: Partial<Role.LinkInfo>) => {
+  return http.get<httpNs.Response<Role.LinkInfo[]>>(`${baseUri}/listRoleLinkByGroupId/${params.id}`, {
     ...params,
-    userGroupId: undefined,
+    id: undefined,
   });
 };
 

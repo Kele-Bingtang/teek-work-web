@@ -16,18 +16,19 @@ const baseUri = "/system/roleDeptLink";
 /**
  * 通过部门 ID 查询角色列表
  */
-export const listRoleLinkByDeptId = (params: { appId: string; deptId: string }) => {
-  return http.get<httpNs.Response<Role.LinkInfo[]>>(
-    `${baseUri}/listRoleLinkByDeptId/${params.appId}/${params.deptId}`,
-    { ...params, appId: undefined, deptId: undefined }
-  );
+export const listRoleLinkByDeptId = (params: Partial<Role.LinkInfo>) => {
+  return http.get<httpNs.Response<Role.LinkInfo[]>>(`${baseUri}/listRoleLinkByDeptId/${params.appId}/${params.id}`, {
+    ...params,
+    appId: undefined,
+    id: undefined,
+  });
 };
 
 /**
  * 查询所有角色列表，如果角色绑定了用户组，则 disabled 属性为 true
  */
-export const listWithSelectedByDeptId = (params: { deptId: string }) => {
-  return http.get<httpNs.Response<Role.BindSelect[]>>(`${baseUri}/listWithSelectedByDeptId/${params.deptId}`);
+export const listWithSelectedByDeptId = (params: { id: string }) => {
+  return http.get<httpNs.Response<Role.BindSelect[]>>(`${baseUri}/listWithSelectedByDeptId/${params.id}`);
 };
 
 /**

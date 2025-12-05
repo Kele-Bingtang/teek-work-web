@@ -3,10 +3,14 @@ import type { TreeKey } from "element-plus";
 import type { DescriptionColumn, TabColumn } from "teek";
 import type { Post } from "@/common/api/system/post";
 import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
+import { listDeptTreeList } from "@/common/api/system/dept";
 import { list } from "@/common/api/system/post";
-import LinkRole from "./components/role.vue";
+import Role from "../common/role.vue";
 
 const ns = useNamespace("user-group-link");
+const initPostRequestParams = reactive({
+  deptId: "",
+});
 
 const descriptionData = reactive({
   title: "",
@@ -18,14 +22,19 @@ const tabColumns: TabColumn[] = [
   {
     prop: "Role",
     label: "已有角色",
-    el: LinkRole,
+    el: Role,
     elProps: computed(() => {
       return {
-        deptId: descriptionData.data.postId,
+        id: descriptionData.data.postId,
       };
     }),
   },
 ];
+
+const handleDeptTreeChange = (nodeId: string | TreeKey[]) => {
+  initPostRequestParams.deptId = nodeId + "";
+  console.log(initPostRequestParams);
+};
 
 // 点击用户列表的回调
 const handleTreeChange = (_: string | TreeKey[], data: Post.Info) => {
@@ -42,8 +51,18 @@ const handleTreeChange = (_: string | TreeKey[], data: Post.Info) => {
 <template>
   <div :class="ns.b()">
     <TreeFilter
+      :requestApi="listDeptTreeList"
+      @change="handleDeptTreeChange"
+      id="value"
+      class="user-tree"
+      default-first
+    ></TreeFilter>
+
+    <TreeFilter
       title="岗位列表"
       :request-api="list"
+      :init-request-params="initPostRequestParams"
+      :request-immediate="false"
       @change="(value, data: any) => handleTreeChange(value, data)"
       id="postId"
       label="postName"

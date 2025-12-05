@@ -8,7 +8,6 @@ export namespace Role {
     roleCode: string; // 角色码
     roleName: string; // 角色名
     status: number; // 状态
-    orderNum: number; // 显示顺序
     intro: string; // 角色介绍
     appId: string; // 应用 ID
     createTime: string; // 创建时间
@@ -44,17 +43,6 @@ export namespace Role {
     expireOn: string; // 过期时间
     appId: string; // 应用 ID
     expireOnNum?: string; // 过期期限
-  }
-
-  // 角色被用户组关联数据（没有生效和过期时间）
-  export interface UserGroupLinkRoleVO {
-    id: number;
-    roleId: string; // 角色 ID
-    roleName: string; // 角色名
-    roleCode: string; // 角色码
-    linkId: number; // 关联 ID
-    appId: string; // 应用 ID
-    createTime: string; // 创建时间
   }
 
   // 角色穿梭框数据，如果 disabled 为 true，则禁选
