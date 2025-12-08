@@ -9,8 +9,9 @@ import { useSettingStore, useRouteStore } from "@/pinia";
 import { useMenuAreaMouse, useHeaderAreaMouse } from "../use-area-mouse";
 import PageContent from "../components/page-content/index.vue";
 import CollapseTrigger from "../components/header/components/collapse-trigger/index.vue";
-import Menu from "../components/menu/index.vue";
 import HeaderRight from "../components/header/header-right.vue";
+import Refresh from "../components/header/components/refresh/index.vue";
+import Menu from "../components/menu/index.vue";
 import TabNav from "../components/tab-nav/index.vue";
 
 import "./index.scss";
@@ -32,7 +33,7 @@ const { menuList } = useMenu();
 const activeMenu = ref("");
 const childrenMenu = ref<RouterConfig[]>([]);
 
-const { menu, logo, header } = storeToRefs(settingStore);
+const { menu, logo, header, widget } = storeToRefs(settingStore);
 
 /**
  * 头部菜单
@@ -44,7 +45,7 @@ const headerMenu = computed(() => {
     const item = { ...menuItem };
     if (item.children) item.children = [];
 
-    parentResourcepush({ ...item });
+    parentMenu.push({ ...item });
   });
 
   return parentMenu;
@@ -65,11 +66,11 @@ watch(
         findParentRoutesByPath(`/${route.path.split("/")[1]}`, routeStore.loadedRouteList, "path")[0] === item.path
     );
 
-    activeResourcevalue = item[0]?.path || "";
+    activeMenu.value = item[0]?.path || "";
 
-    if (item[0]?.children?.length) childrenResourcevalue = item[0].children;
+    if (item[0]?.children?.length) childrenMenu.value = item[0].children;
     else {
-      childrenResourcevalue = [];
+      childrenMenu.value = [];
       // 关闭菜单栏折叠功能
       settingStore.$patch({ menu: { collapsed: false } });
     }
@@ -93,7 +94,8 @@ watch(
         <span>{{ serviceConfig.layout.name }}</span>
       </div>
 
-      <CollapseTrigger :class="ns.has('trigger', !childrenResourcelength)" />
+      <CollapseTrigger :class="ns.has('trigger', !childrenMenu)" />
+      <Refresh v-if="widget.refresh" />
 
       <Menu
         :menu-list="headerMenu"
@@ -108,7 +110,7 @@ watch(
     </el-header>
 
     <el-container :class="ns.e('content')">
-      <el-aside v-if="childrenResourcelength" :class="[ns.join('layout-aside'), ns.is(menu.theme)]" :style="asideStyle">
+      <el-aside v-if="childrenMenu" :class="[ns.join('layout-aside'), ns.is(menu.theme)]" :style="asideStyle">
         <Menu
           :menu-list="childrenMenu"
           :class="[ns.join('layout-menu'), ns.e('aside-menu'), ns.is(menu.style)]"
