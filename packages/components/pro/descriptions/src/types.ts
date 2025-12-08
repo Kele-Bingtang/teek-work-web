@@ -72,6 +72,12 @@ export interface DescriptionColumn
    */
   options?: FormItemColumnProps["options"];
   /**
+   * 是否缓存字典数据
+   *
+   * @default true
+   */
+  optionCache?: boolean;
+  /**
    * 指定 Options 的 key，如果设置了则优先从缓存获取对于 key 的 Options 数据
    */
   optionsProp?: string;

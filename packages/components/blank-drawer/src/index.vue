@@ -5,6 +5,7 @@ defineOptions({ name: "BlankDrawer" });
 
 interface BlankDrawerProps {
   modelValue: any;
+  modalClass?: string;
 }
 
 const props = defineProps<BlankDrawerProps>();
@@ -31,7 +32,12 @@ const clickModal = () => {
 
 <template>
   <div v-if="modelValue" class="create-drawer-modal" @click="clickModal" />
-  <el-drawer v-model="value" v-bind="$attrs" :modal="false" modal-class="blank-drawer-modal">
+  <el-drawer
+    v-model="value"
+    v-bind="$attrs"
+    :modal="false"
+    :modal-class="`${modalClass ? modalClass + ' ' : ''}blank-drawer-modal`"
+  >
     <template v-for="(_, name) in $slots" #[name]="slotData" :key="name">
       <slot :name="name" v-bind="slotData"></slot>
     </template>
@@ -46,12 +52,13 @@ const clickModal = () => {
   width: 100%;
   height: 100%;
   overflow: auto;
-
-  // pointer-events: auto;
-  // background-color: var(--el-overlay-color-lighter);
 }
 
 .blank-drawer-modal {
   position: unset !important;
+
+  .#{$el-namespace}-drawer {
+    position: fixed;
+  }
 }
 </style>
