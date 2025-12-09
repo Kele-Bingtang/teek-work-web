@@ -5,7 +5,7 @@ import type { TreeKey } from "element-plus";
 import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
 import { list } from "@/common/api/system/user/user";
 import { useDictStore } from "@/pinia";
-import { captureText } from "@/common/utils";
+import { simplifyText } from "@/common/utils";
 import {
   listWithSelectedByUserId,
   listRoleLinkByUserId,
@@ -116,7 +116,7 @@ const transformData = (data: Recordable) => {
           :size="34"
           :style="{ backgroundColor: node.data.avatarBgColor }"
         >
-          {{ captureText(node.data.nickname || node.data.username) }}
+          {{ simplifyText(node.data.nickname || node.data.username) }}
         </el-avatar>
         <span>{{ node.label || node.data.username }}</span>
       </template>
@@ -125,7 +125,7 @@ const transformData = (data: Recordable) => {
     <el-card shadow="never" :class="[ns.e('right'), ns.join('card-minimal')]">
       <div class="flx-align-center">
         <el-avatar :size="56" style="font-size: 28px" :style="{ backgroundColor: descriptionData.avatarBgColor }">
-          {{ captureText(descriptionData.title) }}
+          {{ simplifyText(descriptionData.title) }}
         </el-avatar>
 
         <ProDescriptions
