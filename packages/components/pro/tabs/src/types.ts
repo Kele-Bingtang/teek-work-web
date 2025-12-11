@@ -4,7 +4,7 @@ import type { RenderTypes } from "@teek/components/pro/form-item";
 
 export interface TabColumn extends Partial<TabPaneProps> {
   /**
-   * tab 唯一标识，等价于 elTabPane 的 name
+   * tab 唯一标识，等价于 ElTabPane 的 name
    */
   prop?: string;
   /**
@@ -16,29 +16,29 @@ export interface TabColumn extends Partial<TabPaneProps> {
    */
   elProps?: MaybeRef<Record<string, any>>;
   /**
-   * 表单组件的插槽
+   * el 组件的插槽
    */
   elSlots?: {
     [slotName: string]: (data: Record<string, any>) => RenderTypes;
   };
   /**
-   * 是否销毁tabPane，true 销毁，false 不销毁，类似于 v-if
+   * 是否销毁 ElTabPane，true 销毁，false 不销毁，类似于 v-if
    *
    * @default false
    */
   destroy?: MaybeRefOrGetter<boolean>;
   /**
-   * 是否隐藏 tabPane，true 隐藏，false 不隐藏，类似于 v-show
+   * 是否隐藏 ElTabPane，true 隐藏，false 不隐藏，类似于 v-show
    *
    * @default false
    */
   hidden?: MaybeRefOrGetter<boolean>;
   /**
-   * 自定义 TabPane 内容渲染（支持 h、tsx 语法）
+   * 自定义 ElTabPane 内容渲染（支持 h、tsx 语法）
    */
   render?: () => RenderTypes;
   /**
-   * 自定义选项卡标题渲染（支持 h、tsx 语法）
+   * 自定义 ElTabPane 标题渲染（支持 h、tsx 语法）
    */
   renderLabel?: () => RenderTypes;
 }
