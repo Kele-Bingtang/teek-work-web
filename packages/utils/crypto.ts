@@ -1,6 +1,6 @@
 import CryptoJS from "crypto-js";
 import JSEncrypt from "jsencrypt";
-import { randomString } from "../id-generator";
+import { randomString } from "./id-generator";
 
 /**
  * 随机生成 AES 密钥

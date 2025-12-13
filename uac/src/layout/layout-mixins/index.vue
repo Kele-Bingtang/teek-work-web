@@ -100,7 +100,7 @@ watch(
         <span>{{ serviceConfig.layout.name }}</span>
       </div>
 
-      <CollapseTrigger :class="ns.has('trigger', !childrenMenu)" />
+      <CollapseTrigger :class="ns.has('trigger', !childrenMenu.length)" />
       <Refresh v-if="widget.refresh" />
 
       <Menu
@@ -108,7 +108,7 @@ watch(
         :active-menu="activeMenu"
         mode="horizontal"
         :is-collapse="false"
-        :class="[ns.join('layout-menu'), ns.e('header-menu'), ns.is(header.menuAlign)]"
+        :class="[ns.join('layout-menu'), ns.e('header-menu'), ns.is(`align-${header.menuAlign}`)]"
         :popper-class="`${ns.join('layout-menu-popper')} ${ns.b('menu-popper')}`"
       />
 
@@ -116,11 +116,11 @@ watch(
     </el-header>
 
     <el-container :class="ns.e('content')">
-      <el-aside v-if="childrenMenu" :class="ns.join('layout-aside')" :style="asideStyle">
+      <el-aside v-if="childrenMenu.length" :class="ns.join('layout-aside')" :style="asideStyle">
         <Menu
           :menu-list="childrenMenu"
-          :class="[ns.join('layout-menu'), ns.e('aside-menu'), ns.is(menu.style)]"
-          :popper-class="`${ns.join('layout-menu-popper')} ${ns.b('menu-popper')} ${ns.is(menu.style)}`"
+          :class="[ns.join('layout-menu'), ns.e('aside-menu'), ns.is(`style-${menu.style}`)]"
+          :popper-class="`${ns.join('layout-menu-popper')} ${ns.b('menu-popper')} ${ns.is(`theme-${menu.theme}`)} ${ns.is(`style-${menu.style}`)}`"
         />
       </el-aside>
 
