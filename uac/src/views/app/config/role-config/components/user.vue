@@ -17,7 +17,10 @@ export interface LinkUserProps {
   roleId?: string;
 }
 
-const props = defineProps<LinkUserProps>();
+const props = withDefaults(defineProps<LinkUserProps>(), {
+  roleId: "",
+});
+
 const route = useRoute();
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
@@ -116,7 +119,7 @@ const formColumns: DialogFormColumn[] = [
     prop: "userIds",
     label: "用户",
     el: "el-transfer",
-    options: () => (initRequestParams.roleId ? listWithSelectedByRoleId({ roleId: initRequestParams.roleId }) : []),
+    options: () => (initRequestParams.roleId ? listWithSelectedByRoleId(initRequestParams) : []),
     elProps: {
       props: { key: "userId", label: "nickname" },
       filterable: true,

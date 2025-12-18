@@ -29,20 +29,47 @@ export namespace Role {
 
   // 角色关联用户组信息（多个用户组）
   export interface LinkUserGroups {
-    userGroupIds: string[]; // 用户组 ID
     roleId: string; // 角色 ID
+    userGroupIds: string[]; // 用户组 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
     appId: string; // 应用 ID
   }
 
   // 添加用户到角色（多个用户）
   export interface LinkUsers {
-    id: number;
     roleId: string[]; // 角色 ID
     userIds: string; // 用户 ID
     validFrom: string; // 生效时间
     expireOn: string; // 过期时间
     appId: string; // 应用 ID
-    expireOnNum?: string; // 过期期限
+  }
+
+  // 添加部门到角色（多个部门）
+  export interface LinkDepts {
+    roleId: string; // 角色 ID
+    deptIds: string[]; // 部门 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
+    appId: string; // 应用 ID
+  }
+
+  // 添加岗位到角色（多个岗位）
+  export interface LinkPosts {
+    roleId: string; // 角色 ID
+    postIds: string[]; // 岗位 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
+    appId: string; // 应用 ID
+  }
+
+  // 添加资源到角色（多个资源）
+  export interface LinkResources {
+    roleId: string; // 角色 ID
+    resourceIds: string[]; // 资源 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
+    appId: string; // 应用 ID
   }
 
   // 角色穿梭框数据，如果 disabled 为 true，则禁选

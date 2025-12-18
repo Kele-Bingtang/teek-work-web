@@ -37,19 +37,17 @@ export namespace User {
   export interface LinkRoles {
     userId: string; // 用户 ID
     roleIds: string[]; // 角色 ID
-    validFrom: string; // 负责人 ID
-    expireOn: string; // 负责人 username
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
     appId: string; // 应用 ID
   }
 
   // 用户关联用户组信息（多个用户组）
   export interface LinkUserGroup {
-    linkId: number; // 关联 ID
     userId: string; // 用户 ID
     userGroupIds: string[]; // 用户组 ID
-    validFrom: string; // 负责人 ID
-    expireOn: string; // 负责人 username
-    appId: string; // 应用 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
   }
 
   // 用户穿梭框数据，如果 disabled 为 true，则禁选

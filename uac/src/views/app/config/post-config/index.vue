@@ -5,10 +5,17 @@ import type { Post } from "@/common/api/system/post";
 import { TreeFilter, ProDescriptions, ProTabs, useNamespace } from "teek";
 import { listDeptTreeList } from "@/common/api/system/dept";
 import { list } from "@/common/api/system/post";
+import {
+  listWithSelectedByPostId,
+  listRoleLinkByPostId,
+  addRoleListToPost,
+  editRolePostLink,
+  removeRolePostLink,
+} from "@/common/api/link/role-post-link";
 import Role from "../common/role.vue";
 
 const ns = useNamespace("user-group-link");
-const initPostRequestParams = reactive({
+const postRequestParams = reactive({
   deptId: "",
 });
 
@@ -26,18 +33,26 @@ const tabColumns: TabColumn[] = [
     elProps: computed(() => {
       return {
         id: descriptionData.data.postId,
+        idKey: "postId",
+        requestImmediate: false,
+        listWithSelectedApi: listWithSelectedByPostId,
+        listApi: listRoleLinkByPostId,
+        addApi: addRoleListToPost,
+        editApi: editRolePostLink,
+        removeApi: removeRolePostLink,
+        removeBatchApi: removeRolePostLink,
       };
     }),
   },
 ];
 
 const handleDeptTreeChange = (nodeId: string | TreeKey[]) => {
-  initPostRequestParams.deptId = nodeId + "";
-  console.log(initPostRequestParams);
+  postRequestParams.deptId = nodeId + "";
 };
 
 // 点击用户列表的回调
 const handleTreeChange = (_: string | TreeKey[], data: Post.Info) => {
+  console.log(1);
   descriptionData.title = data.postName;
   descriptionData.data = data;
   descriptionData.columns = [
@@ -61,7 +76,7 @@ const handleTreeChange = (_: string | TreeKey[], data: Post.Info) => {
     <TreeFilter
       title="岗位列表"
       :request-api="list"
-      :init-request-params="initPostRequestParams"
+      :request-params="postRequestParams"
       :request-immediate="false"
       @change="(value, data: any) => handleTreeChange(value, data)"
       id="postId"

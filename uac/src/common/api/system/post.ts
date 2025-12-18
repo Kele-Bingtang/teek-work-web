@@ -12,6 +12,27 @@ export namespace Post {
     createTime: string; // 创建时间
   }
 
+  // 与角色关联信息
+  export interface LinkInfo {
+    postId: string; // 岗位 ID
+    postCode: string; // 岗位编码
+    postName: string; // 岗位名称
+    linkId: number; // 关联 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
+    status: number; // 状态
+    createTime: string; // 创建时间
+  }
+
+  // 添加资源到角色（多个岗位）
+  export interface LinkRoles {
+    postId: string; // 岗位 ID
+    roleIds: string[]; // 角色 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
+    appId: string; // 应用 ID
+  }
+
   export interface UserSelectPost {
     postIds: string[];
     postList: Info[];

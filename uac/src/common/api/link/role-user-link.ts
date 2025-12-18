@@ -9,8 +9,8 @@ const baseUri = "/system/roleUserLink";
 /**
  * 查询某个用户所在的角色列表
  */
-export const listRoleLinkByUserId = (params: Partial<Role.LinkInfo>) => {
-  return http.get<httpNs.Response<Role.LinkInfo[]>>(`${baseUri}/listRoleLinkByUserId/${params.appId}/${params.id}`, {
+export const listRoleLinkByUserId = (params: Partial<Role.LinkInfo & { userId: string }>) => {
+  return http.get<httpNs.Page<Role.LinkInfo[]>>(`${baseUri}/listRoleLinkByUserId/${params.appId}/${params.userId}`, {
     ...params,
     appId: undefined,
     id: undefined,
@@ -20,9 +20,9 @@ export const listRoleLinkByUserId = (params: Partial<Role.LinkInfo>) => {
 /**
  * 查询所有角色列表，如果角色绑定了用户，则 disabled 属性为 true
  */
-export const listWithSelectedByUserId = (params: { appId: string; id: string }) => {
+export const listWithSelectedByUserId = (params: { appId: string; userId: string }) => {
   return http.get<httpNs.Response<Role.BindSelect[]>>(
-    `${baseUri}/listWithSelectedByUserId/${params.appId}/${params.id}`
+    `${baseUri}/listWithSelectedByUserId/${params.appId}/${params.userId}`
   );
 };
 
@@ -38,9 +38,10 @@ export const addRoleListToUser = (data: User.LinkRoles) => {
 /**
  * 通过角色 ID 查询用户列表
  */
-export const listUserLinkByRoleId = (params: { roleId: string }) => {
-  return http.get<httpNs.Response<User.LinkInfo[]>>(`${baseUri}/listUserLinkByRoleId/${params.roleId}`, {
+export const listUserLinkByRoleId = (params: Partial<User.Info & { appId: string; roleId: string }>) => {
+  return http.get<httpNs.Page<User.LinkInfo[]>>(`${baseUri}/listUserLinkByRoleId/${params.appId}/${params.roleId}`, {
     ...params,
+    appId: undefined,
     roleId: undefined,
   });
 };
@@ -48,8 +49,10 @@ export const listUserLinkByRoleId = (params: { roleId: string }) => {
 /**
  * 下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true
  */
-export const listWithSelectedByRoleId = (params: { roleId: string }) => {
-  return http.get<httpNs.Response<User.BindSelect[]>>(`${baseUri}/listWithSelectedByRoleId/${params.roleId}`);
+export const listWithSelectedByRoleId = (params: { appId: string; roleId: string }) => {
+  return http.get<httpNs.Response<User.BindSelect[]>>(
+    `${baseUri}/listWithSelectedByRoleId/${params.appId}/${params.roleId}`
+  );
 };
 
 /**

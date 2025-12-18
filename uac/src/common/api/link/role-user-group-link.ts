@@ -9,18 +9,24 @@ const baseUri = "/system/roleUserGroupLink";
 /**
  * 通过用户组 ID 查询角色列表
  */
-export const listRoleLinkByGroupId = (params: Partial<Role.LinkInfo>) => {
-  return http.get<httpNs.Response<Role.LinkInfo[]>>(`${baseUri}/listRoleLinkByGroupId/${params.id}`, {
-    ...params,
-    id: undefined,
-  });
+export const listRoleLinkByGroupId = (params: Partial<Role.Info & { userGroupId: string }>) => {
+  return http.get<httpNs.Page<Role.LinkInfo[]>>(
+    `${baseUri}/listRoleLinkByGroupId/${params.appId}/${params.userGroupId}`,
+    {
+      ...params,
+      appId: undefined,
+      id: undefined,
+    }
+  );
 };
 
 /**
  * 查询所有角色列表，如果角色绑定了用户组，则 disabled 属性为 true
  */
-export const listWithSelectedByGroupId = (params: { userGroupId: string }) => {
-  return http.get<httpNs.Response<Role.BindSelect[]>>(`${baseUri}/listWithSelectedByGroupId/${params.userGroupId}`);
+export const listWithSelectedByGroupId = (params: { appId: string; userGroupId: string }) => {
+  return http.get<httpNs.Response<Role.BindSelect[]>>(
+    `${baseUri}/listWithSelectedByGroupId/${params.appId}/${params.userGroupId}`
+  );
 };
 
 /**
@@ -35,18 +41,20 @@ export const addRoleListToUserGroup = (data: UserGroup.LinkRoles) => {
 /**
  * 查询某个角色绑定的用户组列表
  */
-export const listUserGroupByRoleId = (params: { roleId: string }) => {
-  return http.get<httpNs.Response<UserGroup.LinkInfo[]>>(`${baseUri}/listUserGroupByRoleId/${params.roleId}`, {
-    ...params,
-    roleId: undefined,
-  });
+export const listUserGroupByRoleId = (params: Partial<UserGroup.Info & { appId: string; roleId: string }>) => {
+  return http.get<httpNs.Page<UserGroup.LinkInfo[]>>(
+    `${baseUri}/listUserGroupByRoleId/${params.appId}/${params.roleId}`,
+    { ...params, appId: undefined, roleId: undefined }
+  );
 };
 
 /**
  * 查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true
  */
-export const listWithSelectedByRoleId = (params: { roleId: string }) => {
-  return http.get<httpNs.Response<UserGroup.BindSelect[]>>(`${baseUri}/listWithSelectedByRoleId/${params.roleId}`);
+export const listWithSelectedByRoleId = (params: { appId: string; roleId: string }) => {
+  return http.get<httpNs.Response<UserGroup.BindSelect[]>>(
+    `${baseUri}/listWithSelectedByRoleId/${params.appId}/${params.roleId}`
+  );
 };
 
 /**

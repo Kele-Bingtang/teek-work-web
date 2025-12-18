@@ -2,13 +2,6 @@ import type { Dept } from "../system/dept";
 import type { Role } from "../system/role";
 import { http } from "@/common/http";
 
-// 添加部门到角色（多个部门）
-export interface RoleLinkDept {
-  roleId: string; // 角色 ID
-  appId: string; // 应用 ID
-  deptIds: string[]; // 部门 ID
-}
-
 const baseUri = "/system/roleDeptLink";
 
 // ------- 部门关联角色相关 API（以部门为主）-------
@@ -16,8 +9,8 @@ const baseUri = "/system/roleDeptLink";
 /**
  * 通过部门 ID 查询角色列表
  */
-export const listRoleLinkByDeptId = (params: Partial<Role.LinkInfo>) => {
-  return http.get<httpNs.Response<Role.LinkInfo[]>>(`${baseUri}/listRoleLinkByDeptId/${params.appId}/${params.id}`, {
+export const listRoleLinkByDeptId = (params: Partial<Role.LinkInfo & { deptId: string }>) => {
+  return http.get<httpNs.Page<Role.LinkInfo[]>>(`${baseUri}/listRoleLinkByDeptId/${params.appId}/${params.deptId}`, {
     ...params,
     appId: undefined,
     id: undefined,
@@ -27,14 +20,16 @@ export const listRoleLinkByDeptId = (params: Partial<Role.LinkInfo>) => {
 /**
  * 查询所有角色列表，如果角色绑定了用户组，则 disabled 属性为 true
  */
-export const listWithSelectedByDeptId = (params: { id: string }) => {
-  return http.get<httpNs.Response<Role.BindSelect[]>>(`${baseUri}/listWithSelectedByDeptId/${params.id}`);
+export const listWithSelectedByDeptId = (params: { appId: string; deptId: string }) => {
+  return http.get<httpNs.Response<Role.BindSelect[]>>(
+    `${baseUri}/listWithSelectedByDeptId/${params.appId}/${params.deptId}`
+  );
 };
 
 /**
  * 添加角色到部门（多个角色）
  */
-export const addRoleListToDept = (data: RoleLinkDept) => {
+export const addRoleListToDept = (data: Dept.LinkRoles) => {
   return http.post<httpNs.Response<boolean>>(`${baseUri}/addRoleListToDept`, data);
 };
 
@@ -57,7 +52,7 @@ export const listDeptIdsByRoleId = (appId: string, roleId: string) => {
 /**
  * 添加部门到角色（多个部门）
  */
-export const addDeptListToRole = (data: RoleLinkDept) => {
+export const addDeptListToRole = (data: Role.LinkDepts) => {
   return http.post<httpNs.Response<boolean>>(`${baseUri}/addDeptListToRole`, data);
 };
 
@@ -73,12 +68,12 @@ export const editRoleDeptLink = (data: RequiredKeyPartialOther<Role.LinkInfo, "i
 /**
  * 将用户组移出角色
  */
-export const removeDeptRoleLink = (data: Role.LinkInfo & { idList: string[]; dataList: Role.LinkInfo[] }) => {
+export const removeRoleDeptLink = (data: Role.LinkInfo & { idList: string[]; dataList: Role.LinkInfo[] }) => {
   // 批量删除
   if (data.idList) {
-    return http.delete<httpNs.Response<boolean>>(`${baseUri}/removeDeptRoleLink/${data.idList.join(",")}`);
+    return http.delete<httpNs.Response<boolean>>(`${baseUri}/removeRoleDeptLink/${data.idList.join(",")}`);
   }
 
   // 单行删除
-  return http.delete<httpNs.Response<boolean>>(`${baseUri}/removeDeptRoleLink/${data.linkId}`);
+  return http.delete<httpNs.Response<boolean>>(`${baseUri}/removeRoleDeptLink/${data.linkId}`);
 };

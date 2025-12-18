@@ -57,6 +57,7 @@ const tabColumns: TabColumn[] = [
     el: Role,
     elProps: computed(() => ({
       id: descriptionData.data.userId,
+      idKey: "userId",
       listWithSelectedApi: listWithSelectedByUserId,
       listApi: listRoleLinkByUserId,
       addApi: addRoleListToUser,

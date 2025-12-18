@@ -20,30 +20,28 @@ export namespace UserGroup {
     groupId: string; // 用户组 ID
     groupName: string; // 用户组名
     linkId: number; // 关联 ID
-    expireOn: string; // 生效时间
-    validFrom: string; // 过期时间
-    createTime: string; // 创建时间
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
     ownerName: string; // 负责人 nickname
     ownerId: string; // 负责人 username
     status: number; // 状态
+    createTime: string; // 创建时间
   }
 
   // 用户组关联用户信息（多个用户）
   export interface LinkUsers {
-    id: number;
-    linkId: number; // 关联 ID
-    userIds: string[]; // 用户组 ID
-    userGroupId: string; // 用户组名
-    validFrom: string; // 负责人 ID
+    userIds: string[]; // 用户 ID
+    userGroupId: string; // 用户组 ID
+    validFrom: string; // 生效时间
     expireOn: string; // 过期时间
-    expireOnNum?: string; // 过期期限
   }
 
   // 用户组关联角色信息（多个角色）
   export interface LinkRoles {
-    id: number;
-    userGroupId: string; // 用户组 ID
     roleIds: string[]; // 角色 ID
+    userGroupId: string; // 用户组 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
     appId: string; // 应用 ID
   }
 

@@ -115,8 +115,7 @@ const formColumns: DialogFormColumn[] = [
     prop: "userIds",
     label: "用户",
     el: "el-transfer",
-    options: () =>
-      initRequestParams.userGroupId ? listWithSelectedByGroupId({ userGroupId: initRequestParams.userGroupId }) : [],
+    options: () => (initRequestParams.userGroupId ? listWithSelectedByGroupId(initRequestParams) : []),
     elProps: {
       props: { key: "userId", label: "nickname" },
       filterable: true,

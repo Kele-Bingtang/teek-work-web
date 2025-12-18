@@ -31,6 +31,7 @@ const tabColumns: TabColumn[] = [
     elProps: computed(() => {
       return {
         id: descriptionData.data.groupId,
+        idKey: "userGroupId",
         requestImmediate: false,
         listWithSelectedApi: listWithSelectedByGroupId,
         listApi: listRoleLinkByGroupId,

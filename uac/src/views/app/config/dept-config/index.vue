@@ -9,7 +9,7 @@ import {
   listRoleLinkByDeptId,
   addDeptListToRole,
   editRoleDeptLink,
-  removeDeptRoleLink,
+  removeRoleDeptLink,
 } from "@/common/api/link/role-dept-link";
 import Role from "../common/role.vue";
 
@@ -29,13 +29,14 @@ const tabColumns: TabColumn[] = [
     elProps: computed(() => {
       return {
         id: descriptionData.data.deptId,
+        idKey: "deptId",
         requestImmediate: false,
         listWithSelectedApi: listWithSelectedByDeptId,
         listApi: listRoleLinkByDeptId,
         addApi: addDeptListToRole,
         editApi: editRoleDeptLink,
-        removeApi: removeDeptRoleLink,
-        removeBatchApi: removeDeptRoleLink,
+        removeApi: removeRoleDeptLink,
+        removeBatchApi: removeRoleDeptLink,
       };
     }),
   },

@@ -9,26 +9,29 @@ import { exportExcel } from "@/common/api/system/role";
 
 interface RoleLink {
   id?: string;
+  idKey?: string;
   listWithSelectedApi: (data: Recordable) => Promise<httpNs.Response<Recordable[]>>;
-  listApi?: (data: Recordable) => Promise<httpNs.Response<Recordable[]>>;
+  listApi: (data: Recordable) => Promise<httpNs.Response<Recordable[]>>;
   addApi: (data: Recordable) => Promise<httpNs.Response<boolean>>;
   editApi: (data: Recordable) => Promise<httpNs.Response<boolean>>;
   removeApi: (data: Recordable) => Promise<httpNs.Response<boolean>>;
   removeBatchApi: (data: Recordable) => Promise<httpNs.Response<boolean>>;
 }
 
-const props = defineProps<RoleLink>();
+const props = withDefaults(defineProps<RoleLink>(), {
+  idKey: "id",
+});
 
 const proPageInstance = useTemplateRef<ProPageInstance>("proPageInstance");
 const route = useRoute();
 
 const initRequestParams = reactive({
   appId: route.params.appId as string,
-  id: "",
+  [props.idKey]: "",
 });
 
 watchEffect(() => {
-  if (props.id) initRequestParams.id = props.id;
+  if (props.id) initRequestParams[props.idKey] = props.id;
 });
 
 const { statusChange } = useChange(
@@ -116,7 +119,8 @@ const formColumns: DialogFormColumn[] = [
     prop: "roleIds",
     label: "角色",
     el: "el-transfer",
-    options: () => (initRequestParams.id ? props.listWithSelectedApi(initRequestParams) : []),
+    options: () => (initRequestParams[props.idKey] ? props.listWithSelectedApi(initRequestParams) : []),
+    optionCache: false,
     elProps: {
       props: { key: "roleId", label: "roleName" },
       filterable: true,

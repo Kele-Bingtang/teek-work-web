@@ -9,7 +9,7 @@ const baseUri = "/system/userGroupUserLink";
 /**
  * 通过用户组 ID 查询用户列表
  */
-export const listUserLinkByGroupId = (params: { userGroupId: string }) => {
+export const listUserLinkByGroupId = (params: Partial<UserGroup.Info & { userGroupId: string }>) => {
   return http.get<httpNs.Page<User.LinkInfo[]>>(`${baseUri}/listUserLinkByGroupId/${params.userGroupId}`, {
     ...params,
     userGroupId: undefined,
@@ -35,8 +35,8 @@ export const addUserListToGroup = (data: UserGroup.LinkInfo) => {
 /**
  * 查询某个用户所在的用户组列表
  */
-export const listUserGroupByUserId = (params: { userId: string }) => {
-  return http.get<httpNs.Response<UserGroup.LinkInfo[]>>(`${baseUri}/listUserGroupByUserId/${params.userId}`, {
+export const listUserGroupByUserId = (params: Partial<User.Info>) => {
+  return http.get<httpNs.Page<UserGroup.LinkInfo[]>>(`${baseUri}/listUserGroupByUserId/${params.userId}`, {
     ...params,
     userId: undefined,
   });

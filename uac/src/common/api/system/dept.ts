@@ -21,6 +21,15 @@ export namespace Dept {
     children: Info[]; // 子数据
   }
 
+  // 添加部门到角色（多个部门）
+  export interface LinkRoles {
+    deptId: string; // 部门 ID
+    roleIds: string[]; // 角色 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
+    appId: string; // 应用 ID
+  }
+
   export interface TreeList {
     id: string;
     label: string;

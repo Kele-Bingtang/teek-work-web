@@ -22,6 +22,15 @@ export namespace Resource {
     children: Info[]; // 子数据
   }
 
+  // 添加资源到角色（多个资源）
+  export interface LinkRoles {
+    resourceId: string; // 资源 ID
+    roleIds: string[]; // 角色 ID
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
+    appId: string; // 应用 ID
+  }
+
   export interface TreeList {
     id: string;
     label: string;

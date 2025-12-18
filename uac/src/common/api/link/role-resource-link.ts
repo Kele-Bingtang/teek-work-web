@@ -1,13 +1,6 @@
 import type { Resource } from "../system/resource";
-import { http } from "@/common/http";
 import type { Role } from "../system/role";
-
-// 添加部门到角色（多个部门）
-export interface RoleLinkResource {
-  roleId: string; // 角色 ID
-  appId: string; // 应用 ID
-  resourceIds: string[]; // 资源 ID
-}
+import { http } from "@/common/http";
 
 const baseUri = "/system/roleResourceLink";
 
@@ -22,7 +15,7 @@ export const listResourceIdsByRoleId = (appId: string, roleId: string) => {
 /**
  * 添加资源到角色（多个资源）
  */
-export const addResourceToRole = (data: RoleLinkResource) => {
+export const addResourceToRole = (data: Role.LinkResources) => {
   return http.post<httpNs.Response<boolean>>(`${baseUri}/addResourceToRole`, data);
 };
 
