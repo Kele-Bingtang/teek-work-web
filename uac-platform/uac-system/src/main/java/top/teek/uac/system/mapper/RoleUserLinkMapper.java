@@ -1,11 +1,5 @@
 package top.teek.uac.system.mapper;
 
-import top.teek.uac.system.model.po.RoleUserLink;
-import top.teek.uac.system.model.po.SysRole;
-import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
-import top.teek.uac.system.model.vo.link.RoleLinkVO;
-import top.teek.uac.system.model.vo.link.UserBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserLinkVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -13,6 +7,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
+import top.teek.uac.system.model.po.RoleUserLink;
+import top.teek.uac.system.model.po.SysRole;
+import top.teek.uac.system.model.po.SysUser;
+import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
+import top.teek.uac.system.model.vo.link.RoleLinkVO;
+import top.teek.uac.system.model.vo.link.UserBindSelectVO;
+import top.teek.uac.system.model.vo.link.UserLinkVO;
 
 import java.util.List;
 
@@ -25,15 +26,15 @@ public interface RoleUserLinkMapper extends BaseMapper<RoleUserLink> {
 
     // ------- 用户关联角色相关 API（以用户为主）-------
 
-    List<RoleLinkVO> listRoleLinkByUserId(@Param(Constants.WRAPPER) QueryWrapper<SysRole> wrapper);
+    IPage<RoleLinkVO> listRoleLinkByUserId(@Param("page") Page<RoleLinkVO> page, @Param(Constants.WRAPPER) QueryWrapper<SysRole> wrapper);
 
     List<RoleBindSelectVO> selectWithDisabledByUserId(@Param("appId") String appId, @Param("userId") String userId);
 
     // ------- 角色关联用户相关 API（以角色为主）-------
 
-    IPage<UserLinkVO> listUserLinkByRoleId(@Param("page") Page<RoleUserLink> page, @Param(Constants.WRAPPER) Wrapper<RoleUserLink> queryWrapper);
+    IPage<UserLinkVO> listUserLinkByRoleId(@Param("page") Page<UserLinkVO> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 
-    List<UserBindSelectVO> listWithSelectedByRoleId(@Param("roleId") String roleId);
+    List<UserBindSelectVO> listWithSelectedByRoleId(@Param("appId") String appId, @Param("roleId") String roleId);
 }
 
 

@@ -12,14 +12,16 @@ import org.springframework.stereotype.Service;
 import top.teek.core.constants.ColumnConstant;
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
+import top.teek.uac.core.constant.CommonConstant;
 import top.teek.uac.system.mapper.RoleDeptLinkMapper;
 import top.teek.uac.system.model.dto.RoleDeptLinkDTO;
+import top.teek.uac.system.model.dto.SysDeptDTO;
+import top.teek.uac.system.model.dto.SysRoleDTO;
 import top.teek.uac.system.model.dto.link.DeptLinkRoleListDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkDeptListDTO;
-import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
 import top.teek.uac.system.model.po.RoleDeptLink;
 import top.teek.uac.system.model.po.SysDept;
-import top.teek.uac.system.model.po.UserGroupUserLink;
+import top.teek.uac.system.model.po.SysRole;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
 import top.teek.uac.system.service.link.RoleDeptLinkService;
@@ -32,6 +34,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Teeker
@@ -44,12 +47,13 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     // ------- 部门关联角色相关 API（以部门为主）-------
 
     @Override
-    public TablePage<RoleLinkVO> listRoleLinkByDeptId(String deptId, String appId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
-        QueryWrapper<UserGroupUserLink> queryWrapper = Wrappers.query();
+    public TablePage<RoleLinkVO> listRoleLinkByDeptId(String appId, String deptId, SysRoleDTO sysRoleDTO, PageQuery pageQuery) {
+        QueryWrapper<SysRole> queryWrapper = Wrappers.query();
         queryWrapper.eq("tsr.is_deleted", 0)
+                .eq("trdl.app_id", appId)
                 .eq("trdl.dept_id", deptId)
-                .like(StringUtil.hasText(roleLinkInfoDTO.getRoleCode()), "tsr.role_code", roleLinkInfoDTO.getRoleCode())
-                .like(StringUtil.hasText(roleLinkInfoDTO.getRoleName()), "tsr.role_name", roleLinkInfoDTO.getRoleName());
+                .like(StringUtil.hasText(sysRoleDTO.getRoleCode()), "tsr.role_code", sysRoleDTO.getRoleCode())
+                .like(StringUtil.hasText(sysRoleDTO.getRoleName()), "tsr.role_name", sysRoleDTO.getRoleName());
 
         IPage<RoleLinkVO> deptLinkRoleVOIPage = baseMapper.listRoleLinkByDeptId(pageQuery.buildPage(), queryWrapper);
 
@@ -57,8 +61,8 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     }
 
     @Override
-    public List<RoleBindSelectVO> listWithSelectedByDeptId(String deptId) {
-        return baseMapper.listWithSelectedByDeptId(deptId);
+    public List<RoleBindSelectVO> listWithSelectedByDeptId(String appId, String deptId) {
+        return baseMapper.listWithSelectedByDeptId(appId, deptId);
     }
 
     @Override
@@ -68,6 +72,8 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
         List<RoleDeptLink> roleDeptLinkList = ListUtil.newArrayList(roleIds, roleId ->
                         new RoleDeptLink().setRoleId(roleId)
                                 .setDeptId(deptLinkRoleListDTO.getDeptId())
+                                .setValidFrom(Optional.ofNullable(deptLinkRoleListDTO.getValidFrom()).orElse(LocalDate.now()))
+                                .setExpireOn(Optional.ofNullable(deptLinkRoleListDTO.getExpireOn()).orElse(LocalDate.now().plusYears(CommonConstant.expireOnNum)))
                                 .setAppId(deptLinkRoleListDTO.getAppId())
                 , RoleDeptLink.class);
 
@@ -85,8 +91,8 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     // ------- 角色关联部门相关 API（以角色为主） -------
 
     @Override
-    public List<Tree<String>> listDeptListByRoleId(String roleId, String appId) {
-        List<SysDept> sysDeptList = baseMapper.listDeptListByRoleId(roleId, appId);
+    public List<Tree<String>> listDeptListByRoleId(String appId, String roleId, SysDeptDTO sysDeptDTO) {
+        List<SysDept> sysDeptList = baseMapper.listDeptListByRoleId(appId, roleId, sysDeptDTO);
         return buildDeptTree(sysDeptList);
     }
 
@@ -137,6 +143,8 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
         List<RoleDeptLink> roleDeptLinkList = ListUtil.newArrayList(deptIds, deptId ->
                         new RoleDeptLink().setDeptId(deptId)
                                 .setRoleId(roleLinkDeptListDTO.getRoleId())
+                                .setValidFrom(Optional.ofNullable(roleLinkDeptListDTO.getValidFrom()).orElse(LocalDate.now()))
+                                .setExpireOn(Optional.ofNullable(roleLinkDeptListDTO.getExpireOn()).orElse(LocalDate.now().plusYears(CommonConstant.expireOnNum)))
                                 .setAppId(roleLinkDeptListDTO.getAppId())
                 , RoleDeptLink.class);
 
@@ -154,7 +162,7 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
         }
         if (Objects.isNull(roleDeptLink.getExpireOn())) {
             // 默认为 3 年
-            roleDeptLink.setExpireOn(LocalDate.now().plusYears(3));
+            roleDeptLink.setExpireOn(LocalDate.now().plusYears(CommonConstant.expireOnNum));
         }
         return baseMapper.updateById(roleDeptLink) > 0;
     }

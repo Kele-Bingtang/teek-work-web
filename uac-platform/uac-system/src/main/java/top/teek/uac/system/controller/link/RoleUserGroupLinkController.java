@@ -13,9 +13,9 @@ import top.teek.mp.base.TablePage;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.RoleUserGroupLinkDTO;
-import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
+import top.teek.uac.system.model.dto.SysRoleDTO;
+import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUserGroupListDTO;
-import top.teek.uac.system.model.dto.link.UserGroupLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkRoleListDTO;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
@@ -39,19 +39,19 @@ public class RoleUserGroupLinkController {
 
     // ------- 用户组关联角色相关 API（以用户组为主）-------
 
-    @GetMapping("listRoleLinkByGroupId/{userGroupId}")
+    @GetMapping("listRoleLinkByGroupId/{appId}/{userGroupId}")
     @Operation(summary = "角色列表查询", description = "通过用户组 ID 查询角色列表")
     @PreAuthorize("hasAuthority('system:role:query')")
-    public Response<TablePage<RoleLinkVO>> listRoleLinkByGroupId(@PathVariable String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<RoleLinkVO> tablePage = roleUserGroupLinkService.listRoleLinkByGroupId(userGroupId, roleLinkInfoDTO, pageQuery);
+    public Response<TablePage<RoleLinkVO>> listRoleLinkByGroupId(@PathVariable String appId, @PathVariable String userGroupId, SysRoleDTO sysRoleDTO, PageQuery pageQuery) {
+        TablePage<RoleLinkVO> tablePage = roleUserGroupLinkService.listRoleLinkByGroupId(appId, userGroupId, sysRoleDTO, pageQuery);
         return HttpResult.ok(tablePage);
     }
 
-    @GetMapping("/listWithSelectedByGroupId/{userGroupId}")
+    @GetMapping("/listWithSelectedByGroupId/{appId}/{userGroupId}")
     @Operation(summary = "角色列表查询", description = "查询所有角色列表（查询所有角色列表，如果角色绑定了用户组，则 disabled 属性为 true）")
     @PreAuthorize("hasAuthority('system:role:query')")
-    public Response<List<RoleBindSelectVO>> listWithSelectedByGroupId(@PathVariable String userGroupId) {
-        List<RoleBindSelectVO> roleBindSelectVOList = roleUserGroupLinkService.listWithSelectedByGroupId(userGroupId);
+    public Response<List<RoleBindSelectVO>> listWithSelectedByGroupId(@PathVariable String appId, @PathVariable String userGroupId) {
+        List<RoleBindSelectVO> roleBindSelectVOList = roleUserGroupLinkService.listWithSelectedByGroupId(appId, userGroupId);
         return HttpResult.ok(roleBindSelectVOList);
     }
 
@@ -69,19 +69,19 @@ public class RoleUserGroupLinkController {
 
     // ------- 角色关联用户组相关 API（以角色为主）-------
 
-    @GetMapping("/listUserGroupByRoleId/{roleId}")
+    @GetMapping("/listUserGroupByRoleId/{appId}/{roleId}")
     @Operation(summary = "用户组列表查询", description = "查询某个角色绑定的用户组列表")
     @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<TablePage<UserGroupLinkVO>> listUserGroupByRoleId(@PathVariable String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<UserGroupLinkVO> tablePage = roleUserGroupLinkService.listUserGroupByRoleId(roleId, userGroupLinkInfoDTO, pageQuery);
+    public Response<TablePage<UserGroupLinkVO>> listUserGroupByRoleId(@PathVariable String appId, @PathVariable String roleId, SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery) {
+        TablePage<UserGroupLinkVO> tablePage = roleUserGroupLinkService.listUserGroupByRoleId(appId, roleId, sysUserGroupDTO, pageQuery);
         return HttpResult.ok(tablePage);
     }
 
-    @GetMapping("listWithSelectedByRoleId/{roleId}")
+    @GetMapping("listWithSelectedByRoleId/{appId}/{roleId}")
     @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true")
     @PreAuthorize("hasAuthority('system:userGroup:query')")
-    public Response<List<UserGroupBindSelectVO>> listWithSelectedByRoleId(@PathVariable String roleId) {
-        List<UserGroupBindSelectVO> sysUserGroupVOList = roleUserGroupLinkService.listWithSelectedByRoleId(roleId);
+    public Response<List<UserGroupBindSelectVO>> listWithSelectedByRoleId(@PathVariable String appId, @PathVariable String roleId) {
+        List<UserGroupBindSelectVO> sysUserGroupVOList = roleUserGroupLinkService.listWithSelectedByRoleId(appId, roleId);
         return HttpResult.ok(sysUserGroupVOList);
     }
 

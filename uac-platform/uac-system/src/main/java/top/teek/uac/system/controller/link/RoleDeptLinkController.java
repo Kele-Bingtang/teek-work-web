@@ -14,9 +14,10 @@ import top.teek.mp.base.TablePage;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
 import top.teek.uac.system.model.dto.RoleDeptLinkDTO;
+import top.teek.uac.system.model.dto.SysDeptDTO;
+import top.teek.uac.system.model.dto.SysRoleDTO;
 import top.teek.uac.system.model.dto.link.DeptLinkRoleListDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkDeptListDTO;
-import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
 import top.teek.uac.system.service.link.RoleDeptLinkService;
@@ -40,16 +41,16 @@ public class RoleDeptLinkController {
     @GetMapping("/listRoleLinkByDeptId/{appId}/{deptId}")
     @Operation(summary = "角色列表查询", description = "通过部门 ID 查询角色列表")
     @PreAuthorize("hasAuthority('system:dept:query')")
-    public Response<TablePage<RoleLinkVO>> listRoleLinkByDeptId(@PathVariable String appId, @PathVariable String deptId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<RoleLinkVO> tablePageList = roleDeptLinkService.listRoleLinkByDeptId(deptId, appId, roleLinkInfoDTO, pageQuery);
+    public Response<TablePage<RoleLinkVO>> listRoleLinkByDeptId(@PathVariable String appId, @PathVariable String deptId, SysRoleDTO sysRoleDTO, PageQuery pageQuery) {
+        TablePage<RoleLinkVO> tablePageList = roleDeptLinkService.listRoleLinkByDeptId(appId, deptId, sysRoleDTO, pageQuery);
         return HttpResult.ok(tablePageList);
     }
 
-    @GetMapping("listWithSelectedByDeptId/{deptId}")
+    @GetMapping("listWithSelectedByDeptId/{appId}/{deptId}")
     @Operation(summary = "部门列表查询", description = "查询所有部门列表，如果部门绑定角色，则 disabled 属性为 true")
     @PreAuthorize("hasAuthority('system:dept:query')")
-    public Response<List<RoleBindSelectVO>> listWithSelectedByDeptId(@PathVariable String deptId) {
-        List<RoleBindSelectVO> roleBindSelectVOList = roleDeptLinkService.listWithSelectedByDeptId(deptId);
+    public Response<List<RoleBindSelectVO>> listWithSelectedByDeptId(@PathVariable String appId, @PathVariable String deptId) {
+        List<RoleBindSelectVO> roleBindSelectVOList = roleDeptLinkService.listWithSelectedByDeptId(appId, deptId);
         return HttpResult.ok(roleBindSelectVOList);
     }
 
@@ -70,8 +71,8 @@ public class RoleDeptLinkController {
     @GetMapping("/listDeptListByRoleId/{appId}/{roleId}")
     @Operation(summary = "部门列表查询", description = "通过角色 ID 查询部门列表（树形结构）")
     @PreAuthorize("hasAuthority('system:dept:query')")
-    public Response<List<Tree<String>>> listDeptListByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<Tree<String>> roleDeptLinkList = roleDeptLinkService.listDeptListByRoleId(roleId, appId);
+    public Response<List<Tree<String>>> listDeptListByRoleId(@PathVariable String appId, @PathVariable String roleId, SysDeptDTO sysDeptDTO) {
+        List<Tree<String>> roleDeptLinkList = roleDeptLinkService.listDeptListByRoleId(appId, roleId, sysDeptDTO);
         return HttpResult.ok(roleDeptLinkList);
     }
 
@@ -79,7 +80,7 @@ public class RoleDeptLinkController {
     @Operation(summary = "部门 ID 列表查询", description = "通过角色 ID 查询部门 ID 列表")
     @PreAuthorize("hasAuthority('system:dept:query')")
     public Response<List<String>> listDeptIdsByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<String> deptIds = roleDeptLinkService.listDeptIdsByRoleId(roleId, appId);
+        List<String> deptIds = roleDeptLinkService.listDeptIdsByRoleId(appId, roleId);
         return HttpResult.ok(deptIds);
     }
     

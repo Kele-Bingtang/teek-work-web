@@ -1,33 +1,39 @@
-package top.teek.uac.system.model.dto.link;
+package top.teek.uac.system.model.dto;
 
+import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.experimental.Accessors;
 import top.teek.core.validate.RestGroup;
+import top.teek.uac.system.model.po.RolePostLink;
 
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * @author Teeker
- * @date 2025/11/17 23:13:11
+ * @date 2025/12/18 21:07:01
  * @since 1.0.0
  */
 @Data
-@Accessors(chain = true)
-public class RoleLinkResourceDTO {
+@AutoMapper(target = RolePostLink.class, reverseConvertGenerate = false)
+public class RolePostLinkDTO {
+    /**
+     * 主键 ID
+     */
+    @NotBlank(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
+    private Long id;
+
     /**
      * 角色 ID
      */
     @NotBlank(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String roleId;
-    
+
     /**
-     * 资源 ID
+     * 岗位 ID
      */
-    @NotNull(message = "资源 ID 不能为空", groups = {RestGroup.AddGroup.class})
-    private List<String> resourceIds;
+    @NotBlank(message = "岗位 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private String postId;
 
     /**
      * 生效时间
@@ -44,6 +50,11 @@ public class RoleLinkResourceDTO {
     /**
      * 应用 ID
      */
-    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class})
     private String appId;
+
+    /**
+     * 状态 1 正常 0 异常
+     */
+    private Integer status;
 }

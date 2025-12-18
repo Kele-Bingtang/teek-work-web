@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @AutoMapper(target = RoleUserGroupLink.class, reverseConvertGenerate = false)
 public class RoleUserGroupLinkDTO {
     /**
-     * 主键
+     * 主键 ID
      */
     @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
     private String id;
@@ -26,11 +26,13 @@ public class RoleUserGroupLinkDTO {
     /**
      * 角色 ID
      */
+    @NotBlank(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String roleId;
 
     /**
      * 用户组 ID
      */
+    @NotBlank(message = "用户组 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String userGroupId;
 
     /**
@@ -40,7 +42,7 @@ public class RoleUserGroupLinkDTO {
     private LocalDate validFrom;
 
     /**
-     * 失效时间
+     * 过期时间
      */
     @NotNull(message = "过期时间不能为空", groups = {RestGroup.AddGroup.class})
     private LocalDate expireOn;

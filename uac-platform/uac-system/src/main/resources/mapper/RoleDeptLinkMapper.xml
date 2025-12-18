@@ -45,7 +45,13 @@
         from t_sys_dept tsd left join (
             select * from t_role_dept_link where is_deleted = 0 and role_id = #{roleId} and app_id = #{appId}
         ) trdl on tsd.dept_id = trdl.dept_id
-        where tsd.is_deleted = 0;
+        where tsd.is_deleted = 0
+        <if test="sysDeptDTO.deptId != null and sysDeptDTO.deptId != ''">
+            and tsd.dept_id = #{sysDeptDTO.deptId}
+        </if>
+        <if test="sysDeptDTO.deptName != null and sysDeptDTO.deptName != ''">
+            and tsd.dept_name = #{sysDeptDTO.deptName}
+        </if>
     </select>
     
 </mapper>

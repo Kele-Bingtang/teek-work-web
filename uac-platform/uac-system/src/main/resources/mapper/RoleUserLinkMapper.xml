@@ -50,7 +50,7 @@
     <select id="listWithSelectedByRoleId" resultType="top.teek.uac.system.model.vo.link.UserBindSelectVO">
         select tsu.user_id, tsu.username, tsu.nickname, case when trul.role_id is not null then 1 else 0 end as disabled
         from t_sys_user tsu
-        left join t_role_user_link trul on tsu.user_id = trul.user_id and trul.role_id = #{roleId} and trul.is_deleted = 0
+        left join t_role_user_link trul on tsu.user_id = trul.user_id and trul.role_id = #{roleId} and trul.app_id = #{appId} and trul.is_deleted = 0
         where tsu.is_deleted = 0
     </select>
 </mapper>

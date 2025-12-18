@@ -15,6 +15,7 @@ import top.teek.core.http.HttpResult;
 import top.teek.core.http.Response;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
+import top.teek.uac.system.model.dto.SysResourceDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkResourceDTO;
 import top.teek.uac.system.service.link.RoleResourceLinkService;
 
@@ -39,8 +40,8 @@ public class RoleResourceLinkController {
     @GetMapping("/listResourceListByRoleId/{appId}/{roleId}")
     @Operation(summary = "资源列表查询", description = "通过角色 ID 查询资源列表（树型结构）")
     @PreAuthorize("hasAuthority('system:resource:query')")
-    public Response<List<Tree<String>>> listResourceListByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<Tree<String>> roleResourceLinkList = roleResourceLinkService.listResourceListByRoleId(roleId, appId);
+    public Response<List<Tree<String>>> listResourceListByRoleId(@PathVariable String appId, @PathVariable String roleId, SysResourceDTO sysResourceDTO) {
+        List<Tree<String>> roleResourceLinkList = roleResourceLinkService.listResourceListByRoleId(appId, roleId, sysResourceDTO);
         return HttpResult.ok(roleResourceLinkList);
     }
 
@@ -48,7 +49,7 @@ public class RoleResourceLinkController {
     @Operation(summary = "资源 ID 列表查询", description = "通过角色 ID 查询资源 ID 列表")
     @PreAuthorize("hasAuthority('system:resource:query')")
     public Response<List<String>> listResourceIdsByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<String> resourceIds = roleResourceLinkService.listResourceIdsByRoleId(roleId, appId, null);
+        List<String> resourceIds = roleResourceLinkService.listResourceIdsByRoleId(appId, roleId, null);
         return HttpResult.ok(resourceIds);
     }
 

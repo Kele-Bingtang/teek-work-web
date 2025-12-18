@@ -6,24 +6,25 @@ import java.time.LocalDate;
 
 /**
  * @author Teeker
- * @date 2023/12/16 0:13
- * @note
+ * @date 2025/12/18 21:05:29
+ * @since 1.0.0
  */
 @Data
-public class RoleResourceLinkVO {
+public class RolePostLinkVO {
     /**
      * ID
      */
     private Long id;
+
     /**
      * 角色 ID
      */
     private String roleId;
 
     /**
-     * 资源 ID
+     * 岗位 ID
      */
-    private String resourceId;
+    private String postId;
 
     /**
      * 生效时间
@@ -36,7 +37,7 @@ public class RoleResourceLinkVO {
     private LocalDate expireOn;
 
     /**
-     * 资源名
+     * 应用 ID
      */
-    private String resourceName;
+    private String appId;
 }

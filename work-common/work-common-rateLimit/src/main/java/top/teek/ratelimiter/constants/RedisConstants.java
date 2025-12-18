@@ -1,4 +1,4 @@
-package top.teek.redis.constants;
+package top.teek.ratelimiter.constants;
 
 /**
  * @author Teeker

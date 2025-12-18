@@ -1,16 +1,24 @@
 package top.teek.uac.system.service.link.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
+import org.springframework.stereotype.Service;
 import top.teek.core.constants.ColumnConstant;
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
+import top.teek.uac.core.constant.CommonConstant;
 import top.teek.uac.system.mapper.RoleUserLinkMapper;
-import top.teek.uac.system.model.dto.SysRoleDTO;
 import top.teek.uac.system.model.dto.RoleUserLinkDTO;
+import top.teek.uac.system.model.dto.SysRoleDTO;
+import top.teek.uac.system.model.dto.SysUserDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUserListDTO;
-import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.UserLinkRoleListDTO;
 import top.teek.uac.system.model.po.RoleUserLink;
 import top.teek.uac.system.model.po.SysRole;
+import top.teek.uac.system.model.po.SysUser;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
 import top.teek.uac.system.model.vo.link.UserBindSelectVO;
@@ -19,16 +27,11 @@ import top.teek.uac.system.service.link.RoleUserLinkService;
 import top.teek.utils.ListUtil;
 import top.teek.utils.MapstructUtil;
 import top.teek.utils.StringUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.Db;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Teeker
@@ -41,8 +44,9 @@ public class RoleUserLinkServiceImpl extends ServiceImpl<RoleUserLinkMapper, Rol
     // ------- 用户关联角色相关 API（以用户为主）-------
 
     @Override
-    public List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId, SysRoleDTO sysRoleDTO) {
+    public TablePage<RoleLinkVO> listRoleLinkByUserId(String appId, String userId, SysRoleDTO sysRoleDTO, PageQuery pageQuery) {
         QueryWrapper<SysRole> wrapper = Wrappers.query();
+        
         wrapper.eq("trul.is_deleted", ColumnConstant.NON_DELETED)
                 .eq("tsr.app_id", appId)
                 .eq("trul.user_id", userId)
@@ -50,7 +54,9 @@ public class RoleUserLinkServiceImpl extends ServiceImpl<RoleUserLinkMapper, Rol
                 .eq(StringUtil.hasText(sysRoleDTO.getRoleName()), "tsr.role_name", sysRoleDTO.getRoleName())
                 .eq(Objects.nonNull(sysRoleDTO.getStatus()), "tsr.status", sysRoleDTO.getStatus())
                 .orderByAsc("trul.create_time");
-        return baseMapper.listRoleLinkByUserId(wrapper);
+        IPage<RoleLinkVO> roleLinkVOIPage =  baseMapper.listRoleLinkByUserId(pageQuery.buildPage(), wrapper);
+
+        return TablePage.build(roleLinkVOIPage);
     }
 
     @Override
@@ -65,8 +71,8 @@ public class RoleUserLinkServiceImpl extends ServiceImpl<RoleUserLinkMapper, Rol
         List<RoleUserLink> roleUserLinkList = ListUtil.newArrayList(roleIds, roleId ->
                         new RoleUserLink().setRoleId(roleId)
                                 .setUserId(userLinkRoleListDTO.getUserId())
-                                .setValidFrom(userLinkRoleListDTO.getValidFrom())
-                                .setExpireOn(userLinkRoleListDTO.getExpireOn())
+                                .setValidFrom(Optional.ofNullable(userLinkRoleListDTO.getValidFrom()).orElse(LocalDate.now()))
+                                .setExpireOn(Optional.ofNullable(userLinkRoleListDTO.getExpireOn()).orElse(LocalDate.now().plusYears(CommonConstant.expireOnNum)))
                                 .setAppId(userLinkRoleListDTO.getAppId())
                 , RoleUserLink.class);
 
@@ -84,12 +90,14 @@ public class RoleUserLinkServiceImpl extends ServiceImpl<RoleUserLinkMapper, Rol
     // ------- 角色关联用户相关 API（以角色为主）-------
 
     @Override
-    public TablePage<UserLinkVO> listUserLinkByRoleId(String roleId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
-        QueryWrapper<RoleUserLink> queryWrapper = Wrappers.query();
+    public TablePage<UserLinkVO> listUserLinkByRoleId(String appId, String roleId, SysUserDTO sysUserDTO, PageQuery pageQuery) {
+        QueryWrapper<SysUser> queryWrapper = Wrappers.query();
+        
         queryWrapper.eq("tsu.is_deleted", 0)
+                .eq("trul.app_id", appId)
                 .eq("trul.role_id", roleId)
-                .like(StringUtil.hasText(userLinkInfoDTO.getUsername()), "tsu.username", userLinkInfoDTO.getUsername())
-                .like(StringUtil.hasText(userLinkInfoDTO.getNickname()), "tsu.nickname", userLinkInfoDTO.getNickname());
+                .like(StringUtil.hasText(sysUserDTO.getUsername()), "tsu.username", sysUserDTO.getUsername())
+                .like(StringUtil.hasText(sysUserDTO.getNickname()), "tsu.nickname", sysUserDTO.getNickname());
         IPage<UserLinkVO> userLinkVOIPage = baseMapper.listUserLinkByRoleId(pageQuery.buildPage(), queryWrapper);
 
         return TablePage.build(userLinkVOIPage);
@@ -97,8 +105,8 @@ public class RoleUserLinkServiceImpl extends ServiceImpl<RoleUserLinkMapper, Rol
 
 
     @Override
-    public List<UserBindSelectVO> listWithSelectedByRoleId(String roleId) {
-        return baseMapper.listWithSelectedByRoleId(roleId);
+    public List<UserBindSelectVO> listWithSelectedByRoleId(String appId, String roleId) {
+        return baseMapper.listWithSelectedByRoleId(appId, roleId);
     }
 
     @Override
@@ -108,8 +116,8 @@ public class RoleUserLinkServiceImpl extends ServiceImpl<RoleUserLinkMapper, Rol
         List<RoleUserLink> roleUserLinkList = ListUtil.newArrayList(userIds, userId ->
                         new RoleUserLink().setUserId(userId)
                                 .setRoleId(roleLinkUserListDTO.getRoleId())
-                                .setValidFrom(roleLinkUserListDTO.getValidFrom())
-                                .setExpireOn(roleLinkUserListDTO.getExpireOn())
+                                .setValidFrom(Optional.ofNullable(roleLinkUserListDTO.getValidFrom()).orElse(LocalDate.now()))
+                                .setExpireOn(Optional.ofNullable(roleLinkUserListDTO.getExpireOn()).orElse(LocalDate.now().plusYears(CommonConstant.expireOnNum)))
                                 .setAppId(roleLinkUserListDTO.getAppId())
                 , RoleUserLink.class);
 
@@ -135,7 +143,7 @@ public class RoleUserLinkServiceImpl extends ServiceImpl<RoleUserLinkMapper, Rol
         }
         if (Objects.isNull(roleUserLink.getExpireOn())) {
             // 默认为 3 年
-            roleUserLink.setExpireOn(LocalDate.now().plusYears(3));
+            roleUserLink.setExpireOn(LocalDate.now().plusYears(CommonConstant.expireOnNum));
         }
         return baseMapper.updateById(roleUserLink) > 0;
     }

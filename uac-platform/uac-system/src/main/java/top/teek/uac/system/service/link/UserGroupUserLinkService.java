@@ -3,10 +3,10 @@ package top.teek.uac.system.service.link;
 import com.baomidou.mybatisplus.extension.service.IService;
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
+import top.teek.uac.system.model.dto.SysUserDTO;
 import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.dto.UserGroupUserLinkDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkUserListDTO;
-import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.UserLinkUserGroupListDTO;
 import top.teek.uac.system.model.po.UserGroupUserLink;
 import top.teek.uac.system.model.vo.link.UserBindSelectVO;
@@ -29,9 +29,10 @@ public interface UserGroupUserLinkService extends IService<UserGroupUserLink> {
      * 查询用户组下的用户列表
      *
      * @param userGroupId 用户组 ID
+     * @param sysUserDTO 用户信息
      * @return 用户列表
      */
-    TablePage<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery);
+    TablePage<UserLinkVO> listUserLinkByGroupId(String userGroupId, SysUserDTO sysUserDTO, PageQuery pageQuery);
 
     /**
      * 下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true

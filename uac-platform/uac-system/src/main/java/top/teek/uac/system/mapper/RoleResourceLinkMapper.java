@@ -1,5 +1,6 @@
 package top.teek.uac.system.mapper;
 
+import top.teek.uac.system.model.dto.SysResourceDTO;
 import top.teek.uac.system.model.po.RoleResourceLink;
 import top.teek.uac.system.model.po.SysResource;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -16,7 +17,7 @@ public interface RoleResourceLinkMapper extends BaseMapper<RoleResourceLink> {
 
     // ------- 角色关联资源相关 API（以角色为主）-------
     
-    List<SysResource> listResourceListByRoleId(@Param("roleId") String roleId, @Param("appId") String appId);
+    List<SysResource> listResourceListByRoleId(@Param("roleId") String roleId, @Param("appId") String appId, @Param("sysResourceDTO") SysResourceDTO sysResourceDTO);
 }
 
 

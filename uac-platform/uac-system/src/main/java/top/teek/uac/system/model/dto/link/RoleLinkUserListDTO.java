@@ -19,22 +19,16 @@ import java.util.List;
 @AutoMapper(target = RoleUserLink.class, reverseConvertGenerate = false)
 public class RoleLinkUserListDTO {
     /**
-     * 主键 ID
+     * 角色 ID
      */
-    @NotNull(message = "主键 ID 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
-    private Long id;
+    @NotBlank(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private String roleId;
 
     /**
      * 用户 ID
      */
     @NotNull(message = "用户 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private List<String> userIds;
-
-    /**
-     * 角色 ID
-     */
-    @NotBlank(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
-    private String roleId;
 
     /**
      * 生效时间
@@ -51,6 +45,6 @@ public class RoleLinkUserListDTO {
     /**
      * 应用 ID
      */
-    @NotNull(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
 }

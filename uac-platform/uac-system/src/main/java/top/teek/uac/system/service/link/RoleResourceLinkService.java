@@ -2,6 +2,7 @@ package top.teek.uac.system.service.link;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
+import top.teek.uac.system.model.dto.SysResourceDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkResourceDTO;
 import top.teek.uac.system.model.po.RoleResourceLink;
 
@@ -18,9 +19,9 @@ public interface RoleResourceLinkService extends IService<RoleResourceLink> {
 
     // ------- 角色关联资源相关 API（以角色为主）-------
 
-    List<String> listResourceIdsByRoleId(String roleId, String appId, String tenantId);
-
-    List<Tree<String>> listResourceListByRoleId(String roleId, String appId);
+    List<Tree<String>> listResourceListByRoleId(String appId, String roleId, SysResourceDTO sysResourceDTO);
+    
+    List<String> listResourceIdsByRoleId(String appId, String roleId, String tenantId);
 
     boolean addResourceListToRole(RoleLinkResourceDTO roleLinkResourceDTO, boolean removeLink);
 

@@ -12,10 +12,10 @@ import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
-import top.teek.uac.system.model.dto.SysRoleDTO;
 import top.teek.uac.system.model.dto.RoleUserLinkDTO;
+import top.teek.uac.system.model.dto.SysRoleDTO;
+import top.teek.uac.system.model.dto.SysUserDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUserListDTO;
-import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.UserLinkRoleListDTO;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
@@ -42,8 +42,8 @@ public class RoleUserLinkController {
     @GetMapping("/listRoleLinkByUserId/{appId}/{userId}")
     @Operation(summary = "角色列表查询", description = "通过用户 ID 查询角色列表")
     @PreAuthorize("hasAuthority('system:role:query')")
-    public Response<List<RoleLinkVO>> listRoleListByUserId(@PathVariable String appId, @PathVariable String userId, SysRoleDTO sysRoleDTO) {
-        List<RoleLinkVO> roleLinkVOS = roleUserLinkService.listRoleLinkByUserId(appId, userId, sysRoleDTO);
+    public Response<TablePage<RoleLinkVO>> listRoleListByUserId(@PathVariable String appId, @PathVariable String userId, SysRoleDTO sysRoleDTO, PageQuery pageQuery) {
+        TablePage<RoleLinkVO> roleLinkVOS = roleUserLinkService.listRoleLinkByUserId(appId, userId, sysRoleDTO, pageQuery);
         return HttpResult.ok(roleLinkVOS);
     }
 
@@ -69,19 +69,19 @@ public class RoleUserLinkController {
 
     // ------- 角色关联用户相关 API（以角色为主）-------
 
-    @GetMapping("listUserLinkByRoleId/{roleId}")
+    @GetMapping("listUserLinkByRoleId/{appId}/{roleId}")
     @Operation(summary = "用户列表查询", description = "通过角色 ID 查询用户列表（分页）")
     @PreAuthorize("hasAuthority('system:user:query')")
-    public Response<TablePage<UserLinkVO>> listUserLinkByRoleId(@PathVariable String roleId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<UserLinkVO> userLinkVOList = roleUserLinkService.listUserLinkByRoleId(roleId, userLinkInfoDTO, pageQuery);
+    public Response<TablePage<UserLinkVO>> listUserLinkByRoleId(@PathVariable String appId, @PathVariable String roleId, SysUserDTO sysUserDTO, PageQuery pageQuery) {
+        TablePage<UserLinkVO> userLinkVOList = roleUserLinkService.listUserLinkByRoleId(appId, roleId, sysUserDTO, pageQuery);
         return HttpResult.ok(userLinkVOList);
     }
 
-    @GetMapping("/listWithSelectedByRoleId/{roleId}")
+    @GetMapping("/listWithSelectedByRoleId/{appId}/{roleId}")
     @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true")
     @PreAuthorize("hasAuthority('system:user:query')")
-    public Response<List<UserBindSelectVO>> listWithSelectedByRoleId(@PathVariable String roleId) {
-        List<UserBindSelectVO> userBindSelectVOList = roleUserLinkService.listWithSelectedByRoleId(roleId);
+    public Response<List<UserBindSelectVO>> listWithSelectedByRoleId(@PathVariable String appId, @PathVariable String roleId) {
+        List<UserBindSelectVO> userBindSelectVOList = roleUserLinkService.listWithSelectedByRoleId(appId, roleId);
         return HttpResult.ok(userBindSelectVOList);
     }
 
@@ -96,7 +96,7 @@ public class RoleUserLinkController {
         boolean result = roleUserLinkService.addUserListToRole(roleLinkUserListDTO);
         return HttpResult.ok(result);
     }
-    
+
     // ------- 公共 API -------
 
     @PutMapping("/editRoleUserLink")

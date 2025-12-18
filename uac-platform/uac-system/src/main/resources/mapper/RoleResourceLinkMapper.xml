@@ -27,12 +27,17 @@
     </sql>
     
     <select id="listResourceListByRoleId" resultType="top.teek.uac.system.model.po.SysResource">
-        select
-            tsr.*, case when trml.resource_id is null then 0 else 1 end as selected
-        from
-            t_sys_resource tsr left join (
-                select * from t_role_resource_link where is_deleted = 0 and role_id = #{roleId} and app_id = #{appId}
-            ) trml on tsr.resource_id = trml.resource_id
-        where tsr.app_id = #{appId} and tsr.is_deleted = 0;
+        select tsr.*, case when trml.resource_id is null then 0 else 1 end as selected
+        from t_sys_resource tsr 
+        left join (
+            select * from t_role_resource_link where is_deleted = 0 and role_id = #{roleId} and app_id = #{appId}
+        ) trml on tsr.resource_id = trml.resource_id and tsr.app_id = trml.app_id
+        where tsr.app_id = #{appId} and tsr.is_deleted = 0
+        <if test="sysResourceDTO.resourceCode != null and sysResourceDTO.resourceCode != ''">
+            and tsr.resource_code = #{sysResourceDTO.resourceCode}
+        </if>
+        <if test="sysResourceDTO.resourceName != null and sysResourceDTO.resourceName != ''">
+            and tsr.resource_name = #{sysResourceDTO.resourceName}
+        </if>
     </select>
 </mapper>

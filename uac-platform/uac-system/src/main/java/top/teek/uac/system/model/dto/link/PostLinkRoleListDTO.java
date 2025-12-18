@@ -3,7 +3,6 @@ package top.teek.uac.system.model.dto.link;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.experimental.Accessors;
 import top.teek.core.validate.RestGroup;
 
 import java.time.LocalDate;
@@ -11,23 +10,22 @@ import java.util.List;
 
 /**
  * @author Teeker
- * @date 2025/11/17 23:13:11
+ * @date 2025/12/18 21:27:19
  * @since 1.0.0
  */
 @Data
-@Accessors(chain = true)
-public class RoleLinkResourceDTO {
+public class PostLinkRoleListDTO {
+    /**
+     * 岗位 ID
+     */
+    @NotBlank(message = "岗位 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private String postId;
+
     /**
      * 角色 ID
      */
-    @NotBlank(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
-    private String roleId;
-    
-    /**
-     * 资源 ID
-     */
-    @NotNull(message = "资源 ID 不能为空", groups = {RestGroup.AddGroup.class})
-    private List<String> resourceIds;
+    @NotNull(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private List<String> roleIds;
 
     /**
      * 生效时间

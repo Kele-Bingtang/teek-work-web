@@ -16,16 +16,16 @@ import java.util.List;
 @Data
 public class DeptLinkRoleListDTO {
     /**
-     * 角色 ID
-     */
-    @NotBlank(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
-    private List<String> roleIds;
-
-    /**
      * 部门 ID
      */
-    @NotNull(message = "部门 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "部门 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String deptId;
+    
+    /**
+     * 角色 ID
+     */
+    @NotNull(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private List<String> roleIds;
 
     /**
      * 生效时间
@@ -42,6 +42,6 @@ public class DeptLinkRoleListDTO {
     /**
      * 应用 ID
      */
-    @NotNull(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
 }

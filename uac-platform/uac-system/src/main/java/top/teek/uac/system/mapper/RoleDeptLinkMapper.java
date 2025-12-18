@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
+import top.teek.uac.system.model.dto.SysDeptDTO;
 import top.teek.uac.system.model.po.RoleDeptLink;
 import top.teek.uac.system.model.po.SysDept;
+import top.teek.uac.system.model.po.SysRole;
 import top.teek.uac.system.model.po.UserGroupUserLink;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
@@ -23,13 +25,13 @@ public interface RoleDeptLinkMapper extends BaseMapper<RoleDeptLink> {
 
     // ------- 部门关联角色相关 API（以部门为主）-------
 
-    IPage<RoleLinkVO> listRoleLinkByDeptId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupUserLink> queryWrapper);
-    
-    List<RoleBindSelectVO> listWithSelectedByDeptId(String deptId);
+    IPage<RoleLinkVO> listRoleLinkByDeptId(@Param("page") Page<UserGroupUserLink> page, @Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
+
+    List<RoleBindSelectVO> listWithSelectedByDeptId(@Param("appId") String appId, @Param("deptId") String deptId);
 
     // ------- 角色关联部门相关 API（以角色为主） -------
     
-    List<SysDept> listDeptListByRoleId(@Param("roleId") String roleId, @Param("appId") String appId);
+    List<SysDept> listDeptListByRoleId(@Param("appId") String appId, @Param("roleId") String roleId, @Param("sysDeptDTO") SysDeptDTO sysDeptDTO);
 
 }
 

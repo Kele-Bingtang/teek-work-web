@@ -1,4 +1,4 @@
-package top.teek.redis.exception;
+package top.teek.ratelimiter.exception;
 
 import top.teek.core.exception.BaseException;
 

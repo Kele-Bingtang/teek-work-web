@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 import top.teek.core.constants.ColumnConstant;
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
+import top.teek.uac.core.constant.CommonConstant;
 import top.teek.uac.system.mapper.UserGroupUserLinkMapper;
+import top.teek.uac.system.model.dto.SysUserDTO;
 import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.dto.UserGroupUserLinkDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkUserListDTO;
-import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.UserLinkUserGroupListDTO;
 import top.teek.uac.system.model.po.SysUserGroup;
 import top.teek.uac.system.model.po.UserGroupUserLink;
@@ -30,6 +31,7 @@ import top.teek.utils.StringUtil;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Teeker
@@ -43,12 +45,12 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
     // ------- 用户组关联用户相关 API（以用户组为主）-------
 
     @Override
-    public TablePage<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
+    public TablePage<UserLinkVO> listUserLinkByGroupId(String userGroupId, SysUserDTO sysUserDTO, PageQuery pageQuery) {
         QueryWrapper<UserGroupUserLink> queryWrapper = Wrappers.query();
         queryWrapper.eq("tsu.is_deleted", 0)
                 .eq("tugul.user_group_id", userGroupId)
-                .like(StringUtil.hasText(userLinkInfoDTO.getUsername()), "tsu.username", userLinkInfoDTO.getUsername())
-                .like(StringUtil.hasText(userLinkInfoDTO.getNickname()), "tsu.nickname", userLinkInfoDTO.getNickname());
+                .like(StringUtil.hasText(sysUserDTO.getUsername()), "tsu.username", sysUserDTO.getUsername())
+                .like(StringUtil.hasText(sysUserDTO.getNickname()), "tsu.nickname", sysUserDTO.getNickname());
         IPage<UserLinkVO> userLinkVOIPage = baseMapper.listUserLinkByGroupId(pageQuery.buildPage(), queryWrapper);
 
         return TablePage.build(userLinkVOIPage);
@@ -66,8 +68,8 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
         List<UserGroupUserLink> userGroupUserLinkList = ListUtil.newArrayList(userGroupIds, userGroupId ->
                         new UserGroupUserLink().setUserGroupId(userGroupId)
                                 .setUserId(userLinkUserGroupListDTO.getUserId())
-                                .setValidFrom(userLinkUserGroupListDTO.getValidFrom())
-                                .setExpireOn(userLinkUserGroupListDTO.getExpireOn())
+                                .setValidFrom(Optional.ofNullable(userLinkUserGroupListDTO.getValidFrom()).orElse(LocalDate.now()))
+                                .setExpireOn(Optional.ofNullable(userLinkUserGroupListDTO.getExpireOn()).orElse(LocalDate.now().plusYears(CommonConstant.expireOnNum)))
                 , UserGroupUserLink.class);
 
         return Db.saveBatch(userGroupUserLinkList);
@@ -110,8 +112,8 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
         List<UserGroupUserLink> userGroupUserLinkList = ListUtil.newArrayList(userIds, userId ->
                         new UserGroupUserLink().setUserId(userId)
                                 .setUserGroupId(userGroupLinkUserListDTO.getUserGroupId())
-                                .setValidFrom(userGroupLinkUserListDTO.getValidFrom())
-                                .setExpireOn(userGroupLinkUserListDTO.getExpireOn())
+                                .setValidFrom(Optional.ofNullable(userGroupLinkUserListDTO.getValidFrom()).orElse(LocalDate.now()))
+                                .setExpireOn(Optional.ofNullable(userGroupLinkUserListDTO.getExpireOn()).orElse(LocalDate.now().plusYears(CommonConstant.expireOnNum)))
                 , UserGroupUserLink.class);
 
         return Db.saveBatch(userGroupUserLinkList);
@@ -136,7 +138,7 @@ public class UserGroupUserLinkServiceImpl extends ServiceImpl<UserGroupUserLinkM
         }
         if (Objects.isNull(userGroupUserLink.getExpireOn())) {
             // 默认为 3 年
-            userGroupUserLink.setExpireOn(LocalDate.now().plusYears(3));
+            userGroupUserLink.setExpireOn(LocalDate.now().plusYears(CommonConstant.expireOnNum));
         }
         return baseMapper.updateById(userGroupUserLink) > 0;
     }

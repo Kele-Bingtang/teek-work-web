@@ -42,6 +42,6 @@ public class RoleLinkDeptListDTO {
     /**
      * 应用 ID
      */
-    @NotNull(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
 }

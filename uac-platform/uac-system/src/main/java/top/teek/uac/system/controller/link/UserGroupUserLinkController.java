@@ -12,10 +12,10 @@ import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.core.log.annotation.OperateLog;
 import top.teek.uac.core.log.enums.BusinessType;
+import top.teek.uac.system.model.dto.SysUserDTO;
 import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.dto.UserGroupUserLinkDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkUserListDTO;
-import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.UserLinkUserGroupListDTO;
 import top.teek.uac.system.model.vo.link.UserBindSelectVO;
 import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
@@ -42,8 +42,8 @@ public class UserGroupUserLinkController {
     @GetMapping("listUserLinkByGroupId/{userGroupId}")
     @Operation(summary = "用户列表查询", description = "通过用户组 ID 查询用户列表（分页）")
     @PreAuthorize("hasAuthority('system:user:query')")
-    public Response<TablePage<UserLinkVO>> listUserLinkByGroupId(@PathVariable String userGroupId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<UserLinkVO> tablePage = userGroupUserLinkService.listUserLinkByGroupId(userGroupId, userLinkInfoDTO, pageQuery);
+    public Response<TablePage<UserLinkVO>> listUserLinkByGroupId(@PathVariable String userGroupId, SysUserDTO sysUserDTO, PageQuery pageQuery) {
+        TablePage<UserLinkVO> tablePage = userGroupUserLinkService.listUserLinkByGroupId(userGroupId,sysUserDTO, pageQuery);
         return HttpResult.ok(tablePage);
     }
 

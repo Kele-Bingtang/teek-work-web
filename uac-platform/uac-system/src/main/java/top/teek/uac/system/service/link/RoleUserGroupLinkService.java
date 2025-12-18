@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
 import top.teek.uac.system.model.dto.RoleUserGroupLinkDTO;
-import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
+import top.teek.uac.system.model.dto.SysRoleDTO;
+import top.teek.uac.system.model.dto.SysUserGroupDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUserGroupListDTO;
-import top.teek.uac.system.model.dto.link.UserGroupLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.UserGroupLinkRoleListDTO;
 import top.teek.uac.system.model.po.RoleUserGroupLink;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
@@ -27,18 +27,20 @@ public interface RoleUserGroupLinkService extends IService<RoleUserGroupLink> {
     /**
      * 通过用户组 ID 查询角色列表（分页）
      *
+     * @param appId 应用 ID
      * @param userGroupId 用户组 ID
      * @return 角色列表
      */
-    TablePage<RoleLinkVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery);
+    TablePage<RoleLinkVO> listRoleLinkByGroupId(String appId, String userGroupId, SysRoleDTO sysRoleDTO, PageQuery pageQuery);
 
     /**
      * 查询角色列表（已选的被禁用）
      *
+     * @param appId 应用 ID
      * @param userGroupId 用户组 ID
      * @return 角色列表
      */
-    List<RoleBindSelectVO> listWithSelectedByGroupId(String userGroupId);
+    List<RoleBindSelectVO> listWithSelectedByGroupId(String appId, String userGroupId);
 
     /**
      * 添加角色到用户组（多个角色）
@@ -60,18 +62,20 @@ public interface RoleUserGroupLinkService extends IService<RoleUserGroupLink> {
     /**
      * 查询某个角色绑定的用户组列表
      *
+     * @param appId 应用 ID
      * @param roleId 角色 ID
      * @return 用户组列表
      */
-    TablePage<UserGroupLinkVO> listUserGroupByRoleId(String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery);
+    TablePage<UserGroupLinkVO> listUserGroupByRoleId(String appId, String roleId, SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery);
 
     /**
      * 查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true
      *
+     * @param appId 应用 ID
      * @param roleId 角色 ID
      * @return 用户组列表
      */
-    List<UserGroupBindSelectVO> listWithSelectedByRoleId(String roleId);
+    List<UserGroupBindSelectVO> listWithSelectedByRoleId(String appId, String roleId);
 
     /**
      * 检查用户组是否已存在角色

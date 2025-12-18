@@ -1,9 +1,9 @@
 package top.teek.uac.system.model.dto.link;
 
-import top.teek.core.validate.RestGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import top.teek.core.validate.RestGroup;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,16 +16,16 @@ import java.util.List;
 @Data
 public class UserGroupLinkRoleListDTO {
     /**
-     * 用户 ID
-     */
-    @NotNull(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
-    private List<String> roleIds;
-
-    /**
      * 用户组 ID
      */
     @NotBlank(message = "用户组 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String userGroupId;
+    
+    /**
+     * 用户 ID
+     */
+    @NotNull(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private List<String> roleIds;
 
     /**
      * 生效时间
@@ -42,6 +42,6 @@ public class UserGroupLinkRoleListDTO {
     /**
      * 应用 ID
      */
-    @NotNull(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
 }

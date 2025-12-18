@@ -1,33 +1,36 @@
 package top.teek.uac.system.service.link.impl;
 
-import top.teek.mp.base.PageQuery;
-import top.teek.mp.base.TablePage;
-import top.teek.uac.system.mapper.RoleUserGroupLinkMapper;
-import top.teek.uac.system.model.dto.RoleUserGroupLinkDTO;
-import top.teek.uac.system.model.dto.link.RoleLinkInfoDTO;
-import top.teek.uac.system.model.dto.link.RoleLinkUserGroupListDTO;
-import top.teek.uac.system.model.dto.link.UserGroupLinkInfoDTO;
-import top.teek.uac.system.model.dto.link.UserGroupLinkRoleListDTO;
-import top.teek.uac.system.model.po.UserGroupUserLink;
-import top.teek.uac.system.model.po.RoleUserGroupLink;
-import top.teek.uac.system.service.link.RoleUserGroupLinkService;
-import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
-import top.teek.uac.system.model.vo.link.RoleLinkVO;
-import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
-import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
-import top.teek.utils.ListUtil;
-import top.teek.utils.MapstructUtil;
-import top.teek.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
+import top.teek.mp.base.PageQuery;
+import top.teek.mp.base.TablePage;
+import top.teek.uac.core.constant.CommonConstant;
+import top.teek.uac.system.mapper.RoleUserGroupLinkMapper;
+import top.teek.uac.system.model.dto.RoleUserGroupLinkDTO;
+import top.teek.uac.system.model.dto.SysRoleDTO;
+import top.teek.uac.system.model.dto.SysUserGroupDTO;
+import top.teek.uac.system.model.dto.link.RoleLinkUserGroupListDTO;
+import top.teek.uac.system.model.dto.link.UserGroupLinkRoleListDTO;
+import top.teek.uac.system.model.po.RoleUserGroupLink;
+import top.teek.uac.system.model.po.SysRole;
+import top.teek.uac.system.model.po.SysUserGroup;
+import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
+import top.teek.uac.system.model.vo.link.RoleLinkVO;
+import top.teek.uac.system.model.vo.link.UserGroupBindSelectVO;
+import top.teek.uac.system.model.vo.link.UserGroupLinkVO;
+import top.teek.uac.system.service.link.RoleUserGroupLinkService;
+import top.teek.utils.ListUtil;
+import top.teek.utils.MapstructUtil;
+import top.teek.utils.StringUtil;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Teeker
@@ -40,12 +43,14 @@ public class RoleUserGroupLinkServiceImpl extends ServiceImpl<RoleUserGroupLinkM
     // ------- 用户组关联角色相关 API（以用户组为主）-------
 
     @Override
-    public TablePage<RoleLinkVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
-        QueryWrapper<UserGroupUserLink> queryWrapper = Wrappers.query();
+    public TablePage<RoleLinkVO> listRoleLinkByGroupId(String appId, String userGroupId, SysRoleDTO sysRoleDTO, PageQuery pageQuery) {
+        QueryWrapper<SysRole> queryWrapper = Wrappers.query();
+        
         queryWrapper.eq("tsr.is_deleted", 0)
+                .eq("trugl.app_id", appId)
                 .eq("trugl.user_group_id", userGroupId)
-                .like(StringUtil.hasText(roleLinkInfoDTO.getRoleCode()), "tsr.role_code", roleLinkInfoDTO.getRoleCode())
-                .like(StringUtil.hasText(roleLinkInfoDTO.getRoleName()), "tsr.role_name", roleLinkInfoDTO.getRoleName());
+                .like(StringUtil.hasText(sysRoleDTO.getRoleCode()), "tsr.role_code", sysRoleDTO.getRoleCode())
+                .like(StringUtil.hasText(sysRoleDTO.getRoleName()), "tsr.role_name", sysRoleDTO.getRoleName());
 
         IPage<RoleLinkVO> userGroupLinkRoleVOIPage = baseMapper.listRoleLinkByGroupId(pageQuery.buildPage(), queryWrapper);
 
@@ -53,8 +58,8 @@ public class RoleUserGroupLinkServiceImpl extends ServiceImpl<RoleUserGroupLinkM
     }
 
     @Override
-    public List<RoleBindSelectVO> listWithSelectedByGroupId(String userGroupId) {
-        return baseMapper.listWithSelectedByGroupId(userGroupId);
+    public List<RoleBindSelectVO> listWithSelectedByGroupId(String appId, String userGroupId) {
+        return baseMapper.listWithSelectedByGroupId(appId, userGroupId);
     }
 
 
@@ -65,6 +70,8 @@ public class RoleUserGroupLinkServiceImpl extends ServiceImpl<RoleUserGroupLinkM
         List<RoleUserGroupLink> userGroupLinkList = ListUtil.newArrayList(roleIds, roleId ->
                         new RoleUserGroupLink().setRoleId(roleId)
                                 .setUserGroupId(userGroupLinkRoleListDTO.getUserGroupId())
+                                .setValidFrom(Optional.ofNullable(userGroupLinkRoleListDTO.getValidFrom()).orElse(LocalDate.now()))
+                                .setExpireOn(Optional.ofNullable(userGroupLinkRoleListDTO.getExpireOn()).orElse(LocalDate.now().plusYears(CommonConstant.expireOnNum)))
                                 .setAppId(userGroupLinkRoleListDTO.getAppId())
                 , RoleUserGroupLink.class);
 
@@ -82,12 +89,14 @@ public class RoleUserGroupLinkServiceImpl extends ServiceImpl<RoleUserGroupLinkM
     // ------- 角色关联用户组相关 API（以角色为主）-------
 
     @Override
-    public TablePage<UserGroupLinkVO> listUserGroupByRoleId(String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery) {
-        QueryWrapper<UserGroupUserLink> queryWrapper = Wrappers.query();
+    public TablePage<UserGroupLinkVO> listUserGroupByRoleId(String appId, String roleId, SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery) {
+        QueryWrapper<SysUserGroup> queryWrapper = Wrappers.query();
+        
         queryWrapper.eq("tsug.is_deleted", 0)
+                .eq("trugl.app_id", appId)
                 .eq("trugl.role_id", roleId)
-                .like(StringUtil.hasText(userGroupLinkInfoDTO.getUserGroupName()), "tsug.group_name", userGroupLinkInfoDTO.getUserGroupName())
-                .like(StringUtil.hasText(userGroupLinkInfoDTO.getOwner()), "concat(tsug.owner_id, ',', tsug.owner_name)", userGroupLinkInfoDTO.getOwner());
+                .like(StringUtil.hasText(sysUserGroupDTO.getGroupName()), "tsug.group_name", sysUserGroupDTO.getGroupName())
+                .like(StringUtil.hasText(sysUserGroupDTO.getOwnerId()), "tsug.owner_id", sysUserGroupDTO.getOwnerId());
         IPage<UserGroupLinkVO> userGroupLinkUserVOIPage = baseMapper.listUserGroupByRoleId(pageQuery.buildPage(), queryWrapper);
 
         return TablePage.build(userGroupLinkUserVOIPage);
@@ -95,8 +104,8 @@ public class RoleUserGroupLinkServiceImpl extends ServiceImpl<RoleUserGroupLinkM
 
 
     @Override
-    public List<UserGroupBindSelectVO> listWithSelectedByRoleId(String roleId) {
-        return baseMapper.listWithSelectedByRoleId(roleId);
+    public List<UserGroupBindSelectVO> listWithSelectedByRoleId(String appId, String roleId) {
+        return baseMapper.listWithSelectedByRoleId(appId, roleId);
     }
 
     @Override
@@ -106,6 +115,8 @@ public class RoleUserGroupLinkServiceImpl extends ServiceImpl<RoleUserGroupLinkM
         List<RoleUserGroupLink> userGroupLinkList = ListUtil.newArrayList(userGroupIds, userGroupId ->
                         new RoleUserGroupLink().setUserGroupId(userGroupId)
                                 .setRoleId(roleLinkUserGroupListDTO.getRoleId())
+                                .setValidFrom(Optional.ofNullable(roleLinkUserGroupListDTO.getValidFrom()).orElse(LocalDate.now()))
+                                .setExpireOn(Optional.ofNullable(roleLinkUserGroupListDTO.getExpireOn()).orElse(LocalDate.now().plusYears(CommonConstant.expireOnNum)))
                                 .setAppId(roleLinkUserGroupListDTO.getAppId())
                 , RoleUserGroupLink.class);
 
@@ -131,7 +142,7 @@ public class RoleUserGroupLinkServiceImpl extends ServiceImpl<RoleUserGroupLinkM
         }
         if (Objects.isNull(roleUserGroupLink.getExpireOn())) {
             // 默认为 3 年
-            roleUserGroupLink.setExpireOn(LocalDate.now().plusYears(3));
+            roleUserGroupLink.setExpireOn(LocalDate.now().plusYears(CommonConstant.expireOnNum));
         }
         return baseMapper.updateById(roleUserGroupLink) > 0;
     }

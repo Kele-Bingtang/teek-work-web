@@ -1,18 +1,18 @@
 package top.teek.uac.system.service.link;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import top.teek.mp.base.PageQuery;
 import top.teek.mp.base.TablePage;
-import top.teek.uac.system.model.dto.SysRoleDTO;
 import top.teek.uac.system.model.dto.RoleUserLinkDTO;
+import top.teek.uac.system.model.dto.SysRoleDTO;
+import top.teek.uac.system.model.dto.SysUserDTO;
 import top.teek.uac.system.model.dto.link.RoleLinkUserListDTO;
-import top.teek.uac.system.model.dto.link.UserLinkInfoDTO;
 import top.teek.uac.system.model.dto.link.UserLinkRoleListDTO;
 import top.teek.uac.system.model.po.RoleUserLink;
 import top.teek.uac.system.model.vo.link.RoleBindSelectVO;
 import top.teek.uac.system.model.vo.link.RoleLinkVO;
 import top.teek.uac.system.model.vo.link.UserBindSelectVO;
 import top.teek.uac.system.model.vo.link.UserLinkVO;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public interface RoleUserLinkService extends IService<RoleUserLink> {
      * @param sysRoleDTO 角色信息
      * @return 角色列表
      */
-    List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId, SysRoleDTO sysRoleDTO);
+    TablePage<RoleLinkVO> listRoleLinkByUserId(String appId, String userId, SysRoleDTO sysRoleDTO, PageQuery pageQuery);
 
     /**
      * 根据应用 ID、用户 ID 查询角色列表，如果角色绑定了用户，则 disabled 属性为 false
@@ -64,18 +64,20 @@ public interface RoleUserLinkService extends IService<RoleUserLink> {
     /**
      * 通过角色 ID 查询用户列表
      *
+     * @param appId  应用 ID
      * @param roleId 角色 ID
      * @return 用户列表
      */
-    TablePage<UserLinkVO> listUserLinkByRoleId(String roleId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery);
+    TablePage<UserLinkVO> listUserLinkByRoleId(String appId, String roleId, SysUserDTO sysUserDTO, PageQuery pageQuery);
 
     /**
      * 下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true
      *
+     * @param @param appId  应用 ID
      * @param roleId 角色 ID
      * @return 用户列表
      */
-    List<UserBindSelectVO> listWithSelectedByRoleId(String roleId);
+    List<UserBindSelectVO> listWithSelectedByRoleId(String appId, String roleId);
 
     /**
      * 添加用户到角色
