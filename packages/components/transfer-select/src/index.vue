@@ -74,7 +74,7 @@ const selectedList = computed({
       return selectedData || [];
     }
 
-    let selectedData: CommonObjType[] = [];
+    let selectedData: CommonObjType[];
 
     if (!multiple && Array.isArray(modelValue)) {
       selectedData = tableData.value?.filter(item => modelValue.includes(item[id ?? props.columns[0]?.prop!]));

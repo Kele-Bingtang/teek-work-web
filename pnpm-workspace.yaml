@@ -5,36 +5,36 @@ packages:
   - file-store
 
 catalog:
-  vue: ^3.5.18
-  vite: ^7.1.3
-  vue-router: ^4.5.1
-  vue-i18n: ^11.1.11
-  pinia: ^3.0.3
+  vue: ^3.5.31
+  vite: ^7.3.1
+  vue-router: ^5.0.4
+  vue-i18n: ^11.3.0
+  pinia: ^3.0.4
   pinia-plugin-persistedstate: ^4.7.1
-  "@vueuse/core": ^13.7.0
-  element-plus: ^2.10.7
+  "@vueuse/core": ^14.2.1
+  element-plus: ^2.13.6
   "@element-plus/icons-vue": ^2.3.2
   "@iconify/vue": ^5.0.0
   mitt: ^3.0.1
-  axios: ^1.11.0
-  qs: ^6.14.0
-  "@types/qs": ^6.14.0
+  axios: ^1.14.0
+  qs: ^6.15.0
+  "@types/qs": ^6.15.0
   nprogress: ^0.2.0
   "@types/nprogress": ^0.2.3
-  sortablejs: ^1.15.6
-  "@types/sortablejs": ^1.15.8
-  unplugin-auto-import: ^20.0.0
-  unplugin-vue-components: ^29.0.0
+  sortablejs: ^1.15.7
+  "@types/sortablejs": ^1.15.9
+  unplugin-auto-import: ^21.0.0
+  unplugin-vue-components: ^32.0.0
   vite-plugin-compression: ^0.5.1
   vite-plugin-eslint: ^1.8.1
   vite-plugin-progress: ^0.0.7
   vite-plugin-style-import: ^2.0.0
   vite-plugin-svg-icons: ^2.0.1
   vite-plugin-url-copy: ^1.1.4
-  vite-plugin-vue-devtools: ^8.0.0
-  vue-eslint-parser: ^10.2.0
-  vue-tsc: ^3.0.5
-  tinymce: ^7.9.1
+  vite-plugin-vue-devtools: ^8.1.1
+  vue-eslint-parser: ^10.4.0
+  vue-tsc: ^3.2.6
+  tinymce: ^7.9.2
   "@tinymce/tinymce-vue": ^6.3.0
   file-saver: ^2.0.5
   xlsx: ^0.18.5
@@ -48,15 +48,15 @@ catalog:
 catalogs:
   codemirror:
     codemirror: 6.0.2
-    "@codemirror/commands": ^6.8.1
-    "@codemirror/language": ^6.11.3
-    "@codemirror/lint": ^6.8.5
-    "@codemirror/merge": ^6.10.2
-    "@codemirror/state": ^6.5.2
-    "@codemirror/view": ^6.38.1
-    "@codemirror/lang-json": ^6.0.1
-    "@codemirror/lang-sql": ^6.8.0
-    "@codemirror/theme-one-dark": ^6.1.2
+    "@codemirror/commands": ^6.10.3
+    "@codemirror/language": ^6.12.3
+    "@codemirror/lint": ^6.9.5
+    "@codemirror/merge": ^6.12.1
+    "@codemirror/state": ^6.6.0
+    "@codemirror/view": ^6.40.0
+    "@codemirror/lang-json": ^6.0.2
+    "@codemirror/lang-sql": ^6.10.0
+    "@codemirror/theme-one-dark": ^6.1.3
   wangeditor:
     "@wangeditor/editor": ^5.1.23
     "@wangeditor/editor-for-vue": ^5.1.12

@@ -14,6 +14,7 @@
     "@wangeditor/editor": "catalog:wangeditor",
     "@wangeditor/editor-for-vue": "catalog:wangeditor",
     "@wangeditor/plugin-upload-attachment": "catalog:wangeditor",
+    "@vueuse/core": "catalog:",
     "codemirror": "catalog:codemirror",
     "element-plus": "catalog:",
     "sortablejs": "catalog:",
