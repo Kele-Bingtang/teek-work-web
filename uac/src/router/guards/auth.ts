@@ -59,6 +59,7 @@ export const createAuthGuard = (router: Router) => {
       } catch (error: any) {
         userStore.clearPermission();
         console.log("Auth Router: ", error);
+
         ElNotification.error({
           title: "Auth Router",
           message: "路由跳转失败，错误信息：" + error?.message,
