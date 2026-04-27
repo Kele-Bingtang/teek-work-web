@@ -77,7 +77,7 @@ const projectTabList = [
   :deep(.el-tabs__header) {
     padding: 0 15px;
     margin: 0;
-    background-color: cssVar(bg-color);
+    background-color: cssVar(surface-bg-color-box);
   }
 }
 </style>

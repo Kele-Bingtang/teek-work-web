@@ -46,7 +46,7 @@ const teamTabList = [
 @include b(team) {
   flex: 1;
   padding: 10px;
-  background-color: cssVar(bg-color);
+  background-color: cssVar(surface-bg-color-box);
 
   :deep(.el-card__header) {
     padding: 10px;

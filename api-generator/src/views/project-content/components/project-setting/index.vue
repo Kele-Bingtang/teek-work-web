@@ -162,7 +162,7 @@ const handleRemoveProject = () => {
 
 @include b(project-setting) {
   padding: 20px;
-  background-color: cssVar(bg-color);
+  background-color: cssVar(surface-bg-color-box);
 
   :deep(.el-descriptions__title) {
     font-size: 14px;

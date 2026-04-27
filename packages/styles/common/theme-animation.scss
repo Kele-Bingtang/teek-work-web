@@ -8,7 +8,7 @@ html {
   }
 
   &::view-transition-new(*) {
-    animation: clip #{$bg-animation-duration ease-in} both;
+    animation: clip #{$bg-animation-duration} ease-in both;
   }
 
   &::view-transition-old(root) {
@@ -21,7 +21,7 @@ html {
 
   &.dark {
     &::view-transition-old(*) {
-      animation: clip #{$bg-animation-duration ease-in reverse} both;
+      animation: clip #{$bg-animation-duration} ease-in reverse both;
     }
 
     &::view-transition-new(*) {

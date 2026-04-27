@@ -54,7 +54,7 @@ const handleClick = () => {
 @include b(project-card) {
   width: 100%;
   height: 220px;
-  background-color: cssVar(bg-color);
+  background-color: cssVar(surface-bg-color-box);
   border: 1px solid #fafafa;
   border-radius: 4px;
   box-shadow: 0 0 10px 0 hsl(0deg 0% 82% / 43%);
