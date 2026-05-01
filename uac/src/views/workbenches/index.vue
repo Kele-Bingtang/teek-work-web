@@ -67,7 +67,7 @@ const handleAppClick = (item: App.Info) => {
 
   @include e(intro) {
     font-size: 14px;
-    color: cssVar(text-color-600);
+    color: cssVar(gray-color-600);
   }
 }
 </style>

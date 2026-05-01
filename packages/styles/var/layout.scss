@@ -20,7 +20,7 @@
   // 页签栏
   --#{$teek-namespace}-layout-tab-bg-color: var(--#{$teek-namespace}-surface-bg-color-page);
   --#{$teek-namespace}-layout-tab-item-bg-color: var(--#{$teek-namespace}-surface-bg-color-box);
-  --#{$teek-namespace}-layout-tab-item-border-color: var(--#{$teek-namespace}-border-color);
+  --#{$teek-namespace}-layout-tab-item-border-color: var(--#{$teek-namespace}-surface-border-color);
   --#{$teek-namespace}-layout-tab-height: 38px;
   --#{$teek-namespace}-layout-tab-text-color: var(--#{$teek-namespace}-text-color-600);
   --#{$teek-namespace}-layout-tab-line: none;
@@ -40,7 +40,7 @@
   --#{$teek-namespace}-layout-aside-text-hover-color: var(--#{$teek-namespace}-color-primary);
   --#{$teek-namespace}-layout-aside-icon-color: var(--#{$teek-namespace}-text-color-700);
   --#{$teek-namespace}-layout-aside-icon-active-color: var(--#{$teek-namespace}-color-primary);
-  --#{$teek-namespace}-layout-aside-line: 1px solid var(--#{$teek-namespace}-border-color);
+  --#{$teek-namespace}-layout-aside-line: 1px solid var(--#{$teek-namespace}-surface-border-color);
   --#{$teek-namespace}-layout-aside-text-active-weight: 700;
   --#{$teek-namespace}-layout-aside-text-size: 14px;
   --#{$teek-namespace}-layout-aside-icon-size: 20px;
@@ -53,7 +53,7 @@
   --#{$teek-namespace}-layout-columns-aside-item-height: 72px;
 
   // iframe 嵌入布局侧边栏
-  --#{$teek-namespace}-layout-iframe-aside-line: 1px solid var(--#{$teek-namespace}-border-color);
+  --#{$teek-namespace}-layout-iframe-aside-line: 1px solid var(--#{$teek-namespace}-surface-border-color);
 
   // 内容区
   --#{$teek-namespace}-layout-page-bg-color: var(--#{$teek-namespace}-surface-bg-color-page);
