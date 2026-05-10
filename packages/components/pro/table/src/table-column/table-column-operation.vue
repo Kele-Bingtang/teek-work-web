@@ -6,7 +6,7 @@ import { ArrowDownBold } from "@element-plus/icons-vue";
 import { isFunction } from "@teek/utils";
 import { toCamelCase, lastProp } from "@teek/components/pro/helper";
 import { useNamespace } from "@teek/composables";
-import { OperationConfirmEl, OperationEl } from "../helper";
+import { OperationConfirmEl, OperationEl, initTableColumn } from "../helper";
 import OperationButton from "../plugins/table-column-operation-button.vue";
 
 import "../styles/table-column-operation.scss";
@@ -199,11 +199,17 @@ function useOperationButtonEvent() {
 
 <template>
   <el-table-column
-    v-bind="{ ...$attrs, ...props, buttons: undefined }"
-    :fixed
+    v-bind="{
+      ...$attrs,
+      ...initTableColumn(props),
+      buttons: undefined,
+      el: undefined,
+      showNumber: undefined,
+      confirm: undefined,
+    }"
     :label="toValue(label)"
     :width="toValue(width)"
-    :class-name="className ? className : '' + ns.b()"
+    :class-name="className ? className + ' ' + ns.b() : ns.b()"
   >
     <!-- 表头插槽 - 表头内容 -->
     <template #header="scope">
@@ -218,9 +224,8 @@ function useOperationButtonEvent() {
 
       <template v-else>
         <slot name="operation-before" v-bind="scope" />
-
         <!-- 显示出来的按钮 -->
-        <template v-for="button in getButtons(scope.row, scope.$index).showButtons" :key="button.text">
+        <template v-for="button in getButtons(scope.row, scope.$index).showButtons" :key="button.code">
           <OperationButton
             :text="getText(button, scope.row, scope.$index)"
             :el="getButtonEl(button)"

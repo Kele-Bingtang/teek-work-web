@@ -142,7 +142,8 @@ export type TableRow<T extends Record<string, any> = any> = T & {
  * 表格列配置
  */
 export interface TableColumn<T extends Record<string, any> = any>
-  extends Partial<Omit<TableColumnCtx<T>, "children" | "renderCell" | "renderHeader" | "width" | "label">>,
+  extends
+    Partial<Omit<TableColumnCtx<T>, "children" | "renderCell" | "renderHeader" | "width" | "label">>,
     Omit<ElDisplayProps<T>, "originValue" | "displayValue" | "options" | "optionField">,
     Omit<OperationNamespace.ExtraProp, "el"> {
   /**
