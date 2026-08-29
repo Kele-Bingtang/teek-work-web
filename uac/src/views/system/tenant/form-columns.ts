@@ -1,4 +1,4 @@
-import type { DialogFormColumn } from "@teek/components";
+import type { FeedbackFormColumn } from "@teek/components";
 import type { FormRules } from "element-plus";
 import type { Tenant } from "@/common/api/system/tenant";
 import { useFormRules } from "@/composables";
@@ -18,7 +18,7 @@ export const elFormProps = {
   rules: rules,
 };
 
-export const formColumns: DialogFormColumn<Tenant.Info>[] = [
+export const formColumns: FeedbackFormColumn<Tenant.Info>[] = [
   {
     prop: "tenantName",
     label: "企业名称",

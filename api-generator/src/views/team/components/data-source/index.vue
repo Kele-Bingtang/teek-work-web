@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="DataSource">
-import type { DialogFormProps, FormColumn, PageColumn } from "@teek/components";
+import type { FeedbackFormProps, FormColumn, PageColumn } from "@teek/components";
 import type { DataSource } from "@/common/api/dataSource";
 import { Loading } from "@element-plus/icons-vue";
 import { useNamespace, ProPage, isArray, message } from "teek";
@@ -88,21 +88,23 @@ const elFormProps = {
   },
 };
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: { elFormProps, columns: formColumns },
   id: ["id", "dataSourceId"],
   addApi: data => addDataSource({ ...data, ...initRequestParams }),
   editApi: data => editDataSource({ ...data, ...initRequestParams }),
   removeApi: removeDataSource,
-  beforeAdd: model => {
+  onAdd: model => {
     // dataSourceTypeDriveClass 是级联选择器的值，绑定了后端需要的 dataSourceType 和 driverClassName
     parseDataSourceTypeDriveClass(model);
+    return false;
   },
-  beforeEdit: model => {
+  onEdit: model => {
     // dataSourceTypeDriveClass 是级联选择器的值，绑定了后端需要的 dataSourceType 和 driverClassName
     parseDataSourceTypeDriveClass(model);
+    return false;
   },
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 400,
@@ -119,7 +121,7 @@ const dialogFormProps: DialogFormProps = {
       :init-request-params
       :columns
       :search-props="{ searchCols: { xs: 1, sm: 1, md: 2, lg: 5, xl: 5 } }"
-      :dialog-form-props
+      :feedback-form-props
     >
       <template #operation-after="{ row }">
         <el-button link type="primary" size="small" :icon="Loading" v-throttle="() => handleConnect(row)">

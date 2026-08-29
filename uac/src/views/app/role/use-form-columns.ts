@@ -1,6 +1,6 @@
 import type { FormRules } from "element-plus";
 import type { Role } from "@/common/api/system/role";
-import type { DialogFormColumn } from "@teek/components";
+import type { FeedbackFormColumn } from "@teek/components";
 import { listResourceTreeSelectByApp } from "@/common/api/system/resource";
 import { listResourceIdsByRoleId } from "@/common/api/link/role-resource-link";
 import { list } from "@/common/api/system/user/user";
@@ -19,7 +19,7 @@ export const elFormProps = {
 export const useFormColumns = () => {
   const route = useRoute();
 
-  const columns: DialogFormColumn<Role.Info>[] = [
+  const columns: FeedbackFormColumn<Role.Info>[] = [
     {
       prop: "roleCode",
       label: "角色编码",

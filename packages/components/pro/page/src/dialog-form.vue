@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import type { ProDialogFormInstance } from "@teek/components/pro/form-dialog";
-import type { DialogFormProps, DialogStatus } from "./types";
+import type { ProFormDialogInstance } from "@teek/components/pro/form-dialog";
+import type { FeedbackFormProps, DialogStatus } from "./types";
 import { computed, ref, unref, useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { deepClone, isArray, isFunction } from "@teek/utils";
 import { ProFormDialog } from "@teek/components/pro/form-dialog";
 
-const props = defineProps<DialogFormProps>();
+const props = defineProps<FeedbackFormProps>();
 
 const model = ref<Record<string, any>>({});
 const dialogFormVisible = ref(false);
 const status = ref<DialogStatus>("");
 
-const proFormDialogInstance = useTemplateRef<ProDialogFormInstance>("proFormDialogInstance");
+const proFormDialogInstance = useTemplateRef<ProFormDialogInstance>("proFormDialogInstance");
 
 const dialogProps = computed(() => {
   const { dialog } = props;

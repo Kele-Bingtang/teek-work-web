@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="Dept">
-import type { DialogFormProps, ProPageInstance, PageColumn } from "teek";
+import type { FeedbackFormProps, ProPageInstance, PageColumn } from "teek";
 import type { Dept } from "@/common/api/system/dept";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
@@ -58,7 +58,7 @@ const columns: PageColumn<Dept.TreeTable>[] = [
 
 const { hasAuth } = usePermission();
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: { elFormProps, columns: formColumns },
   id: ["id", "deptId"],
   addApi: addDept,
@@ -67,7 +67,7 @@ const dialogFormProps: DialogFormProps = {
   disableAdd: !hasAuth("system:dept:add"),
   disableEdit: !hasAuth("system:dept:edit"),
   disableRemove: !hasAuth("system:dept:remove"),
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 400,
@@ -91,18 +91,18 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       ref="proPageInstance"
       :request-api="listDeptTreeTable"
       :columns
-      :dialog-form-props
+      :feedback-form-props
       :page-scope="false"
       :export-file
       :disabled-tool-button="!hasAuth('system:dept:export') ? ['export'] : []"
     >
-      <template #operation-after="{ row, dialogFormInstance }">
+      <template #operation-after="{ row, feedbackFormInstance }">
         <el-button
           v-auth="['system:dept:add']"
           link
           size="small"
           :icon="Plus"
-          @click="dialogFormInstance?.handleAdd({ parentId: row.deptId })"
+          @click="feedbackFormInstance?.handleAdd({ parentId: row.deptId })"
         >
           新增
         </el-button>

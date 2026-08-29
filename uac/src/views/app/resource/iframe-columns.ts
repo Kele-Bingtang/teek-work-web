@@ -1,4 +1,4 @@
-import type { DialogFormColumn } from "@teek/components";
+import type { FeedbackFormColumn } from "@teek/components";
 
 export const metaEnumYes = [
   { value: "default", label: "是（默认）" },
@@ -12,7 +12,7 @@ export const metaEnumNo = [
 
 const destroy = (form: any) => form.useMeta === 0;
 
-export const iframeFormColumns: DialogFormColumn[] = [
+export const iframeFormColumns: FeedbackFormColumn[] = [
   {
     prop: "iframe",
     label: "IFrame 配置",

@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="DictType">
-import type { DialogFormProps, PageColumn } from "@teek/components";
+import type { FeedbackFormProps, PageColumn } from "@teek/components";
 import type { DictType } from "@/common/api/system/dict-type";
 import { ElLink, ElMessageBox } from "element-plus";
 import { ProPage, BlankDrawer, PointTag, downloadByData } from "teek";
@@ -59,7 +59,7 @@ const columns: PageColumn<DictType.Info>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: {
     elFormProps: dictTypeElFormProps,
     columns: useFormColumns(computed(() => "")).dictTypeColumns,
@@ -68,7 +68,7 @@ const dialogFormProps: DialogFormProps = {
   addApi: data => addDictType({ ...data, appId: initRequestParams.appId }),
   editApi: editDictType,
   removeApi: removeDictType,
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 400,
@@ -93,7 +93,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
         :request-api="listPage"
         :columns
         :init-request-params="initRequestParams"
-        :dialogFormProps
+        :feedbackFormProps
         :export-file
       ></ProPage>
     </div>

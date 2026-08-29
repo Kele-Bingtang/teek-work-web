@@ -1,5 +1,5 @@
 import type { FormRules } from "element-plus";
-import type { DialogFormColumn } from "teek";
+import type { FeedbackFormColumn } from "teek";
 import type { UserGroup } from "@/common/api/system/user/user-group";
 import type { User } from "@/common/api/system/user/user";
 import { UserSelect } from "teek";
@@ -16,7 +16,7 @@ export const elFormProps = {
   rules: rules,
 };
 
-export const formColumns: DialogFormColumn<UserGroup.Info & { user: User.Info }>[] = [
+export const formColumns: FeedbackFormColumn<UserGroup.Info & { user: User.Info }>[] = [
   {
     prop: "groupName",
     label: "用户组名",

@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="Post">
-import type { DialogFormProps, ProPageInstance, PageColumn } from "@teek/components";
+import type { FeedbackFormProps, ProPageInstance, PageColumn } from "@teek/components";
 import type { Post } from "@/common/api/system/post";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { ProPage, downloadByData, useNamespace } from "teek";
@@ -66,7 +66,7 @@ const { hasAuth } = usePermission();
 
 const formColumns = useFormColumns(computed(() => props.initRequestParams?.deptId));
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: { elFormProps, columns: formColumns },
   id: ["id", "postId"],
   addApi: addPost,
@@ -77,7 +77,7 @@ const dialogFormProps: DialogFormProps = {
   disableEdit: !hasAuth("system:post:edit"),
   disableRemove: !hasAuth("system:post:remove"),
   disableRemoveBatch: !hasAuth("system:post:remove"),
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 300,
@@ -102,7 +102,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       :request-api="listPage"
       :init-request-params
       :columns
-      :dialog-form-props
+      :feedback-form-props
       :export-file
       :disabled-tool-button="!hasAuth('system:post:export') ? ['export'] : []"
     ></ProPage>

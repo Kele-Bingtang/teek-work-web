@@ -1,5 +1,5 @@
 <script setup lang="ts" name="DictData">
-import type { DialogFormProps, PageColumn } from "@teek/components";
+import type { FeedbackFormProps, PageColumn } from "@teek/components";
 import type { DictData } from "@/common/api/system/dict-data";
 import { ElMessageBox } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
@@ -37,7 +37,7 @@ const columns: PageColumn<DictData.Info>[] = [
   { prop: "operation", label: "操作", width: computed(() => (props.isCascade ? 200 : 160)) },
 ];
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: {
     elFormProps: dictDataElFormProps,
     columns: useFormColumns(
@@ -45,7 +45,7 @@ const dialogFormProps: DialogFormProps = {
       computed(() => props.isCascade)
     ).dictDataColumns,
   },
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 350,
@@ -56,8 +56,9 @@ const dialogFormProps: DialogFormProps = {
   addApi: params => addDictData({ ...params, appId: initRequestParams.appId }),
   editApi: editDictData,
   removeApi: removeDictData,
-  beforeEdit: form => {
+  onEdit: form => {
     if (form.tagEl === undefined) form.tagEl = "";
+    return false;
   },
 };
 
@@ -76,12 +77,12 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
     :columns
     :init-request-params="initRequestParams"
     :page-scope="!isCascade"
-    :dialog-form-props
+    :feedback-form-props
     :export-file
     :indent="0"
   >
-    <template #operation-after="{ row, dialogFormInstance }" v-if="isCascade">
-      <el-button link size="small" :icon="Plus" @click="dialogFormInstance?.handleAdd({ parentId: row.dataId })">
+    <template #operation-after="{ row, feedbackFormInstance }" v-if="isCascade">
+      <el-button link size="small" :icon="Plus" @click="feedbackFormInstance?.handleAdd({ parentId: row.dataId })">
         新增
       </el-button>
     </template>

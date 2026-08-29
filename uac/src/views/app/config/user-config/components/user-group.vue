@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import type { DialogFormProps, ProPageInstance, PageColumn, DialogFormColumn, ElFormProps } from "teek";
+import type { FeedbackFormProps, ProPageInstance, PageColumn, FeedbackFormColumn, ElFormProps } from "teek";
 import type { UserGroup } from "@/common/api/system/user/user-group";
 import { dayjs, ElMessageBox, ElSwitch } from "element-plus";
 import { ProPage, downloadByData } from "teek";
@@ -88,7 +88,7 @@ const elFormProps: ElFormProps = {
   },
 };
 
-const formColumns: DialogFormColumn[] = [
+const formColumns: FeedbackFormColumn[] = [
   {
     prop: "validFrom",
     label: "生效时间",
@@ -135,8 +135,8 @@ const formColumns: DialogFormColumn[] = [
 const { hasAuth } = usePermission();
 
 // 新增、编辑弹框配置项
-const dialogFormProps: DialogFormProps = {
-  dialog: {
+const feedbackFormProps: FeedbackFormProps = {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: (_, status) => (status === "add" ? 470 : 170),
@@ -193,7 +193,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
     :init-request-params
     :request-immediate="false"
     :columns
-    :dialog-form-props
+    :feedback-form-props
     row-key="linkId"
     :export-file
     :disabled-tool-button="!hasAuth('system:userGroup:export') ? ['export'] : []"

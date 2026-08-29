@@ -1,4 +1,4 @@
-import type { DialogFormColumn } from "@teek/components";
+import type { FeedbackFormColumn } from "@teek/components";
 
 export const metaEnumYes = [
   { value: "default", label: "是（默认）" },
@@ -13,7 +13,7 @@ export const metaEnumNo = [
 const defaultValue = "default";
 const destroy = (form: Recordable) => form.useMeta !== 1;
 
-export const layoutFormColumns: DialogFormColumn[] = [
+export const layoutFormColumns: FeedbackFormColumn[] = [
   {
     prop: "layout",
     label: "布局配置",

@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="Service">
-import type { DialogFormProps, DialogFormColumn, TableColumn, ProPageInstance } from "teek";
+import type { FeedbackFormProps, FeedbackFormColumn, TableColumn, ProPageInstance } from "teek";
 import { listServicePage, addService, editService, removeService, type Service } from "@/common/api/service";
 import { ProjectKey } from "@/common/config";
 import { ElTooltip, ElTag } from "element-plus";
@@ -121,7 +121,7 @@ const tableColumns: TableColumn[] = [
   { prop: "operation", label: "操作", width: 280, fixed: "right" },
 ];
 
-const formColumns: DialogFormColumn<Service.ServiceInfo>[] = [
+const formColumns: FeedbackFormColumn<Service.ServiceInfo>[] = [
   {
     prop: "serviceName",
     label: "服务名称",
@@ -173,7 +173,7 @@ const formColumns: DialogFormColumn<Service.ServiceInfo>[] = [
   },
 ];
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: {
     elFormProps: {
       labelWidth: 80,
@@ -199,7 +199,7 @@ const dialogFormProps: DialogFormProps = {
   disableAdd: projectInfo.value?.projectRole === "只读成员",
   disableEdit: projectInfo.value?.projectRole === "只读成员",
   disableRemove: projectInfo.value?.projectRole === "只读成员",
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 250,
@@ -217,7 +217,7 @@ const dialogFormProps: DialogFormProps = {
       :columns="tableColumns"
       :init-request-params
       :requestImmediate="false"
-      :dialog-form-props
+      :feedback-form-props
     >
       <template #operation-after="{ row }">
         <el-dropdown @command="command => handleCommand(command, row)" class="align-middle">

@@ -1,6 +1,6 @@
 import type { FormRules } from "element-plus";
 import type { Post } from "@/common/api/system/post";
-import type { DialogFormColumn } from "@teek/components";
+import type { FeedbackFormColumn } from "@teek/components";
 import { listDeptTreeList } from "@/common/api/system/dept";
 
 const rules = reactive<FormRules>({
@@ -15,7 +15,7 @@ export const elFormProps = {
 };
 
 export const useFormColumns = (defaultValue?: ComputedRef<string>) => {
-  const columns: DialogFormColumn<Post.Info>[] = [
+  const columns: FeedbackFormColumn<Post.Info>[] = [
     {
       prop: "deptId",
       label: "部门",

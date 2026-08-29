@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="App">
-import type { DialogFormProps, ProPageInstance, PageColumn, TreeFilterInstance } from "teek";
+import type { FeedbackFormProps, ProPageInstance, PageColumn, TreeFilterInstance } from "teek";
 import type { TreeKey } from "element-plus";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { TreeFilter, ProPage, downloadByData, useNamespace } from "teek";
@@ -76,7 +76,7 @@ const columns: PageColumn<App.Info>[] = [
 
 const { hasAuth } = usePermission();
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: {
     elFormProps,
     columns: useFormColumns(
@@ -86,14 +86,16 @@ const dialogFormProps: DialogFormProps = {
   },
   id: ["id", "appId"],
   addApi: addApp,
-  beforeAdd: form => {
+  onAdd: form => {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
+    return false;
   },
   editApi: data => editApp({ ...data, clientId: initRequestParams.clientId || data.clientId }),
-  beforeEdit: form => {
+  onEdit: form => {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
+    return false;
   },
   removeApi: removeApp,
   removeBatchApi: removeBatch,
@@ -101,7 +103,7 @@ const dialogFormProps: DialogFormProps = {
   disableEdit: !hasAuth("system:app:edit"),
   disableRemove: !hasAuth("system:app:remove"),
   disableRemoveBatch: !hasAuth("system:app:remove"),
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 400,
@@ -147,7 +149,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
         :request-api="listAppPage"
         :columns
         :init-request-params="initRequestParams"
-        :dialogFormProps="dialogFormProps"
+        :feedbackFormProps="feedbackFormProps"
         :export-file
         :disabled-tool-button="!hasAuth('system:app:export') ? ['export'] : []"
       ></ProPage>

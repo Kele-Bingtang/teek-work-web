@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Category">
-import type { DialogFormProps, TableColumn, FormColumn } from "teek";
+import type { FeedbackFormProps, TableColumn, FormColumn } from "teek";
 import { ProTable, mittBus } from "teek";
 import { listCategoryPage, addCategory, editCategory, removeCategory } from "@/common/api/category";
 import { ProjectKey } from "@/common/config";
@@ -43,7 +43,7 @@ const elFormProps = {
   },
 };
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: { elFormProps, columns: formColumns },
   id: ["id", "categoryId"],
   addApi: data => addCategory({ ...data, ...initRequestParams }),
@@ -55,7 +55,7 @@ const dialogFormProps: DialogFormProps = {
   afterConfirm: () => {
     mittBus.emit("initTreeData");
   },
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "30%",
     height: 200,
@@ -66,5 +66,10 @@ const dialogFormProps: DialogFormProps = {
 </script>
 
 <template>
-  <ProTable :request-api="listCategoryPage" :init-request-params :columns="tableColumns" :dialog-form-props></ProTable>
+  <ProTable
+    :request-api="listCategoryPage"
+    :init-request-params
+    :columns="tableColumns"
+    :feedback-form-props
+  ></ProTable>
 </template>

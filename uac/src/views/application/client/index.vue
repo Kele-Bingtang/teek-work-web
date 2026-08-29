@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="Client">
-import type { DialogFormProps, ProPageInstance, PageColumn } from "teek";
+import type { FeedbackFormProps, ProPageInstance, PageColumn } from "teek";
 import type { Client } from "@/common/api/application/client";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { ProPage, downloadByData, useNamespace } from "teek";
@@ -78,7 +78,7 @@ const columns: PageColumn<Client.Info>[] = [
 
 const { hasAuth } = usePermission();
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: { elFormProps, columns: formColumns },
   id: ["id", "clientId"],
   addApi: addClient,
@@ -89,7 +89,7 @@ const dialogFormProps: DialogFormProps = {
   disableEdit: !hasAuth("system:client:edit"),
   disableRemove: !hasAuth("system:client:remove"),
   disableRemoveBatch: !hasAuth("system:client:remove"),
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 350,
@@ -113,7 +113,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       ref="proPageInstance"
       :request-api="listPage"
       :columns
-      :dialog-form-props
+      :feedback-form-props
       :export-file
       :disabled-tool-button="!hasAuth('system:client:export') ? ['export'] : []"
     ></ProPage>

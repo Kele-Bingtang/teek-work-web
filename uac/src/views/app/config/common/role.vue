@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import type { DialogFormProps, ProPageInstance, PageColumn, DialogFormColumn, ElFormProps } from "teek";
+import type { FeedbackFormProps, ProPageInstance, PageColumn, FeedbackFormColumn, ElFormProps } from "teek";
 import type { Role } from "@/common/api/system/role";
 import { dayjs, ElMessageBox, ElSwitch } from "element-plus";
 import { ProPage, downloadByData } from "teek";
@@ -85,7 +85,7 @@ const elFormProps: ElFormProps = {
   },
 };
 
-const formColumns: DialogFormColumn[] = [
+const formColumns: FeedbackFormColumn[] = [
   {
     prop: "validFrom",
     label: "生效时间",
@@ -132,8 +132,8 @@ const formColumns: DialogFormColumn[] = [
 
 const { hasAuth } = usePermission();
 
-const dialogFormProps: DialogFormProps = {
-  dialog: {
+const feedbackFormProps: FeedbackFormProps = {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: (_, status) => (status === "add" ? 470 : 170),
@@ -186,7 +186,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
     :request-api="listApi"
     :columns
     :init-request-params="initRequestParams"
-    :dialog-form-props
+    :feedback-form-props
     row-key="linkId"
     :export-file
     :disabled-tool-button="!hasAuth('system:role:export') ? ['export'] : []"

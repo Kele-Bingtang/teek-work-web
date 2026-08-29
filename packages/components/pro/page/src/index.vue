@@ -23,7 +23,7 @@ import { ProSearch } from "@teek/components/pro/search";
 import { ProTable, defaultTooltipProps } from "@teek/components/pro/table";
 import { filterEmpty, flatColumnsFn, setProp, lastProp } from "@teek/components/pro/helper";
 import { useNamespace } from "@teek/composables";
-import DialogForm from "./dialog-form.vue";
+import FeedbackForm from "./feedback-form.vue";
 
 defineOptions({ name: "ProPage" });
 
@@ -41,12 +41,7 @@ const props = withDefaults(defineProps<ProPageProps>(), {
   highlightCurrentRow: true,
   showHeader: true,
   pageScope: true,
-  stripe: true,
   tooltipProps: () => defaultTooltipProps,
-  exportFile: undefined,
-
-  // DialogForm 配置项
-  dialogFormProps: undefined,
 });
 
 const emits = defineEmits<ProPageEmits>();
@@ -54,7 +49,7 @@ const emits = defineEmits<ProPageEmits>();
 const ns = useNamespace("pro-page");
 const proSearchInstance = useTemplateRef<ProSearchInstance>("proSearchInstance");
 const proTableInstance = useTemplateRef<ProTableInstance>("proTableInstance");
-const dialogFormInstance = useTemplateRef<typeof DialogForm>("dialogFormInstance");
+const feedbackFormInstance = useTemplateRef<typeof FeedbackForm>("feedbackFormInstance");
 
 const slots = useSlots();
 
@@ -66,41 +61,53 @@ const searchSlots = computed(() =>
 
 // 获取 ProTable 配置项
 const proTableProps = computed(() => {
-  const { columns, exportFile, dialogFormProps, ...rest } = props;
+  const { columns, exportFile, feedbackFormProps, ...rest } = props;
 
-  // 如果 dialogFormProps 配置了 API，则开启对应的按钮
+  // 如果 feedbackFormProps 配置了 API，则开启对应的按钮
   const operationIndex = columns.findIndex(item => item.prop === (rest.operationProp || "operation"));
-  if (operationIndex >= 0 && !toValue(columns[operationIndex].buttons)?.some(item => item.code === "native_edit")) {
+  if (
+    operationIndex >= 0 &&
+    !toValue(columns[operationIndex].buttons)?.some(
+      item => item.code === "native_edit" || item.code === "native_delete"
+    )
+  ) {
     columns[operationIndex].buttons ??= [];
     toValue(columns[operationIndex].buttons)?.unshift(
       {
         text: "编辑",
         code: "native_edit",
-        elProps: {
+        elProps: row => ({
           type: "primary",
           size: "small",
-          disabled: dialogFormProps?.disableEdit,
-        },
-        show: dialogFormProps?.editApi ? true : !!dialogFormProps?.useEdit,
+          disabled: executeIfFunctionOrReturn(feedbackFormProps?.disableEdit, row),
+        }),
+        show: row =>
+          feedbackFormProps?.editApi ||
+          feedbackFormProps?.onEdit ||
+          executeIfFunctionOrReturn(feedbackFormProps?.useEdit, row),
         el: "el-link",
         icon: Edit,
-        onClick: ({ row }) => dialogFormInstance.value?.handleEdit(row),
+        onClick: ({ row }) => feedbackFormInstance.value?.handleEdit(row),
       },
       {
         text: "删除",
         code: "native_delete",
-        elProps: {
+        elProps: row => ({
           type: "danger",
           size: "small",
-          disabled: dialogFormProps?.disableRemove,
-        },
+          disabled: executeIfFunctionOrReturn(feedbackFormProps?.disableRemove, row),
+        }),
         confirm: {
           props: { title: "你确定删除吗?" },
         },
-        show: dialogFormProps?.removeApi ? true : !!dialogFormProps?.useRemove,
+        show: row =>
+          feedbackFormProps?.removeApi ||
+          feedbackFormProps?.onRemove ||
+          executeIfFunctionOrReturn(feedbackFormProps?.useRemove, row),
         el: "el-link",
         icon: Delete,
-        onConfirm: ({ row }) => dialogFormInstance.value?.handleRemove(row),
+        onClick: ({ row }) => feedbackFormInstance.value?.clickRemove?.(row),
+        onConfirm: ({ row }) => feedbackFormInstance.value?.handleRemove(row),
       }
     );
   }
@@ -134,8 +141,8 @@ const initRequestParams = computed(() => ({ ...searchDefaultParams.value, ...pro
  *  页面搜索数据初始化
  */
 function usePageSearchInit() {
-  const searchParams = ref<Record<string, any>>({});
-  const searchDefaultParams = ref<Record<string, any>>({});
+  const searchParams = ref<Recordable>({});
+  const searchDefaultParams = ref<Recordable>({});
 
   // 定时器
   let timer: ReturnType<typeof setTimeout> | null = null;
@@ -154,7 +161,6 @@ function usePageSearchInit() {
       const defaultValue = unref(column.search?.defaultValue) ?? props.defaultValues[prop];
 
       if (!isEmpty(defaultValue)) {
-        console.log(defaultValue);
         if (!isFunction(defaultValue)) setSearchParams(prop, defaultValue);
         else {
           setSearchParams(prop, await defaultValue({ model: searchParams.value, optionsMap: optionsMap.value, prop }));
@@ -221,7 +227,7 @@ function usePageSearchInit() {
 
 // ---------- ProSearch 事件监听 ----------
 
-const handleSearch = (searchModel: Record<string, any>) => {
+const handleSearch = (searchModel: Recordable) => {
   const newSearchModel = { ...searchModel };
 
   // 触发每个配置项的 beforeSearch
@@ -241,7 +247,7 @@ const handleSearch = (searchModel: Record<string, any>) => {
   proTableInstance.value?.search(newSearchModel, false);
   emits("search", newSearchModel);
 };
-const handleReset = (searchModel: Record<string, any>) => {
+const handleReset = (searchModel: Recordable) => {
   proTableInstance.value?.reset(searchModel, false);
   emits("reset", searchModel);
 };
@@ -275,7 +281,7 @@ const handleDragSortEnd = (newIndex: number, oldIndex: number) => {
 /**
  * 执行过滤搜索
  */
-const handleFilter = (filterModel: Record<string, any>, filterValue: unknown, prop: string) => {
+const handleFilter = (filterModel: Recordable, filterValue: unknown, prop: string) => {
   emits("filter", filterModel, filterValue, prop);
 };
 /**
@@ -311,12 +317,22 @@ const handleLeaveCellEdit = (row: TableRow, column: TableColumn) => {
   emits("leaveCellEdit", row, column);
 };
 
+/**
+ * 判断是否为函数，是则调用，否则直接返回
+ */
+const executeIfFunctionOrReturn = <T,>(
+  target: boolean | undefined | ((params: T) => boolean | undefined),
+  params: T
+): any => {
+  if (target && isFunction(target)) return target(params);
+  return !!target;
+};
+
 const expose = {
   searchParams,
   searchDefaultParams,
   proSearchInstance,
   proTableInstance,
-  dialogFormInstance,
 
   // 在这里添加暴露常用方法，也可以直接通过 proSearchInstance、proTableInstance 获取实例对象调用方法
   search: () => proSearchInstance.value?.search(),
@@ -324,7 +340,7 @@ const expose = {
   toggleCollapse: () => proSearchInstance.value?.toggleCollapse(),
   getTableData: () => proTableInstance.value?.tableData,
   getPageInfo: () => proTableInstance.value?.pageInfo,
-  setSearchParams: (params: Record<string, any>) => {
+  setSearchParams: (params: Recordable) => {
     Object.entries(params).forEach(([key, value]) => {
       setProp(searchParams.value, key, value);
     });
@@ -360,6 +376,7 @@ defineExpose(expose);
 
     <ProTable
       ref="proTableInstance"
+      class="flx-column"
       v-bind="{ ...$attrs, ...proTableProps }"
       :request-params="searchParams"
       :init-request-params="initRequestParams"
@@ -394,34 +411,54 @@ defineExpose(expose);
         <slot name="head-tool-after" />
       </template>
 
-      <!-- 拓展 ProTable 顶栏左侧按钮，适配 DialogForm 的 API -->
+      <!-- 拓展 ProTable 顶栏左侧按钮，适配 FeedbackForm 的 API -->
       <template #head-left="{ selectedListIds, selectedList, isSelected }">
         <slot name="head-left" v-bind="{ selectedListIds, selectedList, isSelected }">
           <slot name="head-left-before" v-bind="{ selectedListIds, selectedList, isSelected }" />
 
-          <slot name="add" v-bind="{ selectedListIds, selectedList, isSelected, dialogFormInstance }">
+          <slot name="add" v-bind="{ selectedListIds, selectedList, isSelected, feedbackFormInstance }">
             <el-button
-              v-if="dialogFormProps?.addApi ? true : dialogFormProps?.useAdd"
+              v-if="
+                feedbackFormProps?.addApi ||
+                feedbackFormProps?.onAdd ||
+                executeIfFunctionOrReturn(feedbackFormProps?.useAdd, { selectedListIds, selectedList, isSelected })
+              "
               type="primary"
               :icon="Plus"
-              @click="dialogFormInstance?.handleAdd()"
-              :disabled="dialogFormProps?.disableAdd"
+              @click="feedbackFormInstance?.handleAdd()"
+              :disabled="
+                executeIfFunctionOrReturn(feedbackFormProps?.disableAdd, { selectedListIds, selectedList, isSelected })
+              "
             >
               新增
             </el-button>
           </slot>
-          <slot name="removeBatch" v-bind="{ selectedListIds, selectedList, isSelected, dialogFormInstance }">
+          <slot name="removeBatch" v-bind="{ selectedListIds, selectedList, isSelected, feedbackFormInstance }">
             <el-button
-              v-if="dialogFormProps?.removeBatchApi ? true : dialogFormProps?.useRemoveBatch"
+              v-if="
+                feedbackFormProps?.removeBatchApi ||
+                feedbackFormProps?.onRemoveBatch ||
+                executeIfFunctionOrReturn(feedbackFormProps?.useRemoveBatch, {
+                  selectedListIds,
+                  selectedList,
+                  isSelected,
+                })
+              "
               type="danger"
               :icon="Delete"
               plain
               @click="
-                dialogFormInstance?.handleRemoveBatch(selectedListIds, selectedList, () => {
+                feedbackFormInstance?.handleRemoveBatch(selectedListIds, selectedList, () => {
                   proTableInstance?.tableMainInstance?.clearSelection();
                 })
               "
-              :disabled="dialogFormProps?.disableRemoveBatch || !isSelected"
+              :disabled="
+                executeIfFunctionOrReturn(feedbackFormProps?.disableRemoveBatch, {
+                  selectedListIds,
+                  selectedList,
+                  isSelected,
+                }) || !isSelected
+              "
             >
               批量删除
             </el-button>
@@ -432,11 +469,11 @@ defineExpose(expose);
       </template>
 
       <template v-if="$slots['operation-before']" #operation-before="scope">
-        <slot name="operation-before" v-bind="{ ...scope, dialogFormInstance }" />
+        <slot name="operation-before" v-bind="{ ...scope, feedbackFormInstance }" />
       </template>
 
       <template v-if="$slots['operation-after']" #operation-after="scope">
-        <slot name="operation-after" v-bind="{ ...scope, dialogFormInstance }" />
+        <slot name="operation-after" v-bind="{ ...scope, feedbackFormInstance }" />
       </template>
 
       <template
@@ -449,22 +486,22 @@ defineExpose(expose);
       </template>
     </ProTable>
 
-    <!-- Dialog 表单 -->
-    <DialogForm
-      ref="dialogFormInstance"
-      v-if="dialogFormProps"
+    <!-- FeedbackForm 组件 -->
+    <FeedbackForm
+      ref="feedbackFormInstance"
+      v-if="feedbackFormProps"
       v-bind="{
-        ...dialogFormProps,
+        ...feedbackFormProps,
         afterConfirm: (status, result) => {
           result && handleSearch(searchParams);
-          dialogFormProps?.afterConfirm && dialogFormProps.afterConfirm(status, result);
+          feedbackFormProps?.afterConfirm && feedbackFormProps.afterConfirm(status, result);
         },
       }"
     >
       <template v-for="slot in Object.keys($slots)" #[slot]="scope">
         <slot :name="slot" v-bind="scope" />
       </template>
-    </DialogForm>
+    </FeedbackForm>
   </div>
 </template>
 

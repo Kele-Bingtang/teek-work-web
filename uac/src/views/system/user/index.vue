@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import type { DialogFormProps, ProPageInstance, PageColumn } from "@teek/components";
+import type { FeedbackFormProps, ProPageInstance, PageColumn } from "@teek/components";
 import type { User } from "@/common/api/system/user/user";
 import { ElInput, ElMessageBox, ElSwitch } from "element-plus";
 import { Key } from "@element-plus/icons-vue";
@@ -74,7 +74,7 @@ const columns: PageColumn<User.Info>[] = [
 
 const formColumns = useFormColumns(computed(() => props.initRequestParams?.deptId));
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: {
     elFormProps,
     columns: formColumns,
@@ -89,7 +89,7 @@ const dialogFormProps: DialogFormProps = {
   disableEdit: !hasAuth("system:user:edit"),
   disableRemove: !hasAuth("system:user:remove"),
   disableRemoveBatch: !hasAuth("system:user:remove"),
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 700,
@@ -134,7 +134,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       :request-api="listPage"
       :init-request-params
       :columns
-      :dialog-form-props
+      :feedback-form-props
       :export-file
       :disabled-tool-button="!hasAuth('system:user:export') ? ['export'] : []"
     >

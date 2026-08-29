@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="Role">
-import type { DialogFormProps, ProPageInstance, PageColumn } from "teek";
+import type { FeedbackFormProps, ProPageInstance, PageColumn } from "teek";
 import type { Role } from "@/common/api/system/role";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { ProPage, downloadByData, useNamespace } from "teek";
@@ -61,7 +61,7 @@ const columns: PageColumn<Role.Info>[] = [
 
 const { hasAuth } = usePermission();
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: {
     elFormProps,
     columns: useFormColumns().columns,
@@ -80,7 +80,7 @@ const dialogFormProps: DialogFormProps = {
     const res = await listResourceIdsByRoleId(model.appId, model.roleId);
     model.selectedResourceIds = res.data || [];
   },
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 450,
@@ -104,7 +104,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       :request-api="listPage"
       :columns
       :init-request-params="initRequestParams"
-      :dialog-form-props
+      :feedback-form-props
       :export-file
       :disabled-tool-button="!hasAuth('system:role:export') ? ['export'] : []"
     ></ProPage>

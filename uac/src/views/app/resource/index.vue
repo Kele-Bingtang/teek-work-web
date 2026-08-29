@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import type { DialogFormProps, PageColumn, ProPageInstance } from "teek";
+import type { FeedbackFormProps, PageColumn, ProPageInstance } from "teek";
 import type { Resource } from "@/common/api/system/resource";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
@@ -87,8 +87,8 @@ const installMeta = (data: any) => {
 
 const { hasAuth } = usePermission();
 
-const dialogFormProps: DialogFormProps = {
-  dialog: {
+const feedbackFormProps: FeedbackFormProps = {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "50%",
     height: model => (model?.useMeta ? 700 : 500),
@@ -163,18 +163,18 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       :request-api="listResourceTreeTableByApp"
       :columns
       :init-request-params="initRequestParams"
-      :dialog-form-props
+      :feedback-form-props
       :page-scope="false"
       :export-file
       :disabled-tool-button="!hasAuth('system:resource:export') ? ['export'] : []"
     >
-      <template #operation-after="{ row, dialogFormInstance }">
+      <template #operation-after="{ row, feedbackFormInstance }">
         <el-button
           v-auth="['system:resource:add']"
           link
           size="small"
           :icon="Plus"
-          @click="dialogFormInstance?.handleAdd({ parentId: row.resourceId })"
+          @click="feedbackFormInstance?.handleAdd({ parentId: row.resourceId })"
         >
           新增
         </el-button>

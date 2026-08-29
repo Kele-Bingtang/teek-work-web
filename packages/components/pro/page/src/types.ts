@@ -4,6 +4,7 @@ import type { ProTableInstance, ProTableNamespace, TableColumn } from "@teek/com
 import type { SearchColumn, ProSearchEmits, ProSearchInstance, ProSearchProps } from "@teek/components/pro/search";
 import type { BreakPoint, Responsive } from "@teek/components/pro/grid";
 import type { ProFormDialogProps } from "@teek/components/pro/form-dialog";
+import type { ProFormDrawerProps } from "@teek/components/pro/form-drawer";
 import type { FormColumn, ProFormNamespace } from "@teek/components/pro/form";
 import type ProPage from "./index.vue";
 
@@ -43,9 +44,9 @@ export interface ProPageProps extends ProTableNamespace.Props {
    */
   defaultValues?: Record<string, any>;
   /**
-   * dialogForm Props
+   * feedbackForm Props
    */
-  dialogFormProps?: DialogFormProps;
+  feedbackFormProps?: FeedbackFormProps;
   /**
    * 自定义导出为文件
    *
@@ -70,60 +71,213 @@ export interface ProPageEmits extends Omit<ProTableNamespace.Emits, "register">,
  */
 export type ProPageInstance = InstanceType<typeof ProPage>;
 
-// DialogForm 组件的类型
-
-export interface DialogFormColumn<T = any> extends FormColumn<T> {
-  destroyIn?: Array<"add" | "edit">; // 是否销毁表单，类似于 v-if
-  hiddenIn?: Array<"add" | "edit">; // 是否隐藏表单，类似于 v-show
-  disabledIn?: Array<"add" | "edit">; // 是否禁用表单
+/**
+ * FeedbackForm 组件的类型
+ */
+export interface FeedbackFormColumn<T = any> extends FormColumn<T> {
+  /**
+   * 是否销毁表单，类似于 v-if
+   */
+  destroyIn?: Array<"add" | "edit">;
+  /**
+   * 是否隐藏表单，类似于 v-show
+   */
+  hiddenIn?: Array<"add" | "edit">;
+  /**
+   * 是否禁用表单
+   */
+  disabledIn?: Array<"add" | "edit">;
 }
 
-export type DialogStatus = "" | "edit" | "add" | "read";
+export type FeedbackStatus = "" | "edit" | "add" | "read";
 
-export type DialogForm = DialogFormProps;
+export type FeedbackForm = FeedbackFormProps;
 
-export interface DialogFormProps {
+export interface FeedbackFormProps<T extends Record<string, any> = any> {
+  /**
+   * feedbackForm 类型，dialog 或 drawer
+   *
+   * @default "dialog"
+   */
+  type?: MaybeRef<"dialog" | "drawer">;
+  /**
+   * ProForm Props
+   */
   form?: Omit<ProFormNamespace.Props, "columns"> & {
-    columns?: MaybeRef<DialogFormColumn[]>;
+    columns?: MaybeRef<FeedbackFormColumn[]>;
   };
-  dialog?: Omit<ProFormDialogProps["dialog"], "title" | "height"> & {
-    title: string | ((model: Record<string, any>, status: DialogStatus) => string);
-    height: string | number | ((model: Record<string, any>, status: DialogStatus) => string | number);
+  /**
+   * dialog 或 drawer 类型弹窗的属性
+   */
+  feedbackProps?: {
+    /**
+     * 弹窗标题，为字符串或函数
+     */
+    title: string | ((model: T, status: FeedbackStatus) => string);
+    /**
+     * 弹窗高度，为字符串、数字或函数
+     */
+    height?: string | number | ((model: T, status: FeedbackStatus) => string | number);
     [key: string]: any;
-  };
-  id?: string | string[]; // 数据主键。编辑时必传，默认 id
-  cache?: boolean; // 是否缓存新增、编辑后遗留的数据
-  addApi?: (params: any) => Promise<any>; // 新增接口
-  addCarryParams?: Record<string, any>; // 新增时，额外添加的函数
-  addFilterKeys?: string[]; // 新增时，过滤的参数
-  editApi?: (params: any) => Promise<any>; // 编辑接口
-  editCarryParams?: Record<string, any>; // 编辑时，额外添加的参数
-  editFilterKeys?: string[]; // 编辑时，过滤的参数
-  removeApi?: (params: any) => Promise<any>; // 删除接口
-  removeCarryParams?: Record<string, any>; // 删除时，额外添加的参数
-  removeFilterKeys?: string[]; // 删除时，过滤的参数
-  removeBatchCarryParams?: Record<string, any>; // 批量删除时，额外添加的参数
-  removeBatchApi?: (params: any) => Promise<any>; // 批量删除接口
-  apiFilterKeys?: string[]; // 新增、编辑、删除时，过滤的参数
-  apiCarryParams?: Record<string, any>; // 新增、编辑、删除时，额外添加的参数
-  clickAdd?: (model: Record<string, any>) => undefined | Promise<any> | any; // 点击新增按钮回调
-  clickEdit?: (model: Record<string, any>) => undefined | Promise<any> | any; // 点击编辑按钮回调
-  beforeAdd?: (model: Record<string, any>) => undefined | Promise<any> | any; // 新增前回调
-  afterAdd?: (model: Record<string, any>, result: any) => void; // 新增后回调
-  beforeEdit?: (model: Record<string, any>) => undefined | Promise<any> | any; // 编辑前回调
-  afterEdit?: (model: Record<string, any>, result: any) => void; // 编辑后回调
-  beforeRemove?: (model: Record<string, any>) => undefined | Promise<any> | any; // 删除前回调
-  afterRemove?: (model: Record<string, any>, result: any) => void; // 删除后回调
-  beforeRemoveBatch?: (model: Record<string, any>) => undefined | Promise<any> | any; // 批量删除前回调
-  afterRemoveBatch?: (model: Record<string, any>, result: any) => void; // 批量删除后回调
-  beforeConfirm?: (status: string) => void; // 确定按钮触发前回调
-  afterConfirm?: (status: string, result: any) => void; // 确定按钮触发后回调
-  disableAdd?: boolean; // 禁用新增按钮
-  disableEdit?: boolean; // 禁用编辑按钮
-  disableRemove?: boolean; // 禁用删除按钮
-  disableRemoveBatch?: boolean; // 禁用批量删除按钮
-  useAdd?: boolean; // 使用新增按钮
-  useEdit?: boolean; // 使用编辑按钮
-  useRemove?: boolean; // 使用删除按钮
-  useRemoveBatch?: boolean; // 使用批量删除按钮
+  } & (Omit<ProFormDialogProps["dialog"], "title" | "height"> | Omit<ProFormDrawerProps["drawer"], "title" | "height">);
+  /**
+   * 数据主键。编辑时必传
+   *
+   * @default "id"
+   */
+  id?: string | string[];
+  /**
+   * 是否缓存新增、编辑后遗留的数据
+   *
+   * @default false
+   */
+  cache?: boolean;
+  /**
+   * 新增 API 请求
+   */
+  addApi?: (params: T) => Promise<any>;
+  /**
+   * 调用 addApi 时额外传入的参数
+   */
+  addCarryParams?: Record<string, any> | ((model: T) => Record<string, any>);
+  /**
+   * 调用 addApi 时过滤掉的参数
+   */
+  addFilterKeys?: string[];
+  /**
+   * 编辑 API 请求
+   */
+  editApi?: (params: T) => Promise<any>;
+  /**
+   * 调用 editApi 时额外传入的参数
+   */
+  editCarryParams?: Record<string, any> | ((data: T) => Record<string, any>);
+  /**
+   * 调用 editApi 时过滤掉的参数
+   */
+  editFilterKeys?: string[];
+  /**
+   * 删除 API 请求
+   */
+  removeApi?: (params: T) => Promise<any>;
+  /**
+   * 调用 removeApi 时额外传入的参数
+   */
+  removeCarryParams?: Record<string, any> | ((data: T) => Record<string, any>);
+  /**
+   * 调用 removeApi 时过滤掉的参数
+   */
+  removeFilterKeys?: string[];
+  /**
+   * 批量删除 API 请求
+   */
+  removeBatchApi?: (params: T) => Promise<any>;
+  /**
+   * 调用 removeBatchApi 时额外传入的参数
+   */
+  removeBatchCarryParams?: Record<string, any> | ((data: T) => Record<string, any>);
+  /**
+   * 调用所有 API 接口时额外传入的参数
+   */
+  apiFilterKeys?: string[];
+  /**
+   * 调用所有 API 接口时过滤掉的参数
+   */
+  apiCarryParams?: Record<string, any> | ((data: T) => Record<string, any>);
+  /**
+   * 请求失败回调
+   */
+  requestFailed?: (error: any, model: T) => void;
+  /**
+   * 点击新增按钮回调，可以返回一个对象覆盖表单数据，也可以传入 false 取消打开新增弹窗
+   */
+  clickAdd?: (model: T) => Promise<any> | false | undefined;
+  /**
+   * 点击编辑按钮回调，可以返回一个对象覆盖表单数据，也可以传入 false 取消打开编辑弹窗
+   */
+  clickEdit?: (model: T) => Promise<any> | false | undefined;
+  /**
+   * 点击删除按钮回调
+   */
+  clickRemove?: (model: T) => void;
+  /**
+   * 点击批量删除按回调，可以返回一个对象覆盖表单数据，也可以传入 false 取消打开批量删除弹窗
+   */
+  clickRemoveBatch?: (data: T) => Promise<any> | false | undefined;
+  /**
+   * 新增点击保存按钮回调，将自定义新增逻辑，覆盖 addApi 逻辑，当两者同时存在时，onAdd 优先级高，返回 false 代表继续执行 addApi
+   */
+  onAdd?: (
+    model: T,
+    successCallBack: () => void,
+    failureCallBack: (res: any) => void
+  ) => undefined | false | Promise<undefined | false>;
+  /**
+   * 编辑点击保存按钮回调，将自定义新增逻辑，覆盖 editApi 逻辑，当两者同时存在时，onEdit 优先级高，返回 false 代表继续执行 editApi
+   */
+  onEdit?: (
+    model: T,
+    successCallBack: () => void,
+    failureCallBack: (res: any) => void
+  ) => undefined | false | Promise<undefined | false>;
+  /**
+   * 删除点击保存按钮回调，将自定义新增逻辑，覆盖 removeApi 逻辑，当两者同时存在时，onRemove 优先级高，返回 false 代表继续执行 removeApi
+   */
+  onRemove?: (
+    model: T,
+    successCallBack: (res: any) => void,
+    failureCallBack: (res: any) => void
+  ) => undefined | false | Promise<undefined | false>;
+  /**
+   * 批量删除点击保存按钮回调，将自定义新增逻辑，覆盖 removeBatchApi 逻辑，当两者同时存在时，onRemoveBatch 优先级高，返回 false 代表继续执行 removeBatchApi
+   */
+  onRemoveBatch?: (
+    model: T,
+    successCallBack: (res: any) => void,
+    failureCallBack: (res: any) => void
+  ) => undefined | false | Promise<undefined | false>;
+  /**
+   * add、edit、remove、removeBatch 任意操作完成后的回调
+   */
+  afterConfirm?: (status: string, result: boolean) => void;
+  /**
+   * 禁用新增按钮
+   *
+   * @default false
+   */
+  disableAdd?: boolean | ((param: { selectedListIds: any; selectedList: any; isSelected: any }) => boolean);
+  /**
+   * 禁用编辑按钮
+   *
+   * @default false
+   */
+  disableEdit?: boolean | ((row: T) => boolean);
+  /**
+   * 禁用删除按钮
+   *
+   * @default false
+   */
+  disableRemove?: boolean | ((row: T) => boolean);
+  /**
+   * 禁用批量删除按钮
+   *
+   * @default false
+   */
+  disableRemoveBatch?: boolean | ((param: { selectedListIds: any; selectedList: any; isSelected: any }) => boolean);
+  /**
+   * 是否使用新增功能，如果 addApi 存在则默认为 true，否则默认为 false
+   */
+  useAdd?: boolean | ((row: T) => boolean);
+  /**
+   * 是否使用编辑功能，如果 editApi 存在则默认为 true，否则默认为 false
+   */
+  useEdit?: boolean | ((row: T) => boolean);
+  /**
+   * 是否使用删除功能，如果 removeApi 存在则默认为 true，否则默认为 false
+   */
+  useRemove?: boolean | ((row: T) => boolean);
+  /**
+   * 是否使用批量删除功能，如果 removeBatchApi 存在则默认为 true，否则默认为 false
+   */
+  useRemoveBatch?: boolean | ((row: T) => boolean);
 }

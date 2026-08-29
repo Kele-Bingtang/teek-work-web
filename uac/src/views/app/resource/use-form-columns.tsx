@@ -1,4 +1,4 @@
-import type { DialogFormColumn, ElFormProps } from "@teek/components";
+import type { FeedbackFormColumn, ElFormProps } from "@teek/components";
 import type { Resource } from "@/common/api/system/resource";
 import { listResourceTreeSelectByApp } from "@/common/api/system/resource";
 import { ElInput, ElOption, ElSelect, type FormRules } from "element-plus";
@@ -30,7 +30,7 @@ export const elFormProps: ElFormProps = {
 };
 
 export const useFormColumns = (defaultValue: ComputedRef<string>) => {
-  const columns: DialogFormColumn<Resource.Info>[] = [
+  const columns: FeedbackFormColumn<Resource.Info>[] = [
     {
       prop: "base",
       label: "基础配置",

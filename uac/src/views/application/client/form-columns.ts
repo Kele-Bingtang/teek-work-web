@@ -1,4 +1,4 @@
-import type { DialogFormColumn } from "@teek/components";
+import type { FeedbackFormColumn } from "@teek/components";
 import type { FormRules } from "element-plus";
 import { useDictStore } from "@/pinia";
 
@@ -13,7 +13,7 @@ export const elFormProps = {
   rules: rules,
 };
 
-export const formColumns: DialogFormColumn[] = [
+export const formColumns: FeedbackFormColumn[] = [
   {
     prop: "clientKey",
     label: "客户端 Key",

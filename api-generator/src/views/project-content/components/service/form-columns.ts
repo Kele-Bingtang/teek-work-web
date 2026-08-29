@@ -1,5 +1,5 @@
 import type { FormRules } from "element-plus";
-import type { DialogFormColumn } from "teek";
+import type { FeedbackFormColumn } from "teek";
 import type { Service } from "@/common/api/service";
 
 const rules: FormRules = {
@@ -13,7 +13,7 @@ export const elFormProps = {
   rules: rules,
 };
 
-export const formColumns: DialogFormColumn<Service.ServiceInfo>[] = [
+export const formColumns: FeedbackFormColumn<Service.ServiceInfo>[] = [
   {
     prop: "serviceName",
     label: "服务名称",

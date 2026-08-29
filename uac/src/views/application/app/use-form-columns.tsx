@@ -1,6 +1,6 @@
 import type { FormRules } from "element-plus";
 import type { App } from "@/common/api/application/app";
-import type { DialogFormColumn } from "@teek/components";
+import type { FeedbackFormColumn } from "@teek/components";
 import { UserSelect } from "@teek/components";
 import { list } from "@/common/api/system/user/user";
 import { useDictStore } from "@/pinia";
@@ -17,7 +17,7 @@ export const elFormProps = {
   rules: rules,
 };
 export const useFormColumns = (options: ComputedRef<any>, defaultValue: ComputedRef<string>) => {
-  const columns: DialogFormColumn<App.Info>[] = [
+  const columns: FeedbackFormColumn<App.Info>[] = [
     {
       prop: "clientId",
       label: "所属客户端",

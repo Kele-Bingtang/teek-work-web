@@ -1,5 +1,5 @@
 import type { Dept } from "@/common/api/system/dept";
-import type { DialogFormColumn } from "@teek/components";
+import type { FeedbackFormColumn } from "@teek/components";
 import type { FormRules } from "element-plus";
 import { useFormRules } from "@/composables";
 import { listDeptTreeList } from "@/common/api/system/dept";
@@ -18,7 +18,7 @@ export const elFormProps = {
   rules: rules,
 };
 
-export const formColumns: DialogFormColumn<Dept.TreeTable>[] = [
+export const formColumns: FeedbackFormColumn<Dept.TreeTable>[] = [
   {
     prop: "parentId",
     label: "上级部门",

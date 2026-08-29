@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="DictType">
-import type { DialogFormProps, PageColumn } from "@teek/components";
+import type { FeedbackFormProps, PageColumn } from "@teek/components";
 import type { DictType } from "@/common/api/dictType";
 import { ElLink, ElMessageBox } from "element-plus";
 import { ProPage, BlankDrawer, PointTag, downloadByData } from "teek";
@@ -61,7 +61,7 @@ const columns: PageColumn<DictType.DictTypeInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: {
     elFormProps: dictTypeElFormProps,
     columns: useFormColumns(computed(() => "")).dictTypeColumns,
@@ -70,7 +70,7 @@ const dialogFormProps: DialogFormProps = {
   addApi: addDictType,
   editApi: editDictType,
   removeApi: removeDictType,
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 300,
@@ -91,7 +91,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
 <template>
   <div :class="ns.b()">
     <div :class="ns.e('table')">
-      <ProPage :request-api="listPage" :columns="columns" :dialogFormProps :exportFile></ProPage>
+      <ProPage :request-api="listPage" :columns="columns" :feedbackFormProps :exportFile></ProPage>
     </div>
 
     <BlankDrawer v-model="drawer" size="55%" title="字典数据配置">

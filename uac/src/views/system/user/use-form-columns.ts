@@ -1,4 +1,4 @@
-import type { DialogFormColumn, ElFormProps } from "@teek/components";
+import type { FeedbackFormColumn, ElFormProps } from "@teek/components";
 import type { User } from "@/common/api/system/user/user";
 import type { FormRules } from "element-plus";
 import { useDictStore } from "@/pinia";
@@ -25,7 +25,7 @@ export const elFormProps: ElFormProps = {
 export const useFormColumns = (defaultValue?: ComputedRef<string>) => {
   const { getDictData } = useDictStore();
 
-  const columns: DialogFormColumn<User.Info>[] = [
+  const columns: FeedbackFormColumn<User.Info>[] = [
     {
       prop: "username",
       label: "用户名称",

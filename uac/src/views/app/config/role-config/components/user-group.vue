@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="RoleLinkUserGroup">
-import type { DialogFormColumn, DialogFormProps, ElFormProps, PageColumn, ProPageInstance } from "teek";
+import type { FeedbackFormColumn, FeedbackFormProps, ElFormProps, PageColumn, ProPageInstance } from "teek";
 import type { UserGroup } from "@/common/api/system/user/user-group";
 import { dayjs, ElSwitch } from "element-plus";
 import { ProPage } from "teek";
@@ -97,7 +97,7 @@ const elFormProps: ElFormProps = {
   },
 };
 
-const formColumns: DialogFormColumn[] = [
+const formColumns: FeedbackFormColumn[] = [
   {
     prop: "validFrom",
     label: "生效时间",
@@ -144,8 +144,8 @@ const formColumns: DialogFormColumn[] = [
 const { hasAuth } = usePermission();
 
 // 新增、编辑弹框配置项
-const dialogFormProps: DialogFormProps = {
-  dialog: {
+const feedbackFormProps: FeedbackFormProps = {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "50%",
     height: (_, status) => (status === "add" ? 470 : 170),
@@ -191,7 +191,7 @@ const dialogFormProps: DialogFormProps = {
     :request-api="listUserGroupByRoleId"
     :init-request-params
     :columns
-    :dialog-form-props
+    :feedback-form-props
     row-key="linkId"
     :disabled-tool-button="!hasAuth('system:role:linkUserGroup') ? ['export'] : []"
   ></ProPage>

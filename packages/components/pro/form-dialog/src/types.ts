@@ -33,4 +33,4 @@ export interface ProFormDialogEmits {
 /**
  * ProDialogForm 组件实例
  */
-export type ProDialogFormInstance = InstanceType<typeof ProDialogForm>;
+export type ProFormDialogInstance = InstanceType<typeof ProDialogForm>;

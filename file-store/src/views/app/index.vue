@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="App">
-import type { TableColumn, FormColumn, ElFormProps, DialogFormProps } from "teek";
+import type { TableColumn, FormColumn, ElFormProps, FeedbackFormProps } from "teek";
 import { listAppPage, registerApp, editApp, removeApp } from "@/common/api/app";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { ProPage, message } from "teek";
@@ -113,9 +113,9 @@ const elFormProps: Partial<ElFormProps> = {
   },
 };
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: { elFormProps, columns: formColumn },
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 300,
@@ -130,5 +130,5 @@ const dialogFormProps: DialogFormProps = {
 </script>
 
 <template>
-  <ProPage :request-api="listAppPage" :columns :dialog-form-props></ProPage>
+  <ProPage :request-api="listAppPage" :columns :feedback-form-props></ProPage>
 </template>

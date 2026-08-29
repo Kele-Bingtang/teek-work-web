@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="UserGroup">
-import type { DialogFormProps, ProPageInstance, PageColumn } from "teek";
+import type { FeedbackFormProps, ProPageInstance, PageColumn } from "teek";
 import type { UserGroup } from "@/common/api/system/user/user-group";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import {
@@ -77,21 +77,23 @@ const columns: PageColumn<UserGroup.Info>[] = [
 const { hasAuth } = usePermission();
 
 // 新增、编辑弹框配置项
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: {
     elFormProps,
     columns: formColumns,
   },
   id: ["id", "groupId"],
   addApi: addUserGroup,
-  beforeAdd: form => {
+  onAdd: form => {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
+    return false;
   },
   editApi: editUserGroup,
-  beforeEdit: form => {
+  onEdit: form => {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
+    return false;
   },
   disableAdd: !hasAuth("system:userGroup:add"),
   disableEdit: !hasAuth("system:userGroup:edit"),
@@ -100,7 +102,7 @@ const dialogFormProps: DialogFormProps = {
   removeApi: removeUserGroup,
   removeBatchApi: removeBatch,
   apiFilterKeys: ["user", "createTime"],
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
     height: 250,
@@ -124,7 +126,7 @@ const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) 
       ref="proPageInstance"
       :request-api="listPage"
       :columns
-      :dialog-form-props
+      :feedback-form-props
       :export-file
       :disabled-tool-button="!hasAuth('system:userGroup:export') ? ['export'] : []"
     ></ProPage>

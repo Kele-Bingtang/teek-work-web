@@ -1,5 +1,5 @@
 <script setup lang="tsx" name="ServiceCol">
-import type { DialogFormProps, TableColumn, FormColumn, ProPageInstance } from "teek";
+import type { FeedbackFormProps, TableColumn, FormColumn, ProPageInstance } from "teek";
 import type { ServiceCol } from "@/common/api/serviceCol";
 import { Pointer, Delete, Files, Link, Plus, Minus } from "@element-plus/icons-vue";
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -296,7 +296,7 @@ const getDropdownConfig = (data: any) => {
   return dropdownConfig;
 };
 
-const dialogFormProps: DialogFormProps = {
+const feedbackFormProps: FeedbackFormProps = {
   form: { elFormProps, columns: formColumns },
   id: ["id", "colId"],
   addApi: data => {
@@ -336,7 +336,7 @@ const dialogFormProps: DialogFormProps = {
       dropdownService.label = dropdownConfig.value.label;
     } else if (dropdownConfig?.type === "sql") dropdownSql.value = dropdownConfig.value;
   },
-  dialog: {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "50%",
     height: 700,
@@ -353,7 +353,7 @@ const dialogFormProps: DialogFormProps = {
     :init-request-params
     highlight-current-row
     :columns
-    :dialog-form-props
+    :feedback-form-props
     @row-click="handleRowClick"
   >
     <template #head-left-after>

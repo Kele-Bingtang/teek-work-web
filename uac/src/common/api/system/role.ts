@@ -49,8 +49,8 @@ export namespace Role {
   export interface LinkDepts {
     roleId: string; // 角色 ID
     deptIds: string[]; // 部门 ID
-    validFrom: string; // 生效时间
-    expireOn: string; // 过期时间
+    validFrom?: string; // 生效时间
+    expireOn?: string; // 过期时间
     appId: string; // 应用 ID
   }
 
@@ -67,8 +67,8 @@ export namespace Role {
   export interface LinkResources {
     roleId: string; // 角色 ID
     resourceIds: string[]; // 资源 ID
-    validFrom: string; // 生效时间
-    expireOn: string; // 过期时间
+    validFrom?: string; // 生效时间
+    expireOn?: string; // 过期时间
     appId: string; // 应用 ID
   }
 

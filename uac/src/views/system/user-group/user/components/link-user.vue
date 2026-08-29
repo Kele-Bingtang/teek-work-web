@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import type { DialogFormColumn, DialogFormProps, ElFormProps, PageColumn, ProPageInstance } from "@teek/components";
+import type { FeedbackFormColumn, FeedbackFormProps, ElFormProps, PageColumn, ProPageInstance } from "@teek/components";
 import type { User } from "@/common/api/system/user/user";
 import { dayjs, ElSwitch } from "element-plus";
 import { ProPage, useNamespace } from "teek";
@@ -81,7 +81,7 @@ const elFormProps: ElFormProps = {
   },
 };
 
-const formColumns: DialogFormColumn[] = [
+const formColumns: FeedbackFormColumn[] = [
   {
     prop: "validFrom",
     label: "生效时间",
@@ -128,8 +128,8 @@ const formColumns: DialogFormColumn[] = [
 const { hasAuth } = usePermission();
 
 // 新增、编辑弹框配置项
-const dialogFormProps: DialogFormProps = {
-  dialog: {
+const feedbackFormProps: FeedbackFormProps = {
+  feedbackProps: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "50%",
     height: (_, status) => (status === "add" ? 470 : 170),
@@ -178,7 +178,7 @@ const dialogFormProps: DialogFormProps = {
       :init-request-params
       :request-immediate="false"
       :columns
-      :dialog-form-props
+      :feedback-form-props
       row-key="linkId"
       :card="false"
     ></ProPage>
